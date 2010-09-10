@@ -1,0 +1,18 @@
+IDEA ý15:26 ý07/ý04/ý2010
+write comments to stdout 
+simple debug replacement
+encourage commenting
+reduce redundat brute force ebugging
+
+QNM(ý12:21 ý20/ý03/ý2010)
+model every queue  - server performance modeling 
+
+flasg rgb - A R G B , 2 bytes each
+Singleton design pattern - common in game design
+do not modify lists while itereting , use deletion and insertion stacks instead
+
+access
+wirld card character in vba sql is *
+
+
+MIT license a reference is enough
