@@ -1,0 +1,31 @@
+div [id="main"]
+{
+     background-color: yellow;
+     position: absolute;
+     left: 0em;
+    top:0em;
+     height:50em;
+     width:50em;
+}
+div [id="controls"]
+{
+  background-color:fuchsia;
+  opacity:0.4;
+  filter:alpha(opacity=40);
+  position:absolute;
+  left: 0em;
+  top:0em;
+  height:50em;
+  width:24em;
+}
+div [id="info"]
+{
+  background-color:navy;
+  opacity:0.4;
+  filter:alpha(opacity=40);
+  left: 0em;
+  position: absolute;
+  top:50em;
+  height:20em;
+  width:50em;
+}

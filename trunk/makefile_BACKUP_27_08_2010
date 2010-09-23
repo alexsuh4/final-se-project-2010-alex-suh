@@ -1,0 +1,124 @@
+#
+#	makefile 
+#
+#
+CORE_DIR=engine_core
+GAMELET_DIR=gamelets
+WEB_DIR=web
+WEB_PUBLISH_DIR=/opt/monkey/htdocs
+
+# after compilation finished , delete all intermidiate object files (*.o) and 
+# copy all web content to web publish directory specified by WEB_PUBLISH_DIR 
+all : libengine_core.so sample_gamelet libgame_engine_api.so main network thread
+	(rm *.o ;cp -ru $(WEB_DIR)/* $(WEB_PUBLISH_DIR))
+
+
+
+
+############################################################
+#
+#	ENRY POINT COMPILATION
+#
+#
+#
+#############################################################
+
+main : main.cpp  sample_gamelet.so  network  libengine_core.so
+	g++ -Wall -o  main main.cpp -L./ -lengine_core 
+	
+
+#############################################################
+
+############################################################
+#
+#	THREAD LIBRARY COMPILATION
+#
+#
+#					
+#############################################################
+thread : Thread.o
+	(echo "genereting thread")
+
+Thread.o : $(CORE_DIR)/threading/Thread.hh $(CORE_DIR)/threading/Thread.cpp
+	g++ -Wall -c  -fPIC $(CORE_DIR)/threading/Thread.cpp
+
+
+
+################################################################
+
+
+############################################################
+#
+#	LIBRARY ENGINE CORE COMPILATION
+#
+#
+#
+#############################################################
+
+
+libengine_core.so : libengine_core.o Thread.o libnetwork_module.o
+	g++ -Wall --no-undefined -shared -lc -o libengine_core.so libengine_core.o Thread.o libnetwork_module.o -ldl -lpthread
+
+libengine_core.o : $(CORE_DIR)/libengine_core.cpp $(CORE_DIR)/libengine_core.hh  $(CORE_DIR)/threading/Thread.hh $(CORE_DIR)/threading/Thread.cpp
+	g++ -Wall -c  -fPIC $(CORE_DIR)/libengine_core.cpp 
+
+
+
+###############################################################
+
+
+############################################################
+#
+#	NETWORK MODULE COMPILATION
+#
+#
+#
+############################################################
+#libnetwork_module.so : libnetwork_module.o Thread.o
+#	g++ -Wall -shared -lc -o libnetwork_module.so libnetwork_module.o Thread.o -lpthread 
+network : libnetwork_module.o
+	(echo "network compiled";)
+
+libnetwork_module.o : $(CORE_DIR)/networking/libnetwork_module.cpp $(CORE_DIR)/networking/libnetwork_module.hh $(CORE_DIR)/threading/Thread.hh $(CORE_DIR)/threading/Thread.cpp
+	g++ -Wall  -c -fPIC $(CORE_DIR)/networking/libnetwork_module.cpp 
+
+#############################################################
+
+
+
+
+############################################################
+#
+#	SAMPLE GAMELET COMPILATION
+#
+#
+#
+############################################################
+# copy game engine api to sample gamelet root to make less complex compilation
+
+sample_gamelet: sample_gamelet.so
+	(cp sample_gamelet.so $(GAMELET_DIR))
+sample_gamelet.so : sample_gamelet.o libgame_engine_api.so
+	(cp libgame_engine_api.so $(GAMELET_DIR)  ;g++ -Wall -shared -lc -o sample_gamelet.so sample_gamelet.o -L./ -lgame_engine_api)
+
+sample_gamelet.o : $(GAMELET_DIR)/sample_gamelet.cpp $(CORE_DIR)/gamelet.hh $(CORE_DIR)/game_engine_api.hh 
+	g++ -Wall -fPIC -c $(GAMELET_DIR)/sample_gamelet.cpp 
+
+############################################################
+
+
+
+
+############################################################
+#
+#	ENGINE API COMPILATION
+#
+#
+#
+############################################################
+libgame_engine_api.o : $(CORE_DIR)/libgame_engine_api.cpp $(CORE_DIR)/libgame_engine_api.hh
+	g++ -Wall -c -fPIC $(CORE_DIR)/libgame_engine_api.cpp
+
+libgame_engine_api.so : libgame_engine_api.o
+	g++ -Wall -shared -lc -o libgame_engine_api.so libgame_engine_api.o
+

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="proj" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin\Debug\proj" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin\Release\proj" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="..\engine_core\data\mySqlClass.cpp" />
+		<Unit filename="..\engine_core\data\mySqlClass.h" />
+		<Unit filename="..\engine_core\game_engine_api.cpp" />
+		<Unit filename="..\engine_core\game_engine_api.hh" />
+		<Unit filename="..\engine_core\gamelet.hh" />
+		<Unit filename="..\engine_core\libengine_core.cpp" />
+		<Unit filename="..\engine_core\libengine_core.hh" />
+		<Unit filename="..\engine_core\libgame_engine_api.cpp" />
+		<Unit filename="..\engine_core\libgame_engine_api.hh" />
+		<Unit filename="..\engine_core\networking\libnetwork_module.cpp" />
+		<Unit filename="..\engine_core\networking\libnetwork_module.hh" />
+		<Unit filename="..\engine_core\parsing\parser.cpp" />
+		<Unit filename="..\engine_core\parsing\parser.hh" />
+		<Unit filename="..\engine_core\threading\SessionThread.cpp" />
+		<Unit filename="..\engine_core\threading\Thread.cpp" />
+		<Unit filename="..\engine_core\threading\Thread.hh" />
+		<Unit filename="..\gamelets\sample_gamelet.cpp" />
+		<Unit filename="..\main.cpp" />
+		<Unit filename="..\makefile" />
+		<Unit filename="..\scripts\scripts.sql" />
+		<Unit filename="..\web\web_connector.php" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

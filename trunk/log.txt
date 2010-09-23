@@ -1,0 +1,99 @@
+Sat Jun 26 14:40:48 2010
+change game container mapping for ids to string to prevent conversion 
+in other places 
+working of parser
+working on reqHandler parser 
+Sun May  9 16:57:21 2010
+succusfully integrated server and handler with game engine
+fixed chars swalling (problem in web_connector.php , substr for some reason o_O)
+can run by ./main gamelets where gamelets is gamelets dir relative to main excutable
+still need to fix handleclient request method from gamelet.hh
+need to implement parsing functionality in request handler
+
+Sat May  8 16:28:54 2010
+integrated serevr and handler in game_engine
+removed handleclient request method from gamelet api due to compilation error (something to do with string & in parameters to method)
+all seemed to compile OK , need to set path to samplr_gamelet file (so) in main.cpp
+
+Sat May  8 15:10:41 2010
+moved derived network (server) and handler into coreengine file
+need to compile and test
+
+Fri May  7 23:47:20 2010
+working on handler
+implemented simple string tokinizer (/parseing)
+got a bug in returing result as first 2 chars get swollen
+
+Mon Apr 26 20:43:59 2010
+working on handler
+started working on message parser
+implemented as strings 
+got a bug in returing result as first 2 chars get swollen 
+fix build script to publish web contetnt to web library 
+
+Sat Apr 24 22:43:56 2010
+fixed compilation and linkage of project
+Thread.cpp is compiled into object file (o) and linked seperetly into appropriate libraries
+so files need to be sym-linked into usr/lib for main to run
+multi-threaded server tested against php script at port 12345 succesfuly
+written simple publish script to copy web files from dev directory (game_engine/web) to web server folder (currenty /opt/monkey/htdocs)
+
+TODO
+	connect handler to game engine core
+	connect game engine core to loaded gamelets
+	do a speed test from two phisicly remote hosts and measure round trip time for http package (RTT)
+ 
+Fri Apr 23 23:30:53 2010
+wrote own basic thread implementation based on internet resourcse (found ref in comments)
+game_session is now threadable
+libgame_engine_core now compiles  :) 
+need to test it against main now 
+switched to another VM due to linux crash , managed to retrieve code , need to retrive firefox bookmarks
+new VM is also damnsmalllinux
+using NAT with port forwading to access server on VM (80 on host and guest) . tested succesfuly (info in sun virtualBox documentation regarding network config)
+
+Fri Apr 16 14:17:11 EDT 2010
+starting meddling with boost threads
+
+Wed Apr 14 19:02:12 2010
+implementinted gamelet class loading throuhg world manager
+todo
+	fix mess with c thread with cpp code
+	probably use static membar function in session
+	other possibility is to use a full blown thread cpp class
+	details in firefox bookmarks
+
+Mon Apr 12 22:32:27 2010
+libcore compiled :)
+test function in main
+implement init
+
+Fri Apr  9 14:00:36 2010
+working on game engine core / world manager
+data_container responsible for insert / remove/get 
+player/session/factory
+need to be thread safe , possibly use shadow copy .
+data structure are stl hashmaps (rd trees )
+world manager is 
+responsible for managing game world
+start/stop gamelet session
+init load gamelet definition from file , load gamelet state from 
+database
+login logout register player
+communication (Server handlers)
+main entry 
+init world manager
+open server
+	server accapt socket
+	create handler thread with request string as 		
+parameter
+	parse by manager
+	check for hooks
+	retieve relevant gamelet
+		
+
+
+
+
+
+
