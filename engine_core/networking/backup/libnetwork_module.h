@@ -1,0 +1,34 @@
+#ifndef LIBNETWORK_MODULE_HH_INCLUDED
+#define LIBNETWORK_MODULE_HH_INCLUDED
+#include "../threading/Thread.hh"
+#include <string>
+/**
+	network communication module
+*/
+class network
+{
+	private :
+		int server_sockfd;	//self socket descriptor
+		int portno;			//listening port
+		char is_stop;		//stop flag for listening loop
+		char stop_msg[100];//indicate message for server to stop
+	public :
+		/// initalize server at specified port
+		network(int _portno);
+		
+		/// start listening in specified port
+		void start_server();
+		
+		// stop listening loop
+		void stop_server();
+		
+		/// method to be called when connection socket been established 
+		virtual void handleReq(int sockedfd);
+		
+		///virtual destructor
+		virtual ~network();
+};
+
+
+
+#endif

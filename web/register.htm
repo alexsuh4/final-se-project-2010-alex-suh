@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style type="text/css">
+        #txtEmail
+        {
+            width: 258px;
+            height: 27px;
+            margin-left: 3px;
+        }
+        #lblEmail
+        {
+            width: 206px;
+        }
+        .style1
+        {
+        }
+        #txtPassword
+        {
+            width: 262px;
+            height: 25px;
+        }
+        .style2
+        {
+            width: 138px;
+            color: #008000;
+            font: normal normal bold 100% serif;
+        }
+        #btnSubmit
+        {
+            padding-left: 0;
+            padding: 0 0 0 0;
+            border-width: thick;
+            border-style: hidden;
+            background: #00FF00;
+            width: 158px;
+            color: #008000;
+            font-family: "Harlow Solid Italic";
+            font-style: normal;
+            font-variant: normal;
+            font-weight: bolder;
+            font-size: 100%;
+            line-height: normal;
+            height: 49px;
+            border-collapse: collapse;
+        }
+        .style3
+        {
+            font: larger Forte;
+            height: 63px;
+        }
+        #txtUserName
+        {
+            height: 29px;
+        }
+    </style>
+
+    <script language="javascript" src="js/scripts.js"></script>
+    <script language="javascript" >
+        function registerUserLocal() {
+            var email;
+            var username;
+            var password;
+
+            email = document.getElementById("txtEmail").value;
+            username = document.getElementById("txtUserName").value;
+            password = document.getElementById("txtPassword").value;
+            
+            registerUser(email, username, password);
+            
+        }
+    </script>
+</head>
+<body>
+
+    <div>
+        <table style="width: 100%; color: #008000; font: normal normal bold xx-large Arial, Helvetica, sans-serif; font-family: Algerian; letter-spacing: normal; line-height: normal; font-size: xx-large">
+            <tr>
+                <td class="style3" colspan="2">
+                    <div>
+                        Registration Form</div>
+                </td>
+                <td rowspan="5">
+                    <div style="height: 143px">
+                        <img align="middle" alt="" dir="ltr" src="img/register_icon1.gif" 
+                            style="height: 142px; width: 161px" /></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="style1">
+                    <div id="lblEmail" >
+                        Email</div>
+                </td>
+                <td class="style2">
+                    <input id="txtEmail" type="text" /></td>
+            </tr>
+            <tr>
+                <td class="style1">
+                    <div id="lblUserName">
+                        User name</div>
+                </td>
+                <td class="style2">
+                    <input id="txtUserName" type="text" /></td>
+            </tr>
+            <tr>
+                <td class="style1">
+                    <div id="lblPassword">
+                        Password</div>
+                </td>
+                <td class="style2">
+                    <input id="txtPassword" type="password" /></td>
+            </tr>
+            <tr>
+                <td class="style1">
+                    &nbsp;</td>
+                <td class="style2">
+                    <input id="btnSubmit" type="button" value="Register" onclick="registerUserLocal()"/></td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

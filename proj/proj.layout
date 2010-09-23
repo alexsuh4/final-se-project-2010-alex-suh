@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="..\engine_core\data\mySqlClass.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="..\engine_core\data\mySqlClass.h" open="1" top="0" tabpos="5">
+		<Cursor position="2878" topLine="106" />
+	</File>
+	<File name="..\engine_core\game_engine_api.cpp" open="0" top="0" tabpos="7">
+		<Cursor position="45" topLine="0" />
+	</File>
+	<File name="..\engine_core\game_engine_api.hh" open="0" top="0" tabpos="5">
+		<Cursor position="28" topLine="0" />
+	</File>
+	<File name="..\engine_core\gamelet.hh" open="0" top="0" tabpos="6">
+		<Cursor position="142" topLine="0" />
+	</File>
+	<File name="..\engine_core\libengine_core.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="18164" topLine="546" />
+	</File>
+	<File name="..\engine_core\libengine_core.hh" open="1" top="0" tabpos="2">
+		<Cursor position="12465" topLine="399" />
+	</File>
+	<File name="..\engine_core\libgame_engine_api.hh" open="0" top="0" tabpos="0">
+		<Cursor position="327" topLine="0" />
+	</File>
+	<File name="..\engine_core\networking\libnetwork_module.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1989" topLine="63" />
+	</File>
+	<File name="..\engine_core\networking\libnetwork_module.hh" open="1" top="1" tabpos="4">
+		<Cursor position="465" topLine="0" />
+	</File>
+	<File name="..\engine_core\parsing\parser.hh" open="0" top="0" tabpos="0">
+		<Cursor position="164" topLine="0" />
+	</File>
+	<File name="..\engine_core\threading\SessionThread.cpp" open="0" top="0" tabpos="5">
+		<Cursor position="204" topLine="6" />
+	</File>
+	<File name="..\engine_core\threading\Thread.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="354" topLine="0" />
+	</File>
+	<File name="..\engine_core\threading\Thread.hh" open="1" top="0" tabpos="7">
+		<Cursor position="564" topLine="0" />
+	</File>
+	<File name="..\gamelets\sample_gamelet.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="15473" topLine="476" />
+	</File>
+	<File name="..\main.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="1204" topLine="51" />
+	</File>
+	<File name="..\web\web_connector.php" open="0" top="0" tabpos="0">
+		<Cursor position="1126" topLine="27" />
+	</File>
+</CodeBlocks_layout_file>
