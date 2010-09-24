@@ -148,12 +148,12 @@ Function_Ptr game_container::get_factory_for_class(const std::string & gamelet_c
 
     //lock start
 
-    map<std::string,Function_Ptr>::iterator result;
+    //map<std::string,Function_Ptr>::iterator result;
     Function_Ptr fcn_result;
     cout<<"attempting to find gamelet class named "<<gamelet_class_name<<endl;
-    result=gamelet_classes.find(gamelet_class_name);
-
-    if (result==gamelet_classes.end() )
+    //result=gamelet_classes.find(gamelet_class_name);
+	fcn_result=gamelet_classes[gamelet_class_name];
+    /*if (result==gamelet_classes.end() )
     {
         cout<<"no gamelet factory with class name "<<gamelet_class_name<<" in repository\n";
         fcn_result=NULL;
@@ -162,8 +162,15 @@ Function_Ptr game_container::get_factory_for_class(const std::string & gamelet_c
     {
         cout<<"gamelet factory with class name "<<gamelet_class_name<<" exists in repository\n";
         fcn_result=result->second;
+    }*/
+	if (fcn_result==NULL )
+    {
+        cout<<"no gamelet factory with class name "<<gamelet_class_name<<" in repository\n";
     }
-
+    else
+    {
+        cout<<"gamelet factory with class name "<<gamelet_class_name<<" exists in repository\n";
+    }
     //lock end
     pthread_mutex_unlock(&gamelet_classes_mutex);
     cout<<"shared resource gamelet_classes released.\n";
@@ -471,13 +478,29 @@ void world_manager::init(const char *path)
     char dll_path[500];
     strcpy(dll_path,path);
     char dll_name[500];
-    sprintf(dll_name,"%s/sample_gamelet.so",dll_path);
-    ///sprintf(dll_name,"%s/libtest.so",dll_path);
+#ifndef _MSC_VER
+	//linux
+	sprintf(dll_name,"%s/sample_gamelet.so",dll_path);
+#else
+	//windows
+	char shared_library_name[]="sample_gamelet.dll";
+	char delimeter='\\';
+	if (strlen(dll_path)>0)
+	{
+		//other direcory
+		sprintf(dll_name,"%s%c%s",dll_path,delimeter,shared_library_name);
+	}
+	else
+	{
+		//same dir as executable
+		sprintf(dll_name,"%s",shared_library_name);
+	}
+#endif
 
     std::cout<<"opening library at : "<<dll_name<<"\n";
     handle=dlopen(dll_name,RTLD_LAZY);
     err_string = dlerror();
-    if( err_string )
+	if( handle==NULL || err_string )
     {
         printf("error opening library!,aborting\n%s\n",err_string);
         return;
@@ -512,9 +535,13 @@ void world_manager::init(const char *path)
 
 
     ///init config start
-
+	#ifndef	_MSC_VER
     string config_path=string(path)+string("/engineConfig.cfg");
-    if (config.LoadNestedConfig(config_path))
+	#else
+	path="conf";
+	string config_path=string(path)+string("\\")+string("engineConfig.cfg");
+	#endif
+	if (config.LoadNestedConfig(config_path))
     {
         cout<<"config loaded from "<<config_path<<"\n";
         cout<<"saved gamelets found :\n";
@@ -1002,7 +1029,13 @@ void ReqHandler::Execute(void* arg)
     std::cout<<"ReqHandler executing !\n";
     handleRequest();
     //GC disposes of this object start
-    Dispose();
+#ifndef _MSC_VER
+	//this should work, but it doesent , strange ...(linux)
+	Dispose();
+#else
+	//ms hack
+	delete this;
+#endif
     //GC disposes of this object end
 }
 void ReqHandler::Dispose()
@@ -1014,13 +1047,7 @@ void ReqHandler::RegisterSelf(Alexsuh::GarbageCollection::IObjectManager *_objMa
     Alexsuh::GarbageCollection::Disposble::RegisterSelf(_objManager);
 }
 Alexsuh::GarbageCollection::IObjectManager *ReqHandler::objManager;
-/**
-	cleanup for reqest thread
-*/
-//void ReqHandler::removeThread(ReqHandler* removed)
-//{
-//    delete removed;
-//}
+
 /**
 	initializing request handler thread
 */
@@ -1416,6 +1443,7 @@ bool ConfigContainer::LoadConfig(const std::string& path)
 
 bool ConfigContainer::LoadNestedConfig(const std::string & path)
 {
+	system("dir");
     ifstream myfile (path.c_str());
     bool result=true;
     if (!myfile.is_open())
@@ -1572,6 +1600,7 @@ namespace Alexsuh
                          objects.erase(current_disposble);
                          //free memory
                          delete current_disposble;
+						 current_disposble=NULL;
                     }
 
                     int objectsAfterDispose=objects.size();
@@ -1581,7 +1610,7 @@ namespace Alexsuh
 
                 //sleep for next cleanup cycle
 				
-				Utils::msleep(50000);
+				Utils::msleep(500);
             }
 
         }
