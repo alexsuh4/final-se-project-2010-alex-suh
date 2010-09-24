@@ -911,7 +911,8 @@ void ReqHandler::handleRequest()
     /////////////////////////////////////////////////////////////////////////////////////
 
     write(socketfd,msg_out.c_str(),msg_out.length());
-    ///free memory
+    
+	///free memory
     ///free (buffer_out);
     if (n < 0)
         throw "ERROR writing to socket";
@@ -1049,7 +1050,9 @@ ReqHandler::ReqHandler(int _socketfd,world_manager & _world_manager) : Thread()
     this->_world_manager=&_world_manager;
     cout<<"ReqHandler::ReqHandler starting ReqHandler Thread\n";
     int ThreadCreateCode=Start(NULL);
-    switch (ThreadCreateCode)
+#ifndef _MSC_VER
+//unix thread creation debug code 
+	switch (ThreadCreateCode)
     {
         case 0:
             cout<<"Thread completed Succesfully!\n";
@@ -1067,6 +1070,7 @@ ReqHandler::ReqHandler(int _socketfd,world_manager & _world_manager) : Thread()
             cout<<"coult not create thread , error code was "<<ThreadCreateCode<<"\n";
             break;
     }
+#endif
 
 
 }
