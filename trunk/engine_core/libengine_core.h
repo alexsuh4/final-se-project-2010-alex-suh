@@ -238,7 +238,11 @@ private:
     	holds a running number of next free player id
     */
     static unsigned long running_player_id;
+	pthread_mutex_t additionalData_lock;
+	std::map<std::string,std::string> additionalData;
 public:
+	std::string getValue(std::string &key);
+	void setValue(std::string &key,std::string &val);
     /**
     	return next free player id for new player creation
     */
@@ -405,7 +409,7 @@ public:
     	playewr database and and register new player if exsists
     	@return reference to newly created and registered player
     */
-    player& login(std::string user_name,std::string password);
+    player* login(std::string user_name,std::string password);
     /**
     	unregister player with specified id from list of ative players
     */
@@ -537,14 +541,21 @@ public:
     static std::string  MSG_PARSE_MALFORMED_INPUT;
     //return messages
 
-
-    /**
+	/**
+		factory method for prevetion of static instancsiation of ReqHandler
+		ReqHandler class is ownder of return object (meaning he is responsible for it's deletion
+		@param socketfd socket descriptor to which IO accures
+    	@param _world_manager worldmanager on which contex this request operates
+	*/
+    static ReqHandler * CreateHandler(int socketfd,world_manager & _world_manager);
+    
+protected:
+	/**
     	request handler construcotr
     	@param socketfd socket descriptor to which IO accures
     	@param _world_manager worldmanager on which contex this request operates
     */
-    ReqHandler(int socketfd,world_manager & _world_manager);
-protected:
+	ReqHandler(int socketfd,world_manager & _world_manager);
     /// Thread setup routine
     void Setup();
     /// Thread runtime routine

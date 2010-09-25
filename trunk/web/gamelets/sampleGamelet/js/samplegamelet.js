@@ -56,7 +56,7 @@ function Gamelet(_canvas)
        
 
         //var newModelObj = eval("(" + newModel + ")");
-        debug_trace("here sync_Model");
+        
         me.myModel.setModel(newModelObj);
 
     }   
@@ -139,26 +139,26 @@ function Model(canvas)
         }
         this.setModel=function(newModel)
         {
-            debug_trace("here1");
+  
             var num_of_objects=newModel.objects.length;
-            debug_trace("here2");
+           
             var i=0;
-            debug_trace("here3");
+           
             //update existing object
             for (i=0;i<num_of_objects;i++)
                 {
-                    debug_trace("setObject at "+i);
+                    
                     me.objects[i].setObject(newModel.objects[i]);
                 }
-           debug_trace("here4");
+           
             //book keep added objects
             for (i=me.num_of_objects;i<num_of_objects;i++)
             {
-                debug_trace("here book keep added objects "+i+" , mew canvas "+me.canvas);
+               
                 me.objects[i]=new GameObject(0,0,0,0,me.canvas);
-               //debug_trace("here");
+              
                 me.objects[i].setObject(newModel.objects[i]);
-                //debug_trace(me.objects[i].x + " " + me.objects[i].y +" "+ me.objects[i].ang +" "+ me.objects[i].vel +" ");
+               
             }
             
             //book-keep removed objects
@@ -168,9 +168,9 @@ function Model(canvas)
                         me.objects[i].destroyMe();
                     me.current=0;
             }
-            debug_trace("here5");
+           
             me.num_of_objects=num_of_objects;
-            debug_trace("here6");
+           
         }
         this.updateModel=function()
         {
