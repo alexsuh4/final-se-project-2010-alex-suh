@@ -5,9 +5,9 @@ var OPERATION_LOGOUT="logout";
 var OPERATION_SWITCH_GAMELET="switch_gamelet";
 var VAR_OPERTION="operation";
 
-function debug_trace(msg)
+function debug_trace(reason,msg)
 {
-    //alert(msg);
+    alert(reason,msg);
 
 }
 
@@ -272,10 +272,10 @@ function Gamelet_container(_mygamelet)
     this.newModelRecieved=function(xmlhttp)
     {
         var new_Model=xmlhttp.responseText;
-        
-        
-        new_Model=eval("("+new_Model+")");
-        //debug_trace(new_Model);
+        try
+        {
+            new_Model=eval("("+new_Model+")");
+
         if (new_Model.system_data)
         {
             ////system data in thisd batch
@@ -305,6 +305,18 @@ function Gamelet_container(_mygamelet)
 
         me.mygamelet.sync_Model(new_Model.GameletModel);
         me.timer_sync= setTimeout(me.sync,me.sync_speed_long);
+
+        }
+        catch(exp)
+        {
+            //model syncing went wrong
+            var errtxt="ecpetion accured";
+            errtxt+="\ndescription  : "             +exp.description;
+            errtxt+="\nname         : "             +exp.name;
+            errtxt+="\nmessage      : "             +exp.message
+            errtxt+="\nmore data:\n========\n"      +new_Model
+            alert(errtxt);
+        }
     }
     this.updateModel=function()
     {

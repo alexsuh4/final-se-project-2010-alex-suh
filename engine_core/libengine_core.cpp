@@ -10,11 +10,13 @@ using namespace std;
 unsigned long player::running_player_id=0;
 player::player(string& _player_id)
 {
+	pthread_mutex_init(&additionalData_lock,NULL);
     player_id=_player_id;
     gamelet_session_id="";
 }
 player::~player()
 {
+	pthread_mutex_destroy(&additionalData_lock);
     std::cout<<"destructor for player with id "<<player_id<<" been called\n";
 }
 /**
@@ -23,6 +25,20 @@ player::~player()
 void player::generate_next_id(string & newplayerid)
 {
     Utils::generate_uuid(newplayerid);
+}
+string player::getValue(std::string &key)
+{
+	string result;
+	pthread_mutex_lock(&additionalData_lock);
+		result= additionalData[key];
+	pthread_mutex_unlock(&additionalData_lock);
+	return result;
+}
+void player::setValue(std::string &key,std::string &val)
+{
+	pthread_mutex_lock(&additionalData_lock);
+		additionalData[key]=val;
+	pthread_mutex_unlock(&additionalData_lock);
 }
 /**
 	game container -
@@ -262,21 +278,22 @@ world_manager::~world_manager()
 }
 /**
 	will handle player loggin into the system
+	player object return is owned by world manager
 	@param username user name
 	@param password user password
-	@return new user id
+	@return player obejct pointer
 */
-player& world_manager::login(std::string username,std::string password)
+player* world_manager::login(std::string username,std::string password)
 {
     std::cout<<"login requested for user name "<<username<<" and password "<<password<<endl;
-    /**
-    	todo- actual validation code
-    */
+    
+	//todo- actual validation code
+    //dataManager->Instance()->Login(username,password);
     std::string new_user_id;
     player::generate_next_id(new_user_id);
     player *p=new player(new_user_id);
     the_world_container.insert_player(new_user_id,p);
-    return *p;
+    return p;
 }
 /***
 	long world_manager::logout(unsigned long player_id)
@@ -846,7 +863,8 @@ void game_server::handleReq(int socketfd)
     ///start new handler thread with reference to
     ///world manager object and
     ///socket descriptor
-    new ReqHandler(socketfd,_world_manager);
+	ReqHandler::CreateHandler(socketfd,_world_manager);
+
 }
 /****
 destroy game server
@@ -1070,7 +1088,7 @@ ReqHandler::ReqHandler(int _socketfd,world_manager & _world_manager) : Thread()
     objManager=Alexsuh::GarbageCollection::ObjectsManager::GetInstance();
     std::cout<<"ReqHandler::ReqHandler GC manager Aquired\n";
     std::cout<<"ReqHandler::ReqHandler registering object for GC Manager\n";
-    RegisterSelf(objManager);
+    //RegisterSelf(objManager);
     std::cout<<"ReqHandler::ReqHandler object for GC Manager registered\n";
 
     socketfd=_socketfd;
@@ -1100,6 +1118,10 @@ ReqHandler::ReqHandler(int _socketfd,world_manager & _world_manager) : Thread()
 #endif
 
 
+}
+ReqHandler * ReqHandler::CreateHandler(int socketfd,world_manager& _world_manager)
+{
+	return new ReqHandler(socketfd,_world_manager);
 }
 ///consts
 //header types
@@ -1142,8 +1164,8 @@ void ReqHandler::do_login(std::string &msgout)
     std::string password=header_params[field_name_password];
     /// TODO here actual user authorization and authentication takes place
     //register user
-    player newplayer=_world_manager->login(user_name,password);
-    string player_id = newplayer.player_id;
+    player *newplayer=_world_manager->login(user_name,password);
+    string player_id = newplayer->player_id;
     //get user default gamelet
     /// TODO actual default gamelet lookup will go here
     //std::string user_default_startup_gamelet="mydefaultgamelet123";
@@ -1193,9 +1215,7 @@ void ReqHandler::do_update(std::string &msgout)
         cout<<"gmlt is "<<gmlt->gamelet_name<<endl;
     }
     cout<<"gamelet retrieved. \n";
-    //char buffer[500];
     cout<<"getting gamelet model string\n";
-    //gmlt->get_model_string(buffer,sizeof(buffer));
     gmlt->get_model_string(msgout);
 
     //handle gamelelt specific data
@@ -1219,23 +1239,45 @@ void ReqHandler::do_update(std::string &msgout)
 
     //handle gamelet specific data end
 
-    //cout<<"model string is "<<buffer<<"\n";
-    //msgout=string(buffer);
-
+ 
     ostringstream msgoutStream;
-    msgoutStream<<"{\"system_data\":{\"updateTime\":\""<<_game_session->exec_time_main_loop;
 
-    //write system specific events
-    string sessionSerializationString;
+	//system data start
+	string sessionSerializationString;
     _game_session->serialize(sessionSerializationString);
-    msgoutStream<<sessionSerializationString;
-    if (sessionSerializationString.length()>0)
-        msgoutStream<<",";
-    _game_session->GetMessagesForClientByPlayerId(pl->player_id,sessionSerializationString);
+	
+	string MessagesForClientByPlayerId;
+	_game_session->GetMessagesForClientByPlayerId(pl->player_id,MessagesForClientByPlayerId);
 
-    msgoutStream<<sessionSerializationString;
+	map <string ,string > upadteParams;
+	char exec_time_main_loop_cstr[10];
+	sprintf(exec_time_main_loop_cstr,"%g",_game_session->exec_time_main_loop);
+	upadteParams ["updateTime"]						=	exec_time_main_loop_cstr;
+	upadteParams ["sessionSerializationString"]		=	sessionSerializationString;
+	upadteParams ["MessagesForClientByPlayerId"]	=	MessagesForClientByPlayerId;	
+	
+	ostringstream system_data_Stream;
+	int isFirst=1;
+	for (map<string,string>::iterator itr=upadteParams.begin();
+		itr!=upadteParams.end();
+		itr++)
+	{
+		if (!itr->second.empty())
+		{
+			if (isFirst)
+				isFirst=0;
+			else
+			{
+				//add ',' if not the first
+				system_data_Stream<<",";
+			}
+			
+			
+			system_data_Stream<<"\""<<itr->first<<"\":\""<<itr->second<<"\"";
+		}
+	}
 
-    msgoutStream<<"\"}";
+	msgoutStream<<"{\"system_data\":{"<<system_data_Stream.str()<<"}";
 
     msgoutStream<<",\"GameletModel\":"<<msgout<<"}";
     msgout=msgoutStream.str();
@@ -1321,18 +1363,7 @@ void ReqHandler::do_switch_gamelet(std::string &msgout)
 ////////////////////////////
 //  Req Handler End
 //////////////////////////////
-/*
-map<string,ReqHandler::handle_Ptr>  ReqHandler::init_handler_list(map<string,ReqHandler::handle_Ptr>  mymap)
-{
 
-	mymap[req_type_keepAlive]=&do_update;
-	mymap[req_type_login]=&do_login;
-	mymap[req_type_logout]=&do_logout;
-	mymap[req_type_switch_gamelet]=&do_switch_gamelet;
-	return mymap;
-}
-map<string&,ReqHandler::handle_Ptr> ReqHandler::reqHandlers=ReqHandler::init_handler_list(ReqHandler);
-*/
 
 //utils
 namespace Utils
@@ -1340,12 +1371,15 @@ namespace Utils
 //int UUID_INITIATED=0;
 void generate_uuid(string & newuuid)
 {
+	time_t t=time(NULL);
+	srand(t);
     if (!UUID_INITIATED)
     {
-        srand(time(NULL));
+        
         UUID_INITIATED=1;
     }
     char strUuid[200];
+	memset(strUuid,0,sizeof(char)*200);
     sprintf(strUuid, "%x%x-%x-%x-%x-%x%x%x",
             rand(), rand(),                 // Generates a 64-bit Hex number
             rand(),                         // Generates a 32-bit Hex number
@@ -1376,7 +1410,7 @@ int msleep(unsigned long milisec)
 int msleep(unsigned long milisec)
 {
 	Sleep(milisec);
-	return 0;
+	return 1;
 }
 #endif
 }
@@ -1572,8 +1606,9 @@ namespace Alexsuh
                 pthread_mutex_lock(&objects_lock);
 
 
-
+#ifdef _DEBUG_GC
                 cout<<"ObjectsManager::Execute Running GC operetion\n";
+#endif
                 for(
                     map<IDisposble*,bool>::iterator objects_itr=objects.begin();
                     objects_itr!=objects.end();
@@ -1587,8 +1622,10 @@ namespace Alexsuh
                             objects_to_dispose.push(objects_itr->first);
                         }
                     }
+#ifdef _DEBUG_GC
                     cout<<"ObjectsManager::Execute found"<<objects_to_dispose.size()<<" objects to be disposed \n";
-                    int objectsBeforeDispose=objects.size();
+#endif
+					int objectsBeforeDispose=objects.size();
 
                     //dispose all from disposble queue
                     IDisposble *current_disposble;
@@ -1604,13 +1641,14 @@ namespace Alexsuh
                     }
 
                     int objectsAfterDispose=objects.size();
+#ifdef _DEBUG_GC
                     cout<<"objects disposed : "<<(objectsBeforeDispose-objectsAfterDispose)<<"\n";
-
+#endif
                 pthread_mutex_unlock(&objects_lock);
 
                 //sleep for next cleanup cycle
 				
-				Utils::msleep(500);
+				Utils::msleep(5000);
             }
 
         }
