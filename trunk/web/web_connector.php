@@ -6,7 +6,8 @@
 					"header-end"=>"3",
 					"login"=>"2",
 					"logout"=>"4",
-					"switch_gamelet"=>"5");
+					"switch_gamelet"=>"5"
+                                        ,"register"=>"6");
 	
 	$headerFields= array(
 					"messageType"=>"0",
@@ -15,20 +16,10 @@
 					"header-end"=>"3",
 					"username"=>"4",
 					"password"=>"5",
-					"gamelet_type_id","6");
+					"gamelet_type_id"=>"6");
 	
 
-        /*
-	$username="sampleuser";
-	$password="samplepassword";
-	
-
-	if ($message == "")
-	{
-            $message =" ".$message . $headerFields["messageType"] . " " .$reqTypes["login"]. " ";
-            $message =" ".$message . $headerFields["username"] . " " .$username. " ";
-            $message =" ".$message . $headerFields["password"] . " " .$password. " ";	
-	}*/
+       
         $operation=$_GET["operation"];
         $message="";
         if ($operation=="update")
