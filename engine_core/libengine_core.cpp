@@ -1535,7 +1535,7 @@ bool ConfigContainer::LoadNestedConfig(const std::string & path)
 }
 
 ////////////////////////////////////////
-//implementation of ConfigContainer END
+//implementation of Confi4gContainer END
 //
 //
 //

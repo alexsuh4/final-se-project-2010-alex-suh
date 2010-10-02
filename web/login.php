@@ -1,39 +1,55 @@
 
+
 <?php
 	$reqTypes= array(
-					"keepAlive"=>"0",
-					"none"=>"1",
-					"header-end"=>"3",
-					"login"=>"2",
-					"logout"=>"4",
-					"switch_gamelet"=>"5");
+					"keepAlive"          =>"0"
+					,"none"              =>"1"
+					,"header-end"        =>"3"
+					,"login"             =>"2"
+					,"logout"            =>"4"
+					,"switch_gamelet"    =>"5"
+                                        ,"register"          =>"7");
 	
 	$headerFields= array(
-					"messageType"=>"0",
-					"playerId"=>"1",
-					"gameletSessionId"=>"2",
-					"header-end"=>"3",
-					"username"=>"4",
-					"password"=>"5",
-					"gamelet_type_id","6");
-	$start_time=time();
-	//$pid=$_GET["player_id"];
-		
-	$username=$_POST["player_user_name"];
-	$password=$_POST["player_password"];
-	$rounds=1;
-        //echo "user name= " . $username . "password " .$password;
+					"messageType"        =>"0"
+					,"playerId"          =>"1"
+					,"gameletSessionId"  =>"2"
+					,"header-end"        =>"3"
+					,"username"          =>"4"
+					,"password"          =>"5"
+					,"gamelet_type_id"   =>"6"
+                                        ,"email"             =>"7"
+                            );
+	
+	
+	$operation=$_POST["operation"];
+	
+	
+        if ($operation=="login")
+        {
+            $username=$_POST["player_user_name"];
+            $password=$_POST["player_password"];
+            //login
+            $message =" ".$message . $headerFields["messageType"] . " " .$reqTypes["login"]. " ";
+            $message =" ".$message . $headerFields["username"] . " " .$username. " ";
+            $message =" ".$message . $headerFields["password"] . " " .$password. " ";
 
-	if ($message == "")
-	{
-		//$message =" ".$message . $headerFields["messageType"] . " " .$reqTypes["keepAlive"]. " ";
-		//$message =" ".$message . $headerFields["playerId"] . " " . $pid . " ";
-		//$message =" ".$message . $headerFields["header-end"] . " " .$reqTypes["header-end"]. " ";
-		$message =" ".$message . $headerFields["messageType"] . " " .$reqTypes["login"]. " ";
-		$message =" ".$message . $headerFields["username"] . " " .$username. " ";
-		$message =" ".$message . $headerFields["password"] . " " .$password. " ";
-		
-	}
+            
+        }
+        else if($operation=="register")
+        {
+            $username=$_POST["player_user_name"];
+            $password=$_POST["player_password"];
+            $email=$_POST["player_email"];
+            //register
+            $message =" ".$message . $headerFields["messageType"] . " " .$reqTypes["register"]. " ";
+            $message =" ".$message . $headerFields["username"] . " " .$username. " ";
+            $message =" ".$message . $headerFields["password"] . " " .$password. " ";
+            echo "you requested " . $message;
+            return;
+        }
+       
+
 	// form submitted
 	// where is the socket server?
 	$host="localhost";

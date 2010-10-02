@@ -4,6 +4,9 @@ var OPERATION_LOGIN="login";
 var OPERATION_LOGOUT="logout";
 var OPERATION_SWITCH_GAMELET="switch_gamelet";
 var VAR_OPERTION="operation";
+var OPERATION_REGISTER="register";
+
+
 
 function debug_trace(reason,msg)
 {
@@ -391,9 +394,33 @@ function handleControls(event)
     }
 
 }
+
+
 function registerUser(email,username,password) {
-    alert("register "+email+" "+username+ " "+password);
+    
+    var reg_qry="email="+email+"&username="+username+"&password="+password;
+    reg_qry+="&operation="
+    var reg_serevr_url="login.php";
+    sendAjax(
+    "POST"
+    ,reg_qry
+    ,registerUserCallbackFunction
+    ,reg_serevr_url
+    ,null);
 }
+
+function registerUserCallbackFunction(xmlhttp) {
+    var msg =
+    "readyState=" + xmlhttp.readyState +
+    "status=" + xmlhttp.status +
+    "responseText=" + xmlhttp.responseText;
+    alert(msg);
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            alert("REGISTER:    recieved from server    "+xmlhttp.responseText);
+        }
+    }
+
 
 function load()
 {
