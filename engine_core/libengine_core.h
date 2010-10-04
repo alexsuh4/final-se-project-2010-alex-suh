@@ -498,7 +498,7 @@ private:
     void do_update(std::string &msgout);
     void do_logout(std::string &msgout);
     void do_switch_gamelet(std::string &msgout);
-
+	void do_register(std::string &msgout);
 
     //typedef void (*ReqHandler::handle_Ptr)(string&);
 
@@ -522,7 +522,7 @@ public:
     static const int req_type_login=2;
     static const int req_type_logout=4;
     static const int req_type_switch_gamelet=5;
-
+	static const int req_type_register=7;
     //request type
     //field name
     static std::string field_name_messageType;
@@ -532,6 +532,8 @@ public:
     static std::string field_name_password;
     static std::string field_name_gamelet_type_id;
     static std::string field_name_gamelet_session_id;
+	static std::string field_name_email;
+
     //field name
     //header types
     //return messages

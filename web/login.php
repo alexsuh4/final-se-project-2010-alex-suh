@@ -8,7 +8,8 @@
 					,"login"             =>"2"
 					,"logout"            =>"4"
 					,"switch_gamelet"    =>"5"
-                                        ,"register"          =>"7");
+                                        ,"register"          =>"7"
+                        );
 	
 	$headerFields= array(
 					"messageType"        =>"0"
@@ -34,7 +35,7 @@
             $message =" ".$message . $headerFields["username"] . " " .$username. " ";
             $message =" ".$message . $headerFields["password"] . " " .$password. " ";
 
-            
+
         }
         else if($operation=="register")
         {
@@ -45,23 +46,24 @@
             $message =" ".$message . $headerFields["messageType"] . " " .$reqTypes["register"]. " ";
             $message =" ".$message . $headerFields["username"] . " " .$username. " ";
             $message =" ".$message . $headerFields["password"] . " " .$password. " ";
+            $message =" ".$message . $headerFields["email"] . " " .$email. " ";
             echo "you requested " . $message;
-            return;
+            //return;
         }
-       
+
 
 	// form submitted
 	// where is the socket server?
 	$host="localhost";
 	$port = 12345;
-	
+
 		$fp = fsockopen ($host, $port, $errno, $errstr);
 		if (!$fp)
 		{
 			$result = "<script type=\"text/javascript\" >alert('Error: could not open socket connection')</script>";
 		}
 		else
-		{									
+		{
 			fputs ($fp, $message);
 			// get the result
 			$result=fgets($fp,1024);
