@@ -44,7 +44,7 @@ function newlineelm()
 function sendAjax(method,params,onResponse,url,elm)
 {
     var xmlhttp;
-    if (elm!=null)
+    if (elm)
         elm.setAttribute("value", "Please wait...");
     if (window.XMLHttpRequest)
     {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -70,7 +70,6 @@ function sendAjax(method,params,onResponse,url,elm)
         if (params!="" && params !=null)
             url=url+"?"+params;
         xmlhttp.open("GET",url,true);
-        //xmlhttp.onreadystatechange=function(){onResponse(xmlhttp);};
         xmlhttp.send();
     }
    
@@ -397,24 +396,24 @@ function handleControls(event)
 
 
 function registerUser(email,username,password) {
-    
-    var reg_qry="email="+email+"&username="+username+"&password="+password;
-    reg_qry+="&operation="
+
+  
+    var reg_qry="player_email="+email+"&player_user_name="+username+"&player_password="+password;
+    reg_qry+="&operation="+OPERATION_REGISTER;
     var reg_serevr_url="login.php";
+    alert("sending "+reg_qry+" to "+reg_serevr_url);
     sendAjax(
     "POST"
     ,reg_qry
     ,registerUserCallbackFunction
     ,reg_serevr_url
     ,null);
+    alert ("postback sent");
 }
 
 function registerUserCallbackFunction(xmlhttp) {
-    var msg =
-    "readyState=" + xmlhttp.readyState +
-    "status=" + xmlhttp.status +
-    "responseText=" + xmlhttp.responseText;
-    alert(msg);
+    
+    
         if (xmlhttp.readyState==4 && xmlhttp.status==200)
         {
             alert("REGISTER:    recieved from server    "+xmlhttp.responseText);

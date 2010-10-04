@@ -1024,13 +1024,19 @@ void ReqHandler::parse(std::string const &msg_in,std::string &msg_out)
     case req_type_switch_gamelet:
         do_switch_gamelet(msg_out);
         break;
+	case req_type_register:
+		do_register(msg_out);
+		break;
     default:
         msg_out="request not understood";
     }
 
 
 }
-
+void ReqHandler::do_register(std::string &msgout)
+{
+	msgout="REGISTING!!!";
+}
 
 /**
 	pre thread setup stub
@@ -1132,7 +1138,7 @@ const int ReqHandler::req_type_header_end;
 const int ReqHandler::req_type_login;
 const int ReqHandler::req_type_logout;
 const int ReqHandler::req_type_switch_gamelet;
-
+const int ReqHandler::req_type_register;
 
 //request types
 //field names
@@ -1143,6 +1149,7 @@ std::string ReqHandler::field_name_username="4";
 std::string ReqHandler::field_name_password="5";
 std::string ReqHandler::field_name_gamelet_type_id="6";
 std::string ReqHandler::field_name_gamelet_session_id="2";
+std::string ReqHandler::field_name_email="7";
 //field names
 //header types
 //return messages
