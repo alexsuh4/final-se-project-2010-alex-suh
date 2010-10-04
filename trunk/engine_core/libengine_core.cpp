@@ -316,6 +316,23 @@ void world_manager::logout(std::string & player_id)
 }
 
 
+player* world_manager::register_player(const std::string user_name, const char password[], const std::string &email, std::map<std::string,std::string> *additionaldata)
+{
+	std::cout<<"registering player with following data : \n";
+	std::cout<<"user name :"<<user_name<<endl;
+	std::cout<<"password :"<<password<<endl;
+	std::cout<<"email :"<<email<<endl;
+	if (additionaldata)
+	{
+		cout<<"additional Data supplied "<<endl;
+	}
+	else
+	{
+		cout<<"additional Data Not supplied "<<endl;
+	}
+	return NULL;
+}
+
 gamelet_session *rootGamelet=NULL;
 gamelet_session * world_manager::start_gamelet(const std::string& gamelet_class,const std::string& gamelet_session_id)
 {
@@ -1036,6 +1053,11 @@ void ReqHandler::parse(std::string const &msg_in,std::string &msg_out)
 void ReqHandler::do_register(std::string &msgout)
 {
 	msgout="REGISTING!!!";
+	std::string user_name=header_params[field_name_username];
+	std::string password=header_params[field_name_password];
+	std::string email=header_params[field_name_email];
+	
+	_world_manager->register_player(user_name,password.c_str(),email,NULL);
 }
 
 /**

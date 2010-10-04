@@ -418,7 +418,7 @@ public:
     	starts a gamelet with non registered gamelet id
     */
     gamelet_session* start_gamelet(const std::string& gamelet_class);
-    gamelet_session* start_gamelet(const std::string& gamelet_class,const std::string& gamelet_session_id);
+	gamelet_session* start_gamelet(const std::string& gamelet_class,const std::string& gamelet_session_id );
 
     /**
     	stop gamelet with specified ID
@@ -433,6 +433,8 @@ public:
     */
     game_container & get_game_container();
 
+	
+	player * register_player(const std::string user_name,const char password[],const std::string & email ,std::map<std::string,std::string> *additionaldata);
     ///IWorld Manager
     /** @brief moves player to gameelt session
       *
