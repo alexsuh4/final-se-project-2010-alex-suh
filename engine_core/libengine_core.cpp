@@ -330,6 +330,45 @@ player* world_manager::register_player(const std::string user_name, const char p
 	{
 		cout<<"additional Data Not supplied "<<endl;
 	}
+	//allocate new gamelet for player
+	std::string current_gamelet_id;
+	std::string default_gamelet;
+	gamelet_session::get_next_gamelet_session_id(default_gamelet);
+	current_gamelet_id=default_gamelet;
+
+	//data access starts
+	
+	ostringstream oss;
+	oss<<"set @user_name='"<<user_name<<"';\n";
+	oss<<"set @password='"<<password<<"';\n";
+	oss<<"set @email='"<<email<<"';\n";
+	oss<<"set @current_gamelet_id='"<<current_gamelet_id<<"';\n";
+	oss<<"set @default_gamelet='"<<default_gamelet<<"';\n";
+	oss<<"call 'sampleprojectdb'.'registerPlayer'(@user_name,@password,@email,@current_gamelet_id,@default_gamelet);\n";
+
+	std::string qry=oss.str();
+	try
+	{
+		
+		delete DataManager->toDBObject(qry);
+		
+	}
+	catch(sql::SQLException sql_exp)
+	{
+		cout<<"Errors accured while executing Database Transaction "<<endl;
+		cout<<"state:"<<sql_exp.getSQLState()<<endl;
+		cout<<"what:"<<sql_exp.what()<<endl;
+		cout<<"error code :"<<sql_exp.getErrorCode()<<endl;
+		
+	}
+	/*string qry=+string("
+	sprintf("call registerPlayer(@user
+	std::string sql=*/
+	
+	
+	//this->DataManager->toDBObject(
+	//data access ends
+
 	return NULL;
 }
 
