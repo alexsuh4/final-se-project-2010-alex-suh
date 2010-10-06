@@ -339,27 +339,22 @@ player* world_manager::register_player(const std::string user_name, const char p
 	//data access starts
 	
 	ostringstream oss;
-	oss<<"set @user_name='"<<user_name<<"';\n";
-	oss<<"set @password='"<<password<<"';\n";
-	oss<<"set @email='"<<email<<"';\n";
-	oss<<"set @current_gamelet_id='"<<current_gamelet_id<<"';\n";
-	oss<<"set @default_gamelet='"<<default_gamelet<<"';\n";
-	oss<<"call 'sampleprojectdb'.'registerPlayer'(@user_name,@password,@email,@current_gamelet_id,@default_gamelet);\n";
-
+	oss<<"call sampleprojectdb.registerPlayer(";
+	oss<<"'"<<user_name<<"'";
+	oss<<",'"<<password<<"'";
+	oss<<",'"<<email<<"'";
+	oss<<",'"<<current_gamelet_id<<"'";
+	oss<<",'"<<default_gamelet<<"'";
+	oss<<")";
 	std::string qry=oss.str();
 	try
 	{
-		
-		delete DataManager->toDBObject(qry);
-		
+		std::vector<Alexsuh::Data::DBObject*> *result= DataManager->toDBObject(qry);
+		delete result;
 	}
 	catch(sql::SQLException sql_exp)
 	{
-		cout<<"Errors accured while executing Database Transaction "<<endl;
-		cout<<"state:"<<sql_exp.getSQLState()<<endl;
-		cout<<"what:"<<sql_exp.what()<<endl;
-		cout<<"error code :"<<sql_exp.getErrorCode()<<endl;
-		
+		Alexsuh::ErrorHandling::ErrorManager::Instance()->ExceptionHandler(sql_exp);
 	}
 	/*string qry=+string("
 	sprintf("call registerPlayer(@user
@@ -1762,6 +1757,26 @@ Alexsuh::Data::dataManager* Alexsuh::Data::dataManager::GetInstance()
 }
 ////////
 //implemetation DB end
+//
+//
+//
+////////
+
+////////
+//implemetation Error start
+//
+//
+//
+////////
+Alexsuh::ErrorHandling::ErrorManager *Alexsuh::ErrorHandling::ErrorManager::currentInstance;
+Alexsuh::ErrorHandling::ErrorManager* Alexsuh::ErrorHandling::ErrorManager::Instance()
+{
+	if (!currentInstance)
+		currentInstance=new ErrorManager();
+	return currentInstance;
+}
+////////
+//implemetation Error end
 //
 //
 //
