@@ -16,6 +16,12 @@
 #include <list>
 #include <vector>
 #include <sstream>
+#include <fstream>
+#include <ctime>;
+#ifdef _MSC_VER
+	#include <windows.h>
+	#include <Winbase.h>
+#endif
 namespace Alexsuh
 {
 	namespace Data
@@ -142,6 +148,57 @@ namespace Alexsuh
 		};
 
 	}
+}
 
+namespace Alexsuh
+{
+	namespace ErrorHandling
+	{
+		class ErrorManager
+		{
+				char *logPath;
+				bool isWriteToFile;
+				ErrorManager()
+				{
+					isWriteToFile=true;
+
+					logPath="log.txt";
+				}
+				static ErrorManager* currentInstance;
+				void printError(std::ostringstream &oss)
+				{
+					if (isWriteToFile)
+					{
+						std::ofstream logfile;
+						logfile.open(logPath);
+						if (logfile.is_open())
+						{
+							char date[10],time[10];
+							_strtime(time);
+							_strdate(date);
+
+							logfile<<"at : "<<date<<" "<<time<<"\n"<<oss.str();
+						}
+						logfile.close();
+					}
+				}
+			public:
+				static ErrorManager* Instance();
+				void ExceptionHandler(const sql::SQLException sql_exp)
+				{
+					ExceptionHandler(sql_exp,"none");
+				}
+				void ExceptionHandler(const sql::SQLException sql_exp,const char *source)
+				{
+					std::ostringstream oss;
+					oss<<"Errors accured while executing Database Transaction \n";
+					oss<<"state:"<<sql_exp.getSQLState()<<"\n";
+					oss<<"what:"<<sql_exp.what()<<"\n";
+					oss<<"error code :"<<sql_exp.getErrorCode()<<"\n";
+					std::cout<<oss.str();
+					printError(oss);
+				}
+		};
+	}
 }
 #endif
