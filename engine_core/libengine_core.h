@@ -270,6 +270,7 @@ public:
 class game_container
 {
 private:
+	static game_container *currentInstance;
     /**
     //unsync map of player id's and players logged in
     //will not remove players but only mark them as not logged in
@@ -298,11 +299,12 @@ private:
     map<std::string,Function_Ptr> gamelet_classes;
 
     pthread_mutex_t gamelet_classes_mutex;
-public:
-    /**
+	/**
     	default consturct , initializer the containers
     */
     game_container();
+public:
+    static game_container *Instance();
     /**
     	destroys this game container
     */
@@ -392,7 +394,7 @@ public:
 class world_manager : Iworld_manager
 {
 private:
-    game_container the_world_container;
+    game_container &the_world_container;
     std::string database_connection;
     ConfigContainer config;
 public:
@@ -457,11 +459,11 @@ public:
 class game_server :  public network
 {
 private:
-    world_manager _world_manager;
+    world_manager &_world_manager;
 
 public:
     ///pornumber and reefrence to world manager object constructor
-    game_server(int _portno,const world_manager & _world_manager);
+    game_server(int _portno, world_manager & _world_manager);
 
     ///	handle recieved connection
     void handleReq(int sockedfd);

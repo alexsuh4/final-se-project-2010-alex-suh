@@ -18,10 +18,7 @@
 #include <sstream>
 #include <fstream>
 #include <ctime>;
-#ifdef _MSC_VER
-	#include <windows.h>
-	#include <Winbase.h>
-#endif
+
 namespace Alexsuh
 {
 	namespace Data
@@ -182,6 +179,11 @@ namespace Alexsuh
 						logfile.close();
 					}
 				}
+				std::string getStackTrace(std::ostringstream &oss)
+				{
+					//non applicable yet :(
+					return std::string();
+				}
 			public:
 				static ErrorManager* Instance();
 				void ExceptionHandler(const sql::SQLException sql_exp)
@@ -191,10 +193,12 @@ namespace Alexsuh
 				void ExceptionHandler(const sql::SQLException sql_exp,const char *source)
 				{
 					std::ostringstream oss;
+					
 					oss<<"Errors accured while executing Database Transaction \n";
 					oss<<"state:"<<sql_exp.getSQLState()<<"\n";
 					oss<<"what:"<<sql_exp.what()<<"\n";
 					oss<<"error code :"<<sql_exp.getErrorCode()<<"\n";
+					oss<<getStackTrace(oss);
 					std::cout<<oss.str();
 					printError(oss);
 				}

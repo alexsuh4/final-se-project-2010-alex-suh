@@ -248,6 +248,15 @@ game_container::game_container()
 
     std::cout<<"done.\n";
 }
+
+game_container *game_container::currentInstance;
+game_container* game_container::Instance()
+{
+	if (!currentInstance)
+		currentInstance=new game_container();
+	return currentInstance;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///	world manager
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,7 +264,7 @@ game_container::game_container()
 	world manager	-
 		manages the game world
 */
-world_manager::world_manager()
+world_manager::world_manager():the_world_container(*game_container::Instance())
 {
     //init database
     cout <<"initalizng database component\n";
@@ -901,10 +910,10 @@ void gamelet_session::GetMessagesForClientByPlayerId(string &player_id,string &m
 /****
 initalize new game server
 */
-game_server::game_server(int _portno,const world_manager & _world_manager) : network(_portno)
+game_server::game_server(int _portno, world_manager & _world_manager) : network(_portno),_world_manager(_world_manager)
 {
 
-    this->_world_manager=_world_manager;
+    //this->_world_manager=_world_manager;
 }
 /****
 	handle incoming connection request in a new request handler thread
