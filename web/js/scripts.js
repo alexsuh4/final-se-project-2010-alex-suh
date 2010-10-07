@@ -401,22 +401,21 @@ function registerUser(email,username,password) {
     var reg_qry="player_email="+email+"&player_user_name="+username+"&player_password="+password;
     reg_qry+="&operation="+OPERATION_REGISTER;
     var reg_serevr_url="login.php";
-    alert("sending "+reg_qry+" to "+reg_serevr_url);
+  
     sendAjax(
     "POST"
     ,reg_qry
     ,registerUserCallbackFunction
     ,reg_serevr_url
     ,null);
-    alert ("postback sent");
+    
 }
 
 function registerUserCallbackFunction(xmlhttp) {
-    
-    
-        if (xmlhttp.readyState==4 && xmlhttp.status==200)
-        {
-            alert("REGISTER:    recieved from server    "+xmlhttp.responseText);
+
+
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        window.location = "user_client.html";
         }
     }
 
