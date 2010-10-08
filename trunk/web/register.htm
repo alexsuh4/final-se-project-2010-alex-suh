@@ -80,6 +80,8 @@
     <script language="javascript" src="js/scripts.js"></script>
     <script language="javascript" >
         function registerUserLocal() {
+            var btn = document.getElementById("btnSubmit");
+            btn.style = "background-image:url('img/ajax-loader.gif');";
             var email;
             var username;
             var password;
