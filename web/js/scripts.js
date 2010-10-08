@@ -401,7 +401,7 @@ function registerUser(email,username,password) {
     var reg_qry="player_email="+email+"&player_user_name="+username+"&player_password="+password;
     reg_qry+="&operation="+OPERATION_REGISTER;
     var reg_serevr_url="login.php";
-  
+    
     sendAjax(
     "POST"
     ,reg_qry
@@ -415,6 +415,7 @@ function registerUserCallbackFunction(xmlhttp) {
 
 
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        //login succesfull
         window.location = "user_client.html";
         }
     }
