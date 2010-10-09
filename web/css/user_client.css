@@ -1,3 +1,13 @@
+.visible
+{
+    display:block;
+}
+
+.invisible
+{
+    display:none;
+}
+
 div.page
 {
     background-image:url("../img/landscape.jpg");
@@ -29,6 +39,33 @@ div.header
     font-weight:bold;
     color:#FFAD5C;
     text-transform:uppercase;
+    height:200px;
+}
+
+.inputTR
+{
+    text-decoration:none;
+    font-family:Cambria;
+    font-size:20px;
+    font-weight:bold;
+    color:#FFFF75;
+    background-color:#CC3333;
+    cursor:default;
+    height:auto;
+    width:auto;
+    padding:30px 0px 30px 0px;
+}
+
+.inputControl
+{
+    border:2px solid #82A65F;
+    background-color:#74503D;
+    color:#FFFF75;
+    font-weight:bold;
+    font-family:Cambria;
+    font-size:15px;
+    padding:5px 5px 5px 5px;
+    width:200px;
 }
 
 a.controls
@@ -37,10 +74,12 @@ a.controls
     font-family:Cambria;
     font-size:30px;
     font-weight:bold;
-    color:#E6B85C;
+    color:#FFDA47;
     cursor:pointer;
-    border:1px solid #880030;
-    background-color:#AA3333;
+    border:1px solid #8F8F00;
+    background-image:url("../img/wood.jpg");
+    background-repeat:repeat-x repeat-y;
+    /*background-color:#AA3333;*/
     height:auto;
     width:auto;
     padding:10px 15px 10px 15px;
@@ -49,37 +88,69 @@ a.controls
 a.controls:hover
 {
     color:#FFFF75;
-    background-color:#CC3333;
+    border:1px solid #CCCC00;
+    /*background-color:#CC3333;*/
 }
 
-table.welcomeMenu
+a.controls_small
 {
-    width:100%;
+    text-decoration:none;
+    font-family:Cambria;
+    font-size:20px;
+    font-weight:bold;
+    color:#FFDA47;
+    cursor:pointer;
+    border:1px solid #8F8F00;
+    background-image:url("../img/wood.jpg");
+    background-repeat:repeat-x repeat-y;
+    /*background-color:#AA3333;*/
+    height:auto;
+    width:auto;
+    padding:3px 7px 3px 7px;
+    margin:0px 20px 0px 20px;
 }
 
-table.welcomeMenu td
+a.controls_small:hover
+{
+    color:#FFFF75;
+    border:1px solid #CCCC00;
+    /*background-color:#CC3333;*/
+}
+
+#pageContent,
+#pageContentLogin,
+#pageContentRegister,
+table.menu,
+table.mainMenu
+{
+    margin-left:auto;
+    margin-right:auto;
+}
+
+table.menu
+{
+    border:2px solid #82A65F;
+}
+
+table.menu caption
+{
+    font-family:Cambria;
+    font-size:18px;
+    font-weight:bold;
+    color:#B8FF70;
+    background-color:#CC3333;
+    cursor:default;
+    height:auto;
+    width:200px;
+    border:2px solid #82A65F;
+    padding:5px 0 5px 0;
+}
+
+table.menu td,
+table.mainMenu td
 {
     text-align:center;
     width:auto;
     height:auto;
     padding:10px;
 }
-
-div#info
-{
-   
-    left: 0em;
-    position: absolute;
-    top:0%;
-    /*height:10em;*/
-    width:90%;
-}
-
-.text
-{
-    font-family :Cambria;
-    font-size:large;
-    font-weight:bold;
-    color:#009900;
-}
-
