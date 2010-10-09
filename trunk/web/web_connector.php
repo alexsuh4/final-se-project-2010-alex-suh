@@ -34,6 +34,13 @@
         {
             $message =" ".$message." "."gamelet_data"." ".$gamelet_date." ";
         }
+        $messageTo=$_GET["messageTo"];
+        $messageBody=$_GET["messageBody"];
+        if ($messageTo!="" && $messageBody!="")
+        {
+            $message =" ".$message." "."messageTo"." ".$messageTo." ";
+            $message =" ".$message." "."$messageBody"." ".$messageBody." ";
+        }
 	// form submitted
 	// where is the socket server?
 	$host="localhost";

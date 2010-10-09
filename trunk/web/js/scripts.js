@@ -101,8 +101,7 @@ function LoginContext()
         var form=document.createElement("form");
 
         form.setAttribute("id", LOGIN_FORM_ID);
-        //form.setAttribute("action", SERVER_URL);
-        //form.setAttribute("method", "get");
+        
 
         var txtUserName=document.createElement("input");
         txtUserName.setAttribute("type", "text");
@@ -144,6 +143,7 @@ function LoginContext()
         return form;
 
     }
+    
     this.ajax_login=function ()
     {
         var username=me.txtUserName.value;
@@ -216,9 +216,12 @@ function LoginContext()
 
 }
 
+
+
+
 function loadGameletCallbackFunction(xmlhttp)
 {
-    
+
         if (xmlhttp.readyState==4 && xmlhttp.status==200)
         {
             //debug_trace("gamelet recieved!");
@@ -226,20 +229,88 @@ function loadGameletCallbackFunction(xmlhttp)
             //debug_trace("evalueting "+response);
             eval(response);
             var main=getMainPanel();
-            
+
             var loadedgamelet=new Gamelet(main);
             if (currentState.attribs["current_gamlet_container"])
                 currentState.attribs["current_gamlet_container"].stop();
             currentState.attribs["current_gamlet_container"]=new Gamelet_container(loadedgamelet);
             currentState.attribs["current_gamlet_container"].init();
-            
+
             currentState.current_gamelet=loadedgamelet;
 
             currentState.attribs["gamelet"]=currentState.current_gamelet;
 
         }
-        
+
 }
+
+function do_loginCallbackFunction(xmlhttp)
+    {
+
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            var response=xmlhttp.responseText.split(";");
+
+
+            //debug_trace("paramrs split by ;  \n"+dbgTxt);
+
+            var gamelet_url=response[0];
+            //debug_trace("gamelet url "+gamelet_url);
+            var index=gamelet_url.indexOf("gamelets");
+            if (index<0)
+            {
+                //debug_trace("could not load gamelet!,response text was "+response+"\nindex="+index);
+
+                return;
+            }
+            var playerid=response[1];
+            currentState.attribs["playerid"]=playerid;
+
+            //chat integration start
+
+            var info=getInfoPanel();
+            var errMsg="";
+            if (ChatSystsem)
+            {
+                //init chat system
+                currentState.attribs["Chat"]= new ChatSystsem(info,"testplayer");
+            }
+            else
+            {
+                   errMsg+="\ncould not load Chat system !";
+            }
+            if (errMsg.length>0)
+                alert(errMsg);
+
+            //chat integration end
+
+            //debug_trace("loading gamlet from "+gamelet_url+"\n"+
+            //      "player id is "+currentState.attribs["playerid"]);
+
+            sendAjax(
+                "GET"
+                ,""
+                ,loadGameletCallbackFunction
+                ,gamelet_url
+                , me.btnSubmit);
+
+        }
+    }
+        
+function do_login(userName,Password)
+{
+    sendAjax(
+            "POST"
+            ,"player_user_name="+userName+"&player_password="+Password+"&operation="+OPERATION_LOGIN
+            ,do_loginCallbackFunction,
+            SERVER_URL,
+            null);
+}
+
+
+
+
+
 function chnage_gamelet(newGamletUrl)
 {
     sendAjax(
@@ -290,7 +361,10 @@ function Gamelet_container(_mygamelet)
 
         var params="player_id="+playerid+"&"+VAR_OPERTION+"="+OPERATION_UPDATE;
         if (chatParams!="")
-            params+="&"+chatParams;
+            {
+                alert(chatParams);
+                params+="&"+chatParams;
+            }
         //getMainPanel().innerHTML+=chatParams;
         
         params+="&gamelet_data="+me.mygamelet.UpdateServer();
@@ -372,6 +446,11 @@ function Gamelet_container(_mygamelet)
     }
     this.updateModel=function()
     {
+        var selectedObject=me.mygamelet.getSelectedObject();
+        if (selectedObject!="" && currentState.attribs["Chat"])
+        {
+            currentState.attribs["Chat"].setTo(selectedObject);
+        }
         me.mygamelet.extrapolateModel();
         me.timer_update=setTimeout(me.updateModel,me.updateModel_speed);
     }
@@ -445,7 +524,6 @@ function handleControls(event)
 
 }
 
-
 function registerUser(email,username,password) {
 
   
@@ -471,7 +549,50 @@ function registerUserCallbackFunction(xmlhttp) {
         }
     }
 
+function handleMouseEvents(e)
+{
 
+    var posx=0;
+    var posy=0;
+        if (e.pageX || e.pageY)
+        {
+            posx = e.pageX+0;
+            posy = e.pageY+0;
+         }
+        else if (e.clientX || e.clientY)
+        {
+            posx = e.clientX + document.body.scrollLeft
+                    + document.documentElement.scrollLeft;
+            posy = e.clientY + document.body.scrollTop
+                    + document.documentElement.scrollTop;
+        }
+
+        
+        
+        //need to make it somehow calculated
+        var offsetX=400;
+        var offsetY=1;
+        
+        
+        posx=posx-offsetX;
+        posy=posy-offsetY;
+        if (currentState.current_gamelet)
+        {
+            //debug_trace("test");
+            currentState.current_gamelet.handleClick(posx,posy);
+        }
+//        var mainPanel=getMainPanel();
+//        var marker=document.createElement("img");
+//        marker.src="gamelets/sampleGamelet/img/marker.png";
+//        marker.style.position="absolute";
+//        marker.style.top=posy+"px";
+//        marker.style.left=posx+"px";
+//        marker.style.height=30+"px";
+//        marker.style.width=30+"px";
+//
+//        getMainPanel().appendChild(marker);
+
+}
 function load()
 {
     init();
