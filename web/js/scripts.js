@@ -362,7 +362,6 @@ function Gamelet_container(_mygamelet)
         var params="player_id="+playerid+"&"+VAR_OPERTION+"="+OPERATION_UPDATE;
         if (chatParams!="")
             {
-                alert(chatParams);
                 params+="&"+chatParams;
             }
         //getMainPanel().innerHTML+=chatParams;
