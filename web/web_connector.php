@@ -36,10 +36,11 @@
         }
         $messageTo=$_GET["messageTo"];
         $messageBody=$_GET["messageBody"];
+        $messageBody=str_replace(" ", "_", $messageBody);
         if ($messageTo!="" && $messageBody!="")
         {
             $message =" ".$message." "."messageTo"." ".$messageTo." ";
-            $message =" ".$message." "."$messageBody"." ".$messageBody." ";
+            $message =" ".$message." "."messageBody"." ".$messageBody." ";
         }
 	// form submitted
 	// where is the socket server?

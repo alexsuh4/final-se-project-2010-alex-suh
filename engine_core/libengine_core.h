@@ -227,7 +227,31 @@ protected:
 
 
 };
-
+class ChatMessage
+{
+public:
+	std::string to;
+	std::string from;
+	std::string messageBody;
+	std::string messageTime;
+	ChatMessage(std::string to
+				,std::string from
+				,std::string messageBody
+				)
+	{
+		this->to=to;
+		this->from=from;
+		this->messageBody=messageBody;
+		char s[30];
+		size_t i;
+		struct tm tim;
+		time_t now;
+		now = time(NULL);
+		tim = *(localtime(&now));
+		i = strftime(s,30,"%b %d, %Y; %H:%M:%S\n",&tim);
+		this->messageTime=std::string(s);
+	}
+};
 /**
 represents a connected or registed user
 */
@@ -239,8 +263,12 @@ private:
     */
     static unsigned long running_player_id;
 	pthread_mutex_t additionalData_lock;
+	pthread_mutex_t messages_lock;
 	std::map<std::string,std::string> additionalData;
+	std::queue<ChatMessage*> messages;
 public:
+	void addMessage(std::string &from,std::string msgBody);
+	void serializeMessages(std::string &msgout);
 	std::string getValue(std::string &key);
 	void setValue(std::string &key,std::string &val);
     /**
