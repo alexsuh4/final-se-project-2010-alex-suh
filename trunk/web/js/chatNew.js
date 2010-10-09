@@ -144,7 +144,6 @@ function ChatSystsem(container,currentplayer)
             
             if (msgText==""||me.to==""||!me.to||!msgText)
                 return;
-            me.to="test message";
             
             var chatMessage=new me.ChatMessage(me.to, me.currentplayer,msgText);
             me.appendMessage(chatMessage);
@@ -189,6 +188,10 @@ function ChatSystsem(container,currentplayer)
     var me=this;
     var _chatControl=new me.ChatControl(container,currentplayer);
     _chatControl.init();
+    this.appnedMessage=function(from,body)
+    {
+        me.chatControl.appendMessage(new ChatMessage("", from, body));
+    }
     this.chatControl=_chatControl;
     
     this.serializeCurrentMessage=function()

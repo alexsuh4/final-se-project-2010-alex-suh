@@ -125,7 +125,7 @@ function Model(canvas)
             ang=Math.floor(Math.random()*2*3.14);
             vel=Math.floor(Math.random()*4);
 
-            this.objects[i]=new GameObject(x,y,vel,ang,canvas); //(10,10,0.1,2,canvas);
+            this.objects[i]=new GameObject(x,y,vel,ang,canvas,me); //(10,10,0.1,2,canvas);
         }
         this.currentToUpdate=0;
         this.currentToDraw=0;
@@ -167,7 +167,7 @@ function Model(canvas)
             for (i=me.num_of_objects;i<num_of_objects;i++)
             {
                
-                me.objects[i]=new GameObject(0,0,0,0,me.canvas);
+                me.objects[i]=new GameObject(0,0,0,0,me.canvas,me);
               
                 me.objects[i].setObject(newModel.objects[i]);
                
@@ -213,22 +213,7 @@ function Model(canvas)
 
         this.handleClick=function(x,y)
         {
-            //some ugly offset code
-            x=x-30+0;
-            y=y-30+0;
-            for (var i=0;i<me.num_of_objects;i++)
-                {
-                if (
-                        (Math.abs(x- me.objects[i].x)<=50)
-                        && (Math.abs(y- me.objects[i].y)<=50)
-                    )
-                    {
-                            me.selectedObject=me.objects[i].id;
-                            
-                            return;
-                    }
-                }
-                 me.selectedObject="";
+
         }
     }
 
@@ -243,7 +228,7 @@ function Model(canvas)
      * @param canvas a HTML element relative to which  element is appended
      *          as drawing conteext
      */
-        function GameObject(x,y,vel,ang,canvas)
+        function GameObject(x,y,vel,ang,canvas,model)
         {
             var me=this;
             this.Guid=function () {
@@ -258,7 +243,7 @@ function Model(canvas)
                }
             }
             this.id=0;
-
+            this.model=model;
             //parameters
             
             this.x=x-0;
@@ -266,7 +251,11 @@ function Model(canvas)
             this.vel=vel-0;
             this.ang=ang-0;
             this.objectType="";
-
+            this.selectMe=function()
+            {
+               me.model.selectedObject=me.id;
+            }
+            
             var objPic=document.createElement("img");
 
             objPic.src="gamelets/sampleGamelet/img/skel.gif";
@@ -274,14 +263,19 @@ function Model(canvas)
             objPic.style.width=50+"px"
             objPic.style.height=50+"px";
             
+            
+            objPic.onclick=this.selectMe;
            
             canvas.appendChild(objPic);
-           
+
+
             this.draw_context=0;
             
             this.draw_context=objPic;
 
             this._canvas=canvas;
+
+            
 
             this.destroyMe=function()
             {
@@ -297,7 +291,7 @@ function Model(canvas)
 
                if (me.draw_context==null || me.draw_context.style==undefined)
                     return;
-                me.draw_context.style.position="relative";
+                me.draw_context.style.position="absolute";
                 me.draw_context.style.left=me.x+"px";//me.x+"px";
                 me.draw_context.style.top=me.y+"px";//me.y+"px";
 

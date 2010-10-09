@@ -404,6 +404,21 @@ function Gamelet_container(_mygamelet)
                 change_gamelet(new_Model.system_data.ChangeGameletTo);
                 return;
             }
+            if (new_Model.ChatMessages )
+            {
+                for (var i=0;i<new_Model.ChatMessages.length;i++)
+                    {
+                        var chatMan=currentState.attribs["Chat"];
+                        if (chatMan)
+                            {
+                                chatMan.appnedMessage
+                                (
+                                    new_Model.ChatMessages[i].from
+                                    ,new_Model.ChatMessages[i].body
+                                );
+                            }
+                    }
+            }
         }
         else//no sstem data
             {

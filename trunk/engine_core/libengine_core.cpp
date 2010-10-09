@@ -11,12 +11,23 @@ unsigned long player::running_player_id=0;
 player::player(string& _player_id)
 {
 	pthread_mutex_init(&additionalData_lock,NULL);
+	pthread_mutex_init(&messages_lock,NULL);
+	
     player_id=_player_id;
     gamelet_session_id="";
 }
 player::~player()
 {
 	pthread_mutex_destroy(&additionalData_lock);
+	pthread_mutex_lock(&messages_lock);
+	ChatMessage *msg;
+	while(!messages.empty())
+    {
+		msg=messages.front();
+        delete msg;
+        messages.pop();
+    }
+	pthread_mutex_unlock(&messages_lock);
     std::cout<<"destructor for player with id "<<player_id<<" been called\n";
 }
 /**
@@ -39,6 +50,37 @@ void player::setValue(std::string &key,std::string &val)
 	pthread_mutex_lock(&additionalData_lock);
 		additionalData[key]=val;
 	pthread_mutex_unlock(&additionalData_lock);
+}
+
+void player::addMessage(std::string &from,std::string msgBody)
+{
+	pthread_mutex_lock(&messages_lock);
+		messages.push(new ChatMessage(this->player_id,from,msgBody));
+	pthread_mutex_unlock(&messages_lock);
+}
+void player::serializeMessages(std::string &msgout)
+{
+	pthread_mutex_lock(&messages_lock);
+	ChatMessage *msg;
+	ostringstream oss;
+	/*oss<<"\"ChatMessages\":";*/
+	oss<<"[";
+		while(!messages.empty())
+		{
+			/*oss<<"\"message\":";*/
+			oss<<"{";
+			msg=messages.front();
+			oss<<"\"from\":\""<<msg->from<<"\"";
+			oss<<",";
+			oss<<"\"body\":\""<<msg->messageBody<<"\"";
+			oss<<"}";
+			if (messages.size()>1)
+				oss<<",";
+			messages.pop();
+		}
+	oss<<"]";
+	pthread_mutex_unlock(&messages_lock);
+	msgout+=oss.str();
 }
 /**
 	game container -
@@ -1264,6 +1306,22 @@ void ReqHandler::do_update(std::string &msgout)
     cout<<"user id is "<<userid;
     cout<<"seeking player \n";
     player *pl=_world_manager->get_game_container().get_player(userid);
+	//messages start
+
+	std::string messageTo=header_params["messageTo"];
+	std::string messageBody=header_params["messageBody"];
+	//if has messages for player
+	if (!messageTo.empty() && !messageBody.empty())
+	{
+		//add messages to relevant player
+		player* plTo=_world_manager->get_game_container().get_player(messageTo);
+		if (plTo!=NULL)
+		{
+			plTo->addMessage(pl->player_id,messageBody);
+		}
+	}
+
+	//messages end
     cout<<"player is player name="<<pl->name<<" ; gamelet session id "<<pl->gamelet_session_id<<"\n";
     cout<<"seeking gamelet session \n";
     gamelet_session* _game_session=_world_manager->get_game_container().get_gamelet_session(pl->gamelet_session_id);
@@ -1273,7 +1331,7 @@ void ReqHandler::do_update(std::string &msgout)
         return;
     }
     cout<<"gamelet session found \n";
-    //return
+    
 
     cout<<"retieve session gamelet\n";
     gamelet *gmlt=_game_session->get_gamelet();
@@ -1290,7 +1348,7 @@ void ReqHandler::do_update(std::string &msgout)
     cout<<"getting gamelet model string\n";
     gmlt->get_model_string(msgout);
 
-    //handle gamelelt specific data
+    //handle gamelelt specific data start
 
     map<std::string,std::string>::iterator itr=header_params.find("gamelet_data");
     if (itr!=header_params.end())
@@ -1324,11 +1382,18 @@ void ReqHandler::do_update(std::string &msgout)
 	map <string ,string > upadteParams;
 	char exec_time_main_loop_cstr[10];
 	sprintf(exec_time_main_loop_cstr,"%g",_game_session->exec_time_main_loop);
+	std::string chatMessages;
+	pl->serializeMessages(chatMessages);
+	
 	upadteParams ["updateTime"]						=	exec_time_main_loop_cstr;
 	upadteParams ["sessionSerializationString"]		=	sessionSerializationString;
 	upadteParams ["MessagesForClientByPlayerId"]	=	MessagesForClientByPlayerId;	
-	
+	upadteParams ["ChatMessages"]					=	chatMessages;
+
 	ostringstream system_data_Stream;
+	
+	std::string key;
+	std::string value;
 	int isFirst=1;
 	for (map<string,string>::iterator itr=upadteParams.begin();
 		itr!=upadteParams.end();
@@ -1343,9 +1408,16 @@ void ReqHandler::do_update(std::string &msgout)
 				//add ',' if not the first
 				system_data_Stream<<",";
 			}
-			
-			
-			system_data_Stream<<"\""<<itr->first<<"\":\""<<itr->second<<"\"";
+			key=itr->first;
+			value=itr->second;
+			if (value.find(string("["))==string::npos)
+			{
+				system_data_Stream<<"\""<<itr->first<<"\":\""<<value<<"\"";
+			}
+			else
+			{
+				system_data_Stream<<"\""<<itr->first<<"\":"<<value<<"";
+			}
 		}
 	}
 
