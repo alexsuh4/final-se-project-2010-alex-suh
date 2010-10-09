@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Game Client</title>
+    <link href="css/user_client.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascript" >
+        function local_login() {
+            var lg_user = document.getElementById("USER_NAME_ID1").value;
+            var lg_pass = document.getElementById("PASSWORD_ID1").value;
+
+            alert(lg_user + lg_pass);
+            //do_login();
+        }
+        function local_register() 
+        {
+            var reg_mail = document.getElementById("USER_EMAIL1").value;
+            var reg_user = document.getElementById("USER_NAME_ID2").value;
+            var reg_pass = document.getElementById("PASSWORD_ID2").value;
+
+            alert(reg_mail + reg_user + reg_pass);
+            //register_user();
+        }
+        function show_menu() {
+            document.getElementById("pageContent").className = "visible";
+            document.getElementById("pageContentLogin").className = "invisible";
+            document.getElementById("pageContentRegister").className = "invisible";
+        }
+        function show_login() {
+            document.getElementById("pageContent").className = "invisible";
+            document.getElementById("pageContentLogin").className = "visible";
+            document.getElementById("pageContentRegister").className = "invisible";
+        }
+        function show_register() {
+            document.getElementById("pageContent").className = "invisible";
+            document.getElementById("pageContentLogin").className = "invisible";
+            document.getElementById("pageContentRegister").className = "visible";
+        }
+    </script>
+</head>
+<body>
+    <div class="page">
+        <table border="0px" cellpadding="0" cellspacing="0" class="pageLayout">
+            <tr>
+                <td colspan="3">
+                    <div class="header">welcome</div>
+                </td>
+            </tr>
+            <tr>
+                <td>pic1</td>
+                <td>
+                    <div id="pageContent" class="visible">
+                        <table class="mainMenu" cellspacing="20px" border="0px">
+                            <tr>
+                                <td><a href="#" class="controls" id="login" onclick="show_login();">Login</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="#" class="controls" id="register" onclick="show_register()">Register</a></td>
+                            </tr>
+                            <tr>    
+                                <td><a href="#" class="controls" id="about" onclick="about()">About</a></td>
+                            </tr>
+                        </table>    
+                     </div>
+                     <div id="pageContentLogin" class="invisible">
+                        <table class="menu" cellpadding="0px" cellspacing="0px" border="0px" >
+                            <caption>Login form:</caption>
+                            <tbody>
+                                <tr class="inputTR">
+                                    <td><label for="USER_NAME_ID1">User name:</label></td>
+                                    <td><input id="USER_NAME_ID1" name="USER_NAME_ID1" type="text" class="inputControl" /></td>
+                                </tr>
+                                <tr class="inputTR">
+                                    <td><label for="PASSWORD_ID1">Password:</label></td>
+                                    <td><input id="PASSWORD_ID1" name="PASSWORD_ID1" type="text" class="inputControl" /></td>
+                                </tr>
+                                <tr class="inputTR">    
+                                    <td colspan="2">
+                                        <a href="#" class="controls_small" id="btn_back1" name="btn_back1" onclick="show_menu();">< Back</a>
+                                        <a href="#" class="controls_small" id="btn_submit1" name="btn_submit1" onclick="local_login();">Log in</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                     </div>
+                     <div id="pageContentRegister" class="invisible">
+                        <table class="menu" cellpadding="0px" cellspacing="0px" border="0px" >
+                            <caption>Registeration form:</caption>
+                            <tbody>
+                                <tr class="inputTR">
+                                    <td><label for="USER_EMAIL1">E-mail:</label></td>
+                                    <td><input id="USER_EMAIL1" name="USER_EMAIL1" type="text" class="inputControl" /></td>
+                                </tr>
+                                <tr class="inputTR">
+                                    <td><label for="USER_NAME_ID2">User name:</label></td>
+                                    <td><input id="USER_NAME_ID2" name="USER_NAME_ID2" type="text" class="inputControl" /></td>
+                                </tr>
+                                <tr class="inputTR">
+                                    <td><label for="PASSWORD_ID2">Password:</label></td>
+                                    <td><input id="PASSWORD_ID2" name="PASSWORD_ID2" type="text" class="inputControl" /></td>
+                                </tr>
+                                <tr class="inputTR">    
+                                    <td colspan="2">
+                                        <a href="#" class="controls_small" id="btn_back2" name="btn_back2" onclick="show_menu();">< Back</a>
+                                        <a href="#" class="controls_small" id="btn_submit2" name="btn_submit2" onclick="local_register();">Register</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                     </div>
+                </td>
+                <td>pic2</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
