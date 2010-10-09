@@ -446,8 +446,9 @@ function Gamelet_container(_mygamelet)
     this.updateModel=function()
     {
         var selectedObject=me.mygamelet.getSelectedObject();
-        if (selectedObject!="" && currentState.attribs["Chat"])
+        if (selectedObject!="" && selectedObject && currentState.attribs["Chat"])
         {
+            
             currentState.attribs["Chat"].setTo(selectedObject);
         }
         me.mygamelet.extrapolateModel();
