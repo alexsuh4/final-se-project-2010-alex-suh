@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Game Client</title>
+    <script type="text/javascript" language="javascript" >
+        function login() {
+            window.location = "user_client.html";
+        }
+        function register() {
+            window.location = "register.htm";
+        }
+    </script>
+    <link href="css/user_client.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="page">
+    <table border="0px" cellpadding="0" cellspacing="0" class="pageLayout">
+        <tr>
+            <td colspan="3">
+                <div class="header">welcome</div>
+            </td>
+        </tr>
+        <tr>
+            <td>pic1</td>
+            <td>
+                <table class="welcomeMenu" cellspacing="20px" border="0px">
+                    <tr>
+                        <td><a href="#" class="controls" id="login" onclick="login()">Login</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#" class="controls" id="register" onclick="register()">Register</a></td>
+                    </tr>
+                    <tr>    
+                        <td><a href="#" class="controls" id="about" onclick="about()">About</a></td>
+                    </tr>
+                </table>
+            </td>
+            <td>pic2</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
