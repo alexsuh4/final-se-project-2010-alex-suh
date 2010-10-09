@@ -4,13 +4,13 @@
 <head>
     <title>Game Client</title>
     <link href="css/user_client.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" language="javascript" >
+    <script type="text/javascript" src="js/scripts.js"></script>
+    <script type="text/javascript">
         function local_login() {
             var lg_user = document.getElementById("USER_NAME_ID1").value;
             var lg_pass = document.getElementById("PASSWORD_ID1").value;
 
-            alert(lg_user + lg_pass);
-            //do_login();
+            do_login(lg_user,lg_pass);
         }
         function local_register() 
         {
@@ -18,8 +18,10 @@
             var reg_user = document.getElementById("USER_NAME_ID2").value;
             var reg_pass = document.getElementById("PASSWORD_ID2").value;
 
-            alert(reg_mail + reg_user + reg_pass);
-            //register_user();
+            register_user(reg_mail,reg_user,reg_pass);
+        }
+        function local_about() {
+            alert("Created by:\nAlex Suchaman - 303939938\nKonstantin Soltsman - 317379709");
         }
         function show_menu() {
             document.getElementById("pageContent").className = "visible";
@@ -55,10 +57,10 @@
                                 <td><a href="#" class="controls" id="login" onclick="show_login();">Login</a></td>
                             </tr>
                             <tr>
-                                <td><a href="#" class="controls" id="register" onclick="show_register()">Register</a></td>
+                                <td><a href="#" class="controls" id="register" onclick="show_register();">Register</a></td>
                             </tr>
                             <tr>    
-                                <td><a href="#" class="controls" id="about" onclick="about()">About</a></td>
+                                <td><a href="#" class="controls" id="about" onclick="local_about();">About</a></td>
                             </tr>
                         </table>    
                      </div>
