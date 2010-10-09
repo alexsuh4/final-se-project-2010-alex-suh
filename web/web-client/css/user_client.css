@@ -1,0 +1,84 @@
+div.page
+{
+    background-image:url("../img/landscape.jpg");
+    background-repeat:no-repeat;
+    height:645px;
+    width:898px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+table.pageLayout
+{
+    height:645px;
+    width:898px;    
+}
+
+table.pageLayout td
+{
+    text-align:center;
+    vertical-align:middle;
+}
+
+div.header
+{
+    margin-left:auto;
+    margin-right:auto;
+    font-family:Cambria;
+    font-size:100px;
+    font-weight:bold;
+    color:#FFAD5C;
+    text-transform:uppercase;
+}
+
+a.controls
+{
+    text-decoration:none;
+    font-family:Cambria;
+    font-size:30px;
+    font-weight:bold;
+    color:#E6B85C;
+    cursor:pointer;
+    border:1px solid #880030;
+    background-color:#AA3333;
+    height:auto;
+    width:auto;
+    padding:10px 15px 10px 15px;
+}
+
+a.controls:hover
+{
+    color:#FFFF75;
+    background-color:#CC3333;
+}
+
+table.welcomeMenu
+{
+    width:100%;
+}
+
+table.welcomeMenu td
+{
+    text-align:center;
+    width:auto;
+    height:auto;
+    padding:10px;
+}
+
+div#info
+{
+    background-color:navy;
+    left: 0em;
+    position: absolute;
+    top:50em;
+    height:20em;
+    width:50em;
+}
+
+.text
+{
+    font-family :Cambria;
+    font-size:large;
+    font-weight:bold;
+    color:#009900;
+}

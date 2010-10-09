@@ -21,7 +21,7 @@ function ChatSystsem(container,currentplayer)
             this.from=from;
             this.body=body;
             var me=this;
-            alert("me.to ="+me.to+" me.body="+ me.body);
+           
             this.serialize=function()
             {
                 if (me.body!="" && me.from!="")
@@ -142,8 +142,10 @@ function ChatSystsem(container,currentplayer)
             var msgText= me.inputText.value;
 
             
-            if (msgText==""||me.to=="")
+            if (msgText==""||me.to==""||!me.to||!msgText)
                 return;
+            me.to="test message";
+            
             var chatMessage=new me.ChatMessage(me.to, me.currentplayer,msgText);
             me.appendMessage(chatMessage);
             me.inputText.value="";
@@ -162,7 +164,9 @@ function ChatSystsem(container,currentplayer)
         }
         this.setTo=function(to)
         {
+            
             me.to=to;
+            
         }
         this.serializeCurrentMessage=function()
         {
@@ -194,7 +198,9 @@ function ChatSystsem(container,currentplayer)
 
     this.setTo=function(playerTo)
     {
-        me.chatControl.to=playerTo;
+        
+        me.chatControl.setTo(playerTo);
+        
        
     }
 

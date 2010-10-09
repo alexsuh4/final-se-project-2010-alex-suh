@@ -89,6 +89,7 @@ function Gamelet(_canvas)
     }
     this.getSelectedObject=function()
     {
+       
         return me.myModel.getSelectedObject();
     }
     this.handleClick=function(x,y)
@@ -206,7 +207,6 @@ function Model(canvas)
 
         this.getSelectedObject=function()
         {
-         
             return me.selectedObject;
 
         }
@@ -224,6 +224,7 @@ function Model(canvas)
                     )
                     {
                             me.selectedObject=me.objects[i].id;
+                            
                             return;
                     }
                 }
@@ -324,7 +325,7 @@ function Model(canvas)
                 me.y=newObject.y;
                 me.vel=newObject.vel;
                 me.ang=newObject.ang;
-                me.id=newObject.id;
+                me.id=newObject.player_id;
                 if (newObject.objectType && newObject.objectType!=me.objectType )
                 {
                     if (newObject.objectType=="portal")
