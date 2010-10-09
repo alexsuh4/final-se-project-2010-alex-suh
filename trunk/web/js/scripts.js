@@ -10,8 +10,7 @@ var OPERATION_REGISTER="register";
 
 function debug_trace(reason,msg)
 {
-    alert(reason,msg);
-
+    alert(reason+"\n====="+"\n"+msg);
 }
 
 function getMainPanel()
@@ -280,19 +279,19 @@ function Gamelet_container(_mygamelet)
         var SERVER_URL="web_connector.php";
         var playerid=currentState.attribs["playerid"];
         
-        alert("accessing chatmanager");
+        
         var chatmanager=currentState.attribs["Chat"];
         var chatParams="";
-        alert("chat manager accessed");
-        alert(chatmanager);
+        
+       
         if (chatmanager)
             chatParams=chatmanager.serializeCurrentMessage();
-         alert("chatParams="+chatParams);
+         
 
         var params="player_id="+playerid+"&"+VAR_OPERTION+"="+OPERATION_UPDATE;
         if (chatParams!="")
             params+="&"+chatParams;
-        getMainPanel().innerHTML+=chatParams;
+        //getMainPanel().innerHTML+=chatParams;
         
         params+="&gamelet_data="+me.mygamelet.UpdateServer();
         sendAjax
@@ -309,15 +308,15 @@ function Gamelet_container(_mygamelet)
         try
         {
             new_Model=eval("("+new_Model+")");
-            alert("model evaluated");
+            
         if (new_Model.system_data)
         {
-            alert("new_Model.system_data");
+            
             ////system data in thisd batch
             //update time
             if (new_Model.system_data.updateTime)
             {
-                alert("new_Model.system_data.updateTime");
+                
                 //debug_trace("system time");
                 //accamodate for server actual speed
                 me.updateModel_speed=new_Model.system_data.updateTime;
@@ -327,7 +326,7 @@ function Gamelet_container(_mygamelet)
              //Change Gamelet To another gamelet
             if (new_Model.system_data.ChangeGameletTo)
             {
-                alert("new_Model.system_data.ChangeGameletTo");
+                
                 //debug_trace("message to change gameelt been recieved...");
                 change_gamelet(new_Model.system_data.ChangeGameletTo);
                 return;
@@ -338,15 +337,15 @@ function Gamelet_container(_mygamelet)
                 debug_trace("no system data");
             }
         
-        alert("before me.mygamelet.sync_Model(new_Model.GameletModel);");
+        
 
         me.mygamelet.sync_Model(new_Model.GameletModel);
 
-        alert("after me.mygamelet.sync_Model(new_Model.GameletModel);");
+       
 
         me.timer_sync= setTimeout(me.sync,me.sync_speed_long);
 
-        alert("after me.timer_sync= setTimeout(me.sync,me.sync_speed_long);");
+        
 
         }
         catch(exp)
@@ -355,9 +354,20 @@ function Gamelet_container(_mygamelet)
             var errtxt="ecpetion accured";
             errtxt+="\ndescription  : "             +exp.description;
             errtxt+="\nname         : "             +exp.name;
-            errtxt+="\nmessage      : "             +exp.message
-            errtxt+="\nmore data:\n========\n"      +new_Model
-            alert(errtxt);
+            errtxt+="\nmessage      : "             +exp.message;
+            errtxt+="\nmore data:\n========\n";
+            errtxt+="\n   exp\n======";
+            for(prop in exp)
+            {
+                errtxt+="\n"+prop+"="+exp[prop];
+            }
+            errtxt+="\n   new_Model\n=========";
+            for(prop in new_Model)
+            {
+                errtxt+="\n"+prop+"="+new_Model[prop];
+            }
+                 
+            debug_trace("exception", errtxt);
         }
     }
     this.updateModel=function()
