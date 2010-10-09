@@ -6,16 +6,22 @@ Alex Suchman 2010
 -->
 <html>
     <head>
-        <script type="text/javascript" src="js/scripts.js"></script>
+        <title>User Client Ver 1.0</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
         <link rel="stylesheet" type="text/css" href="css/user_client.css" />
+        <link rel="stylesheet" type="text/css" href="css/Chat.css" />
+        <link rel="stylesheet" type="text/css" href="css/user_client_Ingame.css" />
+        <script type="text/javascript" src="js/chatNew.js"></script>
+        <script type="text/javascript" src="js/scripts.js"></script>
+        
     </head>
 
     <body onload="load()" onkeypress="handleControls(event)" >
         <p>Version<b>8</b></p>
         <div id="canvas">
-            <div id="main"/>
-            <div id="controls"/>
-            <div id="info"/>
+            <div id="user_client_main"></div>
+            <div id="user_client_controls"></div>
+            <div id="user_client_info"></div>
         </div>
     </body>
 </html>

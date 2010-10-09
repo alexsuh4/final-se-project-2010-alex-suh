@@ -16,15 +16,15 @@ function debug_trace(reason,msg)
 
 function getMainPanel()
 {
-    return document.getElementById("main");
+    return document.getElementById("user_client_main");
 }
 function getControlsPanel()
 {
-    return document.getElementById("controls");
+    return document.getElementById("user_client_controls");
 }
 function getInfoPanel()
 {
-    return document.getElementById("info");
+    return document.getElementById("user_client_info");
 }
 
 function newlineelm()
@@ -151,7 +151,7 @@ function LoginContext()
         var password=me.txtPassword.value;
         sendAjax(
             "POST"
-            ,"player_user_name="+username+"&player_password="+password
+            ,"player_user_name="+username+"&player_password="+password+"&operation="+OPERATION_LOGIN
             ,me.loginCallbackFunction,
             SERVER_URL,
             me.btnSubmit);
@@ -164,9 +164,7 @@ function LoginContext()
         {
             var response=xmlhttp.responseText.split(";");
             
-            var dbgTxt="";
-            for (var i=0;i<response.length;i++)
-                dbgTxt+="\n"+response[i];
+            
             //debug_trace("paramrs split by ;  \n"+dbgTxt);
 
             var gamelet_url=response[0];
@@ -180,6 +178,27 @@ function LoginContext()
             }
             var playerid=response[1];
             currentState.attribs["playerid"]=playerid;
+
+            //chat integration start
+
+            var info=getInfoPanel();
+            var errMsg="";
+            if (ChatSystsem)
+            {
+                info.innerHTML+="<br/>loading chat System ...";
+                info.innerHTML="";
+                //init chat system
+                currentState.attribs["Chat"]= new ChatSystsem(info,"testplayer");
+            }
+            else
+            {
+                   errMsg+="\ncould not load Chat system !";
+            }
+            if (errMsg.length>0)
+                alert(errMsg);
+
+            //chat integration end
+
             //debug_trace("loading gamlet from "+gamelet_url+"\n"+
             //      "player id is "+currentState.attribs["playerid"]);
 
@@ -260,8 +279,21 @@ function Gamelet_container(_mygamelet)
     {
         var SERVER_URL="web_connector.php";
         var playerid=currentState.attribs["playerid"];
+        
+        alert("accessing chatmanager");
+        var chatmanager=currentState.attribs["Chat"];
+        var chatParams="";
+        alert("chat manager accessed");
+        alert(chatmanager);
+        if (chatmanager)
+            chatParams=chatmanager.serializeCurrentMessage();
+         alert("chatParams="+chatParams);
 
         var params="player_id="+playerid+"&"+VAR_OPERTION+"="+OPERATION_UPDATE;
+        if (chatParams!="")
+            params+="&"+chatParams;
+        getMainPanel().innerHTML+=chatParams;
+        
         params+="&gamelet_data="+me.mygamelet.UpdateServer();
         sendAjax
         ("GET"
@@ -277,13 +309,15 @@ function Gamelet_container(_mygamelet)
         try
         {
             new_Model=eval("("+new_Model+")");
-
+            alert("model evaluated");
         if (new_Model.system_data)
         {
+            alert("new_Model.system_data");
             ////system data in thisd batch
             //update time
             if (new_Model.system_data.updateTime)
             {
+                alert("new_Model.system_data.updateTime");
                 //debug_trace("system time");
                 //accamodate for server actual speed
                 me.updateModel_speed=new_Model.system_data.updateTime;
@@ -293,6 +327,7 @@ function Gamelet_container(_mygamelet)
              //Change Gamelet To another gamelet
             if (new_Model.system_data.ChangeGameletTo)
             {
+                alert("new_Model.system_data.ChangeGameletTo");
                 //debug_trace("message to change gameelt been recieved...");
                 change_gamelet(new_Model.system_data.ChangeGameletTo);
                 return;
@@ -303,10 +338,15 @@ function Gamelet_container(_mygamelet)
                 debug_trace("no system data");
             }
         
-        
+        alert("before me.mygamelet.sync_Model(new_Model.GameletModel);");
 
         me.mygamelet.sync_Model(new_Model.GameletModel);
+
+        alert("after me.mygamelet.sync_Model(new_Model.GameletModel);");
+
         me.timer_sync= setTimeout(me.sync,me.sync_speed_long);
+
+        alert("after me.timer_sync= setTimeout(me.sync,me.sync_speed_long);");
 
         }
         catch(exp)
@@ -371,11 +411,12 @@ function init()
     //init session State
     currentState=new State();
     //show login screen
-    var main=getControlsPanel();
+    var controlPanel=getControlsPanel();
     _loginContext=new LoginContext();
     
     var form=_loginContext.init();
-    main.appendChild(form);
+    controlPanel.appendChild(form);
+    
 }
 function handleControls(event)
 {
@@ -386,7 +427,7 @@ function handleControls(event)
      key= String.fromCharCode(event.which);	  // All others
 
     //debug_trace(currentState.current_gamelet);
-    if (currentState.current_gamelet!=null)
+    if (currentState.current_gamelet)
     {
         //debug_trace("test");
         currentState.current_gamelet.handleControls(key);
