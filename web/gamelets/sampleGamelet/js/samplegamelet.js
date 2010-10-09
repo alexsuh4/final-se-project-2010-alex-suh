@@ -14,7 +14,7 @@ function Gamelet(_canvas)
     this.init=function()
     {
        // me.canvas.innerHTML="intialized";
-       //me.main.onKeyPress="alert('click');"
+       
     }
     ///this gets exceuted every game cycle
     
@@ -56,7 +56,8 @@ function Gamelet(_canvas)
        
 
         //var newModelObj = eval("(" + newModel + ")");
-        alert("in sync_Model before me.myModel.setModel(newModelObj);");
+       
+           
         me.myModel.setModel(newModelObj);
 
     }   
@@ -139,19 +140,16 @@ function Model(canvas)
         }
         this.setModel=function(newModel)
         {
-
-            alert("in  this.setModel=function(newModel)")
+            
             var num_of_objects=newModel.objects.length;
            
             var i=0;
-           
             //update existing object
             for (i=0;i<num_of_objects;i++)
                 {
-                    
                     me.objects[i].setObject(newModel.objects[i]);
                 }
-           
+
             //book keep added objects
             for (i=me.num_of_objects;i<num_of_objects;i++)
             {
@@ -161,15 +159,16 @@ function Model(canvas)
                 me.objects[i].setObject(newModel.objects[i]);
                
             }
-            
+           
             //book-keep removed objects
             if (me.num_of_objects>num_of_objects)
             {
+                
                     for (i=num_of_objects;i<me.num_of_objects;i++)
                         me.objects[i].destroyMe();
                     me.current=0;
             }
-           
+          
             me.num_of_objects=num_of_objects;
            
         }
@@ -207,46 +206,80 @@ function Model(canvas)
      */
         function GameObject(x,y,vel,ang,canvas)
         {
-            //parameters
             var me=this;
+            this.Guid=function () {
+                var me=this;
+               this.s4=function ()
+               {
+                    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+                }
+               this.get=function()
+               {
+                    return (me.s4()+me.s4()+"-"+me.s4()+"-"+me.s4()+"-"+me.s4()+"-"+me.s4()+me.s4()+me.s4());
+               }
+            }
+            this.id=new this.Guid().get();
+
+            //parameters
+            
             this.x=x-0;
             this.y=y-0;
             this.vel=vel-0;
             this.ang=ang-0;
             this.objectType="";
 
-            this.draw_context=null;
-            me.draw_context=document.createElement("img");
-            me.draw_context.src="gamelets/sampleGamelet/img/skel.gif";
-            me.draw_context.style.width=50+"px"
-            me.draw_context.style.height=50+"px";
-            canvas.appendChild(me.draw_context);
+            var objPic=document.createElement("img");
+    
+            objPic.src="gamelets/sampleGamelet/img/skel.gif";
+            objPic.style.width=50+"px"
+            objPic.style.height=50+"px";
+            objPic.id=this.id;
+            canvas.appendChild(objPic);
+           
+            this.draw_context=0;
+            
+            this.draw_context=objPic;
+
             this._canvas=canvas;
+
             this.destroyMe=function()
             {
-                me._canvas.removeChild(me.draw_context);
+                
+                if (me.draw_context.parentNode)
+                    me.draw_context.parentNode.removeChild(me.draw_context);
+                 //me._canvas.removeChild(me.draw_context);
+                
             }
             this.draw=function()
             {
+                
+
                if (me.draw_context==null || me.draw_context.style==undefined)
                     return;
                 me.draw_context.style.position="relative";
                 me.draw_context.style.left=me.x+"px";//me.x+"px";
                 me.draw_context.style.top=me.y+"px";//me.y+"px";
-                
+
+                 
             }
            
             //move action
             this.move=function()
             {
+               
+                 
                 var newX=Number(me.x) + me.vel*Math.cos(me.ang);
                 var newY=Number(me.y) + me.vel*Math.sin(me.ang);
                 me.x=newX;
                 me.y=newY;
+
+                 
             }
             //setst GameObject with new parameters
             this.setObject=function(newObject)
             {
+               
+
                 me.x=newObject.x;
                 me.y=newObject.y;
                 me.vel=newObject.vel;
@@ -266,6 +299,6 @@ function Model(canvas)
                         me.draw_context.src="gamelets/sampleGamelet/img/girl.gif";
                     }
                 }
-
+                
             }
         }
