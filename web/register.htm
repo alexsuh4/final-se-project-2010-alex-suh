@@ -80,8 +80,8 @@
     <script language="javascript" src="js/scripts.js"></script>
     <script language="javascript" >
         function registerUserLocal() {
-            var btn = document.getElementById("btnSubmit");
-            btn.style = "background-image:url('img/ajax-loader.gif');";
+            var loader = document.getElementById("imgloader");
+            loader.style.visibility = "visible";
             var email;
             var username;
             var password;
@@ -145,7 +145,7 @@
             </tr>
             <tr>
                 <td>
-                    </td>
+                    <img id="imgloader" alt="" src="img/ajax-loader.gif" style="height: 40px; width: 40px ; visibility:hidden;"/></td>
                 <td class="style2">
                     <input id="btnSubmit" type="button" value="Register" onclick="registerUserLocal()"/></td>
             </tr>

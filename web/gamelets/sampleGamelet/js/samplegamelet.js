@@ -56,7 +56,7 @@ function Gamelet(_canvas)
        
 
         //var newModelObj = eval("(" + newModel + ")");
-        
+        alert("in sync_Model before me.myModel.setModel(newModelObj);");
         me.myModel.setModel(newModelObj);
 
     }   
@@ -94,8 +94,8 @@ function Model(canvas)
         this.objects=new Array();
 
         this.num_of_objects=5;
-        canvas.style.width=100+"em";
-        canvas.style.height=100+"em";
+        canvas.style.width=80+"%";
+        canvas.style.height=80+"%";
 
         canvas.style.backgroundRepeat="repeat";
         canvas.style.backgroundImage="url(gamelets/sampleGamelet/img/background.bmp)";
@@ -139,7 +139,8 @@ function Model(canvas)
         }
         this.setModel=function(newModel)
         {
-  
+
+            alert("in  this.setModel=function(newModel)")
             var num_of_objects=newModel.objects.length;
            
             var i=0;
@@ -229,7 +230,7 @@ function Model(canvas)
             {
                if (me.draw_context==null || me.draw_context.style==undefined)
                     return;
-                me.draw_context.style.position="Absolute";
+                me.draw_context.style.position="relative";
                 me.draw_context.style.left=me.x+"px";//me.x+"px";
                 me.draw_context.style.top=me.y+"px";//me.y+"px";
                 
