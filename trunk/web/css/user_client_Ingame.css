@@ -1,0 +1,56 @@
+/* 
+    Document   : user_client_Ingame
+    Created on : Oct 9, 2010, 12:22:42 AM
+    Author     : Administrator
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+/*game are*/
+#user_client_main
+{
+    display: block;
+    border-style: solid;
+    position:absolute;
+    top:1px;
+    left:400px;
+    width:400px;
+    height:400px;
+    background-color: gray;
+}
+/*controls area*/
+#user_client_controls
+{
+    display: block;
+    border-style: solid;
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:380px;
+    height:200px;
+
+    background-color: gray;
+}
+/*misc area*/
+#user_client_info
+{
+    display: block;
+    border-style: solid;
+    position:absolute;
+    top:210px;
+    left:0em;
+    width:380px;
+    height:380px;
+
+     background-color: gray;
+}
+
