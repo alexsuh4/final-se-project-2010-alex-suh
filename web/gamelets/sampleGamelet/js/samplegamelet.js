@@ -6,7 +6,7 @@ function Gamelet(_canvas)
 
     this.name="sample gamelet"
     this.canvas=_canvas;
-    this.canvas.innerHTML="Loaded!";
+    
     this.myModel=new Model(this.canvas);
     var me=this;
     //this get excecuted before first run and after the new 
@@ -70,7 +70,7 @@ function Gamelet(_canvas)
     {
        
          me.myModel.updateModel();
-        
+
        
     }
     ////
@@ -87,13 +87,22 @@ function Gamelet(_canvas)
     {
         return me.myModel.UpdateServer();
     }
+    this.getSelectedObject=function()
+    {
+        return me.myModel.getSelectedObject();
+    }
+    this.handleClick=function(x,y)
+    {
+        me.myModel.handleClick(x,y);
+    }
+
 }
 
 //represent the gamelet model (state)
 function Model(canvas)
     {
         this.objects=new Array();
-
+        
         this.num_of_objects=5;
         canvas.style.width=80+"%";
         canvas.style.height=80+"%";
@@ -121,6 +130,9 @@ function Model(canvas)
         this.currentToDraw=0;
         this.canvas=canvas;
         var me=this;
+
+        
+
         this.userKey=null;
         this.UpdateServer=function()
         {
@@ -190,7 +202,33 @@ function Model(canvas)
             if (me.currentToDraw>=me.num_of_objects)
                 me.currentToDraw=0;
         }
-        
+        this.selectedObject="";
+
+        this.getSelectedObject=function()
+        {
+         
+            return me.selectedObject;
+
+        }
+
+        this.handleClick=function(x,y)
+        {
+            //some ugly offset code
+            x=x-30+0;
+            y=y-30+0;
+            for (var i=0;i<me.num_of_objects;i++)
+                {
+                if (
+                        (Math.abs(x- me.objects[i].x)<=50)
+                        && (Math.abs(y- me.objects[i].y)<=50)
+                    )
+                    {
+                            me.selectedObject=me.objects[i].id;
+                            return;
+                    }
+                }
+                 me.selectedObject="";
+        }
     }
 
 
@@ -218,7 +256,7 @@ function Model(canvas)
                     return (me.s4()+me.s4()+"-"+me.s4()+"-"+me.s4()+"-"+me.s4()+"-"+me.s4()+me.s4()+me.s4());
                }
             }
-            this.id=new this.Guid().get();
+            this.id=0;
 
             //parameters
             
@@ -229,11 +267,13 @@ function Model(canvas)
             this.objectType="";
 
             var objPic=document.createElement("img");
-    
+
             objPic.src="gamelets/sampleGamelet/img/skel.gif";
+            objPic.style.position="absolute";
             objPic.style.width=50+"px"
             objPic.style.height=50+"px";
-            objPic.id=this.id;
+            
+           
             canvas.appendChild(objPic);
            
             this.draw_context=0;
@@ -284,6 +324,7 @@ function Model(canvas)
                 me.y=newObject.y;
                 me.vel=newObject.vel;
                 me.ang=newObject.ang;
+                me.id=newObject.id;
                 if (newObject.objectType && newObject.objectType!=me.objectType )
                 {
                     if (newObject.objectType=="portal")
