@@ -2,13 +2,48 @@
 //this class acts as an interface for an flash gamelet
 function Gamelet(_divOnPage)
 {
+    var me=this;
+   /**
+ * Converts the given data structure to a JSON string.
+ * Argument: arr - The data structure that must be converted to JSON
+ * Example: var json_string = array2json(['e', {pluribus: 'unum'}]);
+ * 			var json = array2json({"success":"Sweet","failure":false,"empty_array":[],"numbers":[1,2,3],"info":{"name":"Binny","site":"http:\/\/www.openjs.com\/"}});
+ * http://www.openjs.com/scripts/data/json_encode.php
+ */
+this.array2json=function (arr) {
+    var parts = [];
+    var is_list = (Object.prototype.toString.apply(arr) === '[object Array]');
 
+    for(var key in arr) {
+    	var value = arr[key];
+        if(typeof value == "object") { //Custom handling for arrays
+            if(is_list) parts.push(array2json(value)); /* :RECURSION: */
+            else parts[key] = array2json(value); /* :RECURSION: */
+        } else {
+            var str = "";
+            if(!is_list) str = '"' + key + '":';
+
+            //Custom handling for multiple data types
+            if(typeof value == "number") str += value; //Numbers
+            else if(value === false) str += 'false'; //The booleans
+            else if(value === true) str += 'true';
+            else str += '"' + value + '"'; //All other things
+            // :TODO: Is there any more datatype we should be in the lookout for? (Functions?)
+
+            parts.push(str);
+        }
+    }
+    var json = parts.join(",");
+
+    if(is_list) return '[' + json + ']';//Return numerical JSON
+    return '{' + json + '}';//Return associative JSON
+}
     this.name="Flash gamelet"
     this.canvas = _divOnPage;
     this.myFlashObj = null;
     //this.canvas.innerHTML="Loaded!";
     //this.myModel=new Model(this.canvas);
-    var me=this;
+    
     //this get excecuted before first run and after the new
 
     this.init = function() {
@@ -93,8 +128,31 @@ function Gamelet(_divOnPage)
     this.sync_Model=function(newModelObj)
     {
         // call flex function and pass newModelObj as a state of current game state
-        
-        me.myFlashObj.sync_Model(newModelObj);
+        var x;
+        var y;
+        var ang;
+        var vel;
+        var id;
+        var isCurrentPlayer;
+        for(var i=0 ;i <newModelObj.objects.length;i++ )
+           {
+                x=newModelObj.x;
+                y=newModelObj.y;
+                ang=newModelObj.ang;
+                vel=newModelObj.vel;
+                id=newModelObj.id;
+                isCurrentPlayer=newModelObj.isCurrentPlayer;
+
+                me.myFlashObj.sync_Model
+                (
+                    isCurrentPlayer
+                    ,id
+                    ,x
+                    ,y
+                    ,ang
+                    ,vel
+                );
+           }
 
     }   
     ///leave empty if got own timing logic
@@ -105,14 +163,11 @@ function Gamelet(_divOnPage)
     this.extrapolateModel=function()
     {
        
-        
-        
-       
+
+            //N.A
+
     }
-    ////
-    ///
-    ///???
-    ///
+    ///passes pressed controls in HTML context
     this.handleControls=function(key)
     {
        
@@ -121,6 +176,24 @@ function Gamelet(_divOnPage)
     //right now supported GET method only
     this.UpdateServer=function()
     {
-//        return me.myModel.UpdateServer();
+        //returns feedback to server
+        //controls pressed ed.
     }
+
+    this.getSelectedObject=function()
+    {
+
+        return me.myModel.getSelectedObject();
+    }
+    ///passes on clicks , clicked on HTML surface
+    this.handleClick=function(x,y)
+    {
+       
+    }
+
+
+
+
 }
+
+

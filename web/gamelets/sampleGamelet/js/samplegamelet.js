@@ -73,9 +73,8 @@ function Gamelet(_canvas)
 
        
     }
-    ////
-    ///
-    ///???
+     ///
+    ///passes controls pressed in game into the gamelet
     ///
     this.handleControls=function(key)
     {
@@ -106,12 +105,12 @@ function Model(canvas)
         this.objects=new Array();
         
         this.num_of_objects=5;
-        canvas.style.width=80+"%";
-        canvas.style.height=80+"%";
+        canvas.style.width =400+"px";
+        canvas.style.height=400+"px";
 
         canvas.style.backgroundRepeat="repeat";
-        canvas.style.backgroundImage="url(gamelets/sampleGamelet/img/background.bmp)";
-
+//        canvas.style.backgroundImage="url(gamelets/sampleGamelet/img/background.bmp)";
+        canvas.style.backgroundImage="url(gamelets/sampleGamelet/img/GreenStone.jpg)";
         //creatting some obejcts
         
         var i=0;
@@ -348,7 +347,8 @@ function Model(canvas)
                 {
                     if (newObject.objectType=="portal")
                     {
-                        me.draw_context.src="gamelets/sampleGamelet/img/portal.gif";
+                        //me.draw_context.src="gamelets/sampleGamelet/img/portal.gif";
+                        me.draw_context.src="gamelets/sampleGamelet/img/farm.png";
                     }
                     if (newObject.objectType=="boy")
                     {

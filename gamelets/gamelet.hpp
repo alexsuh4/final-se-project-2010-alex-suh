@@ -75,6 +75,8 @@ public:
 	///params are of type std::string
 	virtual void handle_client_request(const handle_client_request_Args & req_Ags,std::string & reply) =0;
 	virtual bool is_initalized()=0;
+	virtual void get_name(char *name)=0;
+	virtual void get_path(char *path)=0;
 };
 
 extern "C" 
@@ -84,4 +86,8 @@ extern "C"
 #endif
 	gamelet* make();
 }
+
+
+
+
 #endif
