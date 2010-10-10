@@ -336,13 +336,37 @@ world_manager::~world_manager()
 */
 player* world_manager::login(std::string username,std::string password)
 {
+	if (username.length()>20 || password.length()>20)
+		return NULL;
     std::cout<<"login requested for user name "<<username<<" and password "<<password<<endl;
     
 	//todo- actual validation code
     //dataManager->Instance()->Login(username,password);
-    std::string new_user_id;
+	
+	char qry[255];
+	std::vector<Alexsuh::Data::DBObject*> *result=NULL;
+	sprintf(qry,"select * from sampleprojectdb.players where player_name='%s' and player_password='%s'",username.c_str(),password.c_str());
+	std::string player_name;
+	std::string player_email;
+	try
+	{
+		result= DataManager->toDBObject(string(qry));
+		if (result->empty())
+			return NULL;
+		player_name=(*result)[0]->data["player_name"];
+		player_email=(*result)[0]->data["player_email"];
+		
+	}
+	catch(sql::SQLException sql_exp)
+	{
+		Alexsuh::ErrorHandling::ErrorManager::Instance()->ExceptionHandler(sql_exp);
+		return NULL;
+	}
+	std::string new_user_id;
     player::generate_next_id(new_user_id);
     player *p=new player(new_user_id);
+	p->setValue(string("player_name"),player_name);
+	p->setValue(string("player_email"),player_email);
     the_world_container.insert_player(new_user_id,p);
     return p;
 }
@@ -1317,7 +1341,7 @@ void ReqHandler::do_update(std::string &msgout)
 		player* plTo=_world_manager->get_game_container().get_player(messageTo);
 		if (plTo!=NULL)
 		{
-			plTo->addMessage(pl->player_id,messageBody);
+			plTo->addMessage(pl->getValue(string("player_name")),messageBody);
 		}
 	}
 

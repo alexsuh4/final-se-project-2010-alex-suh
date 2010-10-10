@@ -156,9 +156,13 @@ function ChatSystsem(container,currentplayer)
         }
         this.appendMessage=function(newMsgObj)
         {
-            var d=new Date();
+            me.appendMesageFromBody(newMsgObj.from,newMsgObj.body);
+        }
+        this.appendMesageFromBody=function(from,body)
+        {
+             var d=new Date();
             var time=d.getHours()+":"+d.getMinutes();
-           var newMsgText="["+time+"] "+newMsgObj.from+": "+newMsgObj.body;
+           var newMsgText="["+time+"] "+from+": "+body;
            me.appendMessageText(newMsgText);
         }
         this.setTo=function(to)
@@ -190,7 +194,7 @@ function ChatSystsem(container,currentplayer)
     _chatControl.init();
     this.appnedMessage=function(from,body)
     {
-        me.chatControl.appendMessage(new ChatMessage("", from, body));
+        me.chatControl.appendMesageFromBody(from, body);
     }
     this.chatControl=_chatControl;
     
