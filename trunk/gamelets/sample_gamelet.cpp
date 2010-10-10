@@ -205,6 +205,8 @@ public:
 	{
 		return isInialized;
 	}
+	void get_name(char *name);
+	void get_path(char *path);
 };
 
 sample_gamelet::sample_gamelet()
@@ -628,3 +630,12 @@ extern "C" gamelet* make()
 }
 
 
+void sample_gamelet::get_name(char *name)
+{
+	strcpy(name,"sampleGamelet");
+}
+
+void sample_gamelet::get_path(char *path)
+{
+	strcpy(path,"js/samplegamelet.js");
+}

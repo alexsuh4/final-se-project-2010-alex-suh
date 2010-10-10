@@ -1303,6 +1303,11 @@ void ReqHandler::do_login(std::string &msgout)
     /// TODO here actual user authorization and authentication takes place
     //register user
     player *newplayer=_world_manager->login(user_name,password);
+	if (newplayer==NULL)
+	{
+		msgout="";
+		return;
+	}
     string player_id = newplayer->player_id;
     //get user default gamelet
     /// TODO actual default gamelet lookup will go here
@@ -1523,7 +1528,15 @@ void ReqHandler::do_switch_gamelet(std::string &msgout)
     cout<<"moving player ... \n";
     _world_manager->move_player(playerid,newsession);
     //TODO actual client code path retrievel
-    msgout="gamelets/sampleGamelet/js/samplegamelet.js";
+    
+	char gameletPath[255];
+	char gameletName[255];
+	newsession->get_gamelet()->get_name(gameletName);
+	newsession->get_gamelet()->get_path(gameletPath);
+	
+	ostringstream oss;
+	oss<<"gamelets/"<<gameletName<<"/"<<gameletPath;
+	msgout=oss.str();
 }
 
 
