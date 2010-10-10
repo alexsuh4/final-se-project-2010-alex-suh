@@ -363,9 +363,7 @@ function Gamelet_container(_mygamelet)
         if (chatParams!="")
             {
                 params+="&"+chatParams;
-            }
-        //getMainPanel().innerHTML+=chatParams;
-        
+            } 
         params+="&gamelet_data="+me.mygamelet.UpdateServer();
         sendAjax
         ("GET"
@@ -377,10 +375,14 @@ function Gamelet_container(_mygamelet)
     }
     this.newModelRecieved=function(xmlhttp)
     {
-        var new_Model=xmlhttp.responseText;
+        var new_Model_Serialized=xmlhttp.responseText;
+        var new_Model;
         try
         {
-            new_Model=eval("("+new_Model+")");
+            //evaluate system message
+            
+           new_Model=eval("("+new_Model_Serialized+")");
+            
             
         if (new_Model.system_data)
         {
@@ -404,21 +406,24 @@ function Gamelet_container(_mygamelet)
                 change_gamelet(new_Model.system_data.ChangeGameletTo);
                 return;
             }
-            if (new_Model.ChatMessages )
+            //chat handling start
+            if (new_Model.system_data.ChatMessages && new_Model.system_data.ChatMessages.length>0)
             {
-                for (var i=0;i<new_Model.ChatMessages.length;i++)
+                var messages=new_Model.system_data.ChatMessages;
+                for (var i=0;i<messages.length;i++)
                     {
                         var chatMan=currentState.attribs["Chat"];
                         if (chatMan)
                             {
                                 chatMan.appnedMessage
                                 (
-                                    new_Model.ChatMessages[i].from
-                                    ,new_Model.ChatMessages[i].body
+                                    messages[i].from
+                                    ,messages[i].body
                                 );
                             }
                     }
             }
+            //chat handling end
         }
         else//no sstem data
             {
@@ -445,6 +450,7 @@ function Gamelet_container(_mygamelet)
             errtxt+="\nmessage      : "             +exp.message;
             errtxt+="\nmore data:\n========\n";
             errtxt+="\n   exp\n======";
+
             for(prop in exp)
             {
                 errtxt+="\n"+prop+"="+exp[prop];
@@ -454,7 +460,7 @@ function Gamelet_container(_mygamelet)
             {
                 errtxt+="\n"+prop+"="+new_Model[prop];
             }
-                 
+            errtxt="serialized data was : " +new_Model_Serialized+"\n"+errtxt;
             debug_trace("exception", errtxt);
         }
     }
@@ -564,50 +570,7 @@ function registerUserCallbackFunction(xmlhttp) {
         }
     }
 
-function handleMouseEvents(e)
-{
 
-    var posx=0;
-    var posy=0;
-        if (e.pageX || e.pageY)
-        {
-            posx = e.pageX+0;
-            posy = e.pageY+0;
-         }
-        else if (e.clientX || e.clientY)
-        {
-            posx = e.clientX + document.body.scrollLeft
-                    + document.documentElement.scrollLeft;
-            posy = e.clientY + document.body.scrollTop
-                    + document.documentElement.scrollTop;
-        }
-
-        
-        
-        //need to make it somehow calculated
-        var offsetX=400;
-        var offsetY=1;
-        
-        
-        posx=posx-offsetX;
-        posy=posy-offsetY;
-        if (currentState.current_gamelet)
-        {
-            //debug_trace("test");
-            currentState.current_gamelet.handleClick(posx,posy);
-        }
-//        var mainPanel=getMainPanel();
-//        var marker=document.createElement("img");
-//        marker.src="gamelets/sampleGamelet/img/marker.png";
-//        marker.style.position="absolute";
-//        marker.style.top=posy+"px";
-//        marker.style.left=posx+"px";
-//        marker.style.height=30+"px";
-//        marker.style.width=30+"px";
-//
-//        getMainPanel().appendChild(marker);
-
-}
 function load()
 {
     init();

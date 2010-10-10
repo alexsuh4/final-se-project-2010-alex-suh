@@ -102,6 +102,7 @@ function Gamelet(_canvas)
 //represent the gamelet model (state)
 function Model(canvas)
     {
+        var me=this;
         this.objects=new Array();
         
         this.num_of_objects=5;
@@ -130,7 +131,7 @@ function Model(canvas)
         this.currentToUpdate=0;
         this.currentToDraw=0;
         this.canvas=canvas;
-        var me=this;
+        
 
         
 
@@ -203,14 +204,24 @@ function Model(canvas)
             if (me.currentToDraw>=me.num_of_objects)
                 me.currentToDraw=0;
         }
-        this.selectedObject="";
+        this.selectedObject=0;
 
         this.getSelectedObject=function()
         {
-            return me.selectedObject;
+            if (me.selectedObject)
+                return me.selectedObject.id;
+            else
+                return "";
 
         }
-
+        this.setSelectedObject=function(obj)
+        {
+            if (me.selectedObject)
+                {
+                    me.selectedObject.unSelectSelf();
+                }
+                me.selectedObject=obj;
+        }
         this.handleClick=function(x,y)
         {
 
@@ -227,9 +238,12 @@ function Model(canvas)
      * @param ang angle
      * @param canvas a HTML element relative to which  element is appended
      *          as drawing conteext
+     * @param model - points to this object manager
      */
         function GameObject(x,y,vel,ang,canvas,model)
         {
+            
+
             var me=this;
             this.Guid=function () {
                 var me=this;
@@ -244,6 +258,7 @@ function Model(canvas)
             }
             this.id=0;
             this.model=model;
+           
             //parameters
             
             this.x=x-0;
@@ -251,9 +266,18 @@ function Model(canvas)
             this.vel=vel-0;
             this.ang=ang-0;
             this.objectType="";
+            this.unSelectSelf=function()
+            {
+                me.draw_context.borderstyle="none";
+                me.draw_context.borderwidth="0px";
+            }
             this.selectMe=function()
             {
-               me.model.selectedObject=me.id;
+               //alert(me.model);
+               me.model.setSelectedObject(me);
+               me.draw_context.borderstyle="solid";
+               me.draw_context.borderwidth="5px";
+
             }
             
             var objPic=document.createElement("img");
