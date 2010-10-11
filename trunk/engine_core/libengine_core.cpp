@@ -1536,6 +1536,7 @@ void ReqHandler::do_switch_gamelet(std::string &msgout)
 	
 	ostringstream oss;
 	oss<<"gamelets/"<<gameletName<<"/"<<gameletPath;
+	//oss<<"gamelets/sampleGamelet/js/samplegamelet.js";
 	msgout=oss.str();
 }
 

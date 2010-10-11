@@ -105,12 +105,14 @@ function Model(canvas)
         this.objects=new Array();
         
         this.num_of_objects=5;
-        canvas.style.width =400+"px";
-        canvas.style.height=400+"px";
-
+        canvas.style.width =800+"px";
+        canvas.style.height=600+"px";
+        
         canvas.style.backgroundRepeat="repeat";
-//        canvas.style.backgroundImage="url(gamelets/sampleGamelet/img/background.bmp)";
-        canvas.style.backgroundImage="url(gamelets/sampleGamelet/img/GreenStone.jpg)";
+        canvas.style.backgroundImage="url(gamelets/sampleGamelet/img/background.bmp)";
+        //canvas.style.backgroundImage="url(gamelets/sampleGamelet/img/GreenStone.jpg)";
+        //canvas.style.backgroundImage="url(gamelets/sampleGamelet/img/grass.jpg)";
+
         //creatting some obejcts
         
         var i=0;
@@ -347,8 +349,8 @@ function Model(canvas)
                 {
                     if (newObject.objectType=="portal")
                     {
-                        //me.draw_context.src="gamelets/sampleGamelet/img/portal.gif";
-                        me.draw_context.src="gamelets/sampleGamelet/img/farm.png";
+                        me.draw_context.src="gamelets/sampleGamelet/img/portal.gif";
+                        //me.draw_context.src="gamelets/sampleGamelet/img/farm.png";
                     }
                     if (newObject.objectType=="boy")
                     {
@@ -357,6 +359,10 @@ function Model(canvas)
                     if (newObject.objectType=="girl")
                     {
                         me.draw_context.src="gamelets/sampleGamelet/img/girl.gif";
+                    }
+                    if (newObject.objectType=="fountain")
+                    {
+                        me.draw_context.src="gamelets/sampleGamelet/img/fountain.gif";
                     }
                 }
                 

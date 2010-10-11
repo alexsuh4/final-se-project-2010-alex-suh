@@ -77,6 +77,7 @@ public:
 	virtual bool is_initalized()=0;
 	virtual void get_name(char *name)=0;
 	virtual void get_path(char *path)=0;
+	virtual void get_addidionalValues(std::map<std::string,std::string> & addidionalValues)=0;
 };
 
 extern "C" 
