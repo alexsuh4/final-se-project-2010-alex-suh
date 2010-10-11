@@ -4,13 +4,38 @@
 <head>
     <title>Game Client</title>
     <link href="css/user_client.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="css/user_client.css" />
+    <link rel="stylesheet" type="text/css" href="css/Chat.css" />
+    <script type="text/javascript" src="js/chatNew.js"></script>
     <script type="text/javascript" src="js/scripts.js"></script>
     <script type="text/javascript">
         function local_login() {
             var lg_user = document.getElementById("USER_NAME_ID1").value;
             var lg_pass = document.getElementById("PASSWORD_ID1").value;
+            var page=document.getElementById("page");
+            var mainTable=document.getElementById("mainTable");
+            alert(page)
+            if (page && mainTable)
+            {
+                page.removeChild(mainTable)
+                var main;
+                var controls;
+                var info;
 
-            do_login(lg_user,lg_pass);
+                main=document.createElement("div");
+                main.id="user_client_main";
+                controls=document.createElement("div");
+                controls.id="user_client_controls";
+                info=document.createElement("div");
+                info.id="user_client_info";
+                
+                page.appendChild(main);
+                page.appendChild(controls);
+                page.appendChild(info);
+                init();
+                do_login(lg_user,lg_pass);
+            }
+            
         }
         function local_register() 
         {
@@ -40,9 +65,9 @@
         }
     </script>
 </head>
-<body>
-    <div class="page">
-        <table border="0px" cellpadding="0" cellspacing="0" class="pageLayout">
+<body onkeypress="handleControls(event)">
+    <div id="page" class="page">
+        <table id="mainTable" border="0px" cellpadding="0" cellspacing="0" class="pageLayout">
             <tr>
                 <td colspan="3">
                     <div class="header">welcome</div>

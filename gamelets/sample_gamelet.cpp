@@ -207,6 +207,14 @@ public:
 	}
 	void get_name(char *name);
 	void get_path(char *path);
+	void get_addidionalValues(std::map<std::string,std::string> & addidionalValues)
+	{
+		addidionalValues["Description"]="this is a sample gameled , Desgined to demostrated Game engine capacities";
+		addidionalValues["Version"]="1.1";
+		addidionalValues["clientPath"]="js/samplegamelet.js";
+		addidionalValues["ClassID"]="dbd8f7e0-d525-11df-937b-0800200c9a66";
+		addidionalValues["Name"]="sampleGamelet";
+	}
 };
 
 sample_gamelet::sample_gamelet()
@@ -455,27 +463,26 @@ void sample_gamelet::main_loop()
                         //cout<<"collision detected , resolving collision of "<<playerIdToMove<<" with "<<targetGameletSessionId<<"\n";
 
                         //will deadlock if transfered to self so prevent that
-                        cout<<"current session id is "<<this->my_gamelet_desc->gamelet_session_id<<"\n";
-                        cout<<"need move to "<<targetGameletSessionId<<"\n";
+                        //update : seemed to be fixed
+						//cout<<"current session id is "<<this->my_gamelet_desc->gamelet_session_id<<"\n";
+                        //cout<<"need move to "<<targetGameletSessionId<<"\n";
 
-                        if (targetGameletSessionId!= this->my_gamelet_desc->gamelet_session_id)
-                        {
+                        /*if (targetGameletSessionId!= this->my_gamelet_desc->gamelet_session_id)
+                        {*/
                             //playersToMoveOutOfThisGamelet[playerIdToMove]=targetGameletSessionId;
                             kvp.key=playerIdToMove;
                             kvp.val=targetGameletSessionId;
                             playersToMoveOutOfThisGamelet.push(kvp);
 
-                        }
+                        //}
                             //_world_manager->move_player(playerIdToMove,targetGameletSessionId);
-                        else
+                        /*else
                         {
                             cout<<"self teleporting is not supported!\n";
-                            exit(1);
-                        }
+                            
+                        }*/
 
-                        //this->my_gamelet_desc->request["movePlayer"]["playerid"]=itr_players->second->entity_id;
-                        //itr_players->second->Dynamic_properies["objectType"]="portal";
-
+                        
                     }
             }
          }
