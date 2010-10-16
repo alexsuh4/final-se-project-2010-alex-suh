@@ -348,6 +348,7 @@ player* world_manager::login(std::string username,std::string password)
 	sprintf(qry,"select * from sampleprojectdb.players where player_name='%s' and player_password='%s'",username.c_str(),password.c_str());
 	std::string player_name;
 	std::string player_email;
+	std::string current_gamelet;
 	try
 	{
 		result= DataManager->toDBObject(string(qry));
@@ -355,7 +356,7 @@ player* world_manager::login(std::string username,std::string password)
 			return NULL;
 		player_name=(*result)[0]->data["player_name"];
 		player_email=(*result)[0]->data["player_email"];
-		
+		current_gamelet=(*result)[0]->data["current_gamelet"];
 	}
 	catch(sql::SQLException sql_exp)
 	{
@@ -367,6 +368,8 @@ player* world_manager::login(std::string username,std::string password)
     player *p=new player(new_user_id);
 	p->setValue(string("player_name"),player_name);
 	p->setValue(string("player_email"),player_email);
+	p->setValue(string("current_gamelet"),player_email);
+
     the_world_container.insert_player(new_user_id,p);
     return p;
 }
@@ -393,6 +396,11 @@ void world_manager::logout(std::string & player_id)
 
 player* world_manager::register_player(const std::string user_name, const char password[], const std::string &email, std::map<std::string,std::string> *additionaldata)
 {
+	std::string gamelet_type;
+	if (additionaldata!=NULL)
+	{
+		gamelet_type=(*additionaldata)["gamelet_type"];
+	}
 	std::cout<<"registering player with following data : \n";
 	std::cout<<"user name :"<<user_name<<endl;
 	std::cout<<"password :"<<password<<endl;
@@ -653,14 +661,24 @@ void world_manager::LoadGamelet(const char *dll_name)
     gamelet* (*test_fctn)();
     *(void **)(&test_fctn) =dlsym(handle,"make");
     err_string = dlerror();
-    if( err_string )
+	if( err_string || test_fctn==NULL )
     {
         printf("error seeking function!,aborting\n%s\n",err_string);
         return;
     }
     std::cout<<"function loaded!\n";
-    std::string gamelet_class_name="sample_gamelet";
+	
+	std::cout<<"getting gamelet parameters ...\n";
+	gamelet *g=test_fctn();
+	
+	char gamelet_name[255];
+	g->get_name(gamelet_name);
+	std::string gamelet_class_name(gamelet_name);
+	std::cout<<"getting gamelet parameters ...DONE\n";
 
+	
+	/*std::string gamelet_class_name="sample_gamelet";*/
+	
     the_world_container.add_gamelet_class(gamelet_class_name,test_fctn);
     std::cout<<"gamelet factory loaded to game container\n";
 
@@ -1357,8 +1375,12 @@ void ReqHandler::do_login(std::string &msgout)
     //get user default gamelet
     /// TODO actual default gamelet lookup will go here
     //std::string user_default_startup_gamelet="mydefaultgamelet123";
-    header_params[field_name_gamelet_type_id]="sample_gamelet";
-    //gamelet_session *ssn=_world_manager->get_game_container().get_gamelet_session(user_default_startup_gamelet);
+    
+	
+	header_params[field_name_gamelet_type_id]="sampleGamelet";
+    //header_params[field_name_gamelet_type_id]=newplayer->
+	
+	//gamelet_session *ssn=_world_manager->get_game_container().get_gamelet_session(user_default_startup_gamelet);
     //get and start user gamelet
     header_params[field_name_playerId]=player_id;
     cout<<"accessing gamelet...\n";
