@@ -425,6 +425,8 @@ private:
     game_container &the_world_container;
     std::string database_connection;
     ConfigContainer config;
+	void LoadGamelets(const char* path);
+	void LoadGamelet(const char* path);
 public:
     Alexsuh::Data::dataManager *DataManager;
     world_manager();

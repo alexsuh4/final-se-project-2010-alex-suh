@@ -104,7 +104,7 @@ function Model(canvas)
         var me=this;
         this.objects=new Array();
         
-        this.num_of_objects=5;
+        this.num_of_objects=100;
         canvas.style.width =800+"px";
         canvas.style.height=600+"px";
         
@@ -120,6 +120,8 @@ function Model(canvas)
         var y;//object y position
         var ang;//object angle
         var vel;//object velocity
+        //var dummy=document.createElement("div");
+        //canvas.innerHTML="loading...";
         for(i=0;i<this.num_of_objects;i++)
         {
             x=Math.floor(Math.random()*400);
@@ -129,13 +131,10 @@ function Model(canvas)
 
             this.objects[i]=new GameObject(x,y,vel,ang,canvas,me); //(10,10,0.1,2,canvas);
         }
+        //canvas.innerHTML="";
         this.currentToUpdate=0;
         this.currentToDraw=0;
         this.canvas=canvas;
-        
-
-        
-
         this.userKey=null;
         this.UpdateServer=function()
         {
@@ -155,55 +154,48 @@ function Model(canvas)
         }
         this.setModel=function(newModel)
         {
-            
             var num_of_objects=newModel.objects.length;
-           
             var i=0;
             //update existing object
             for (i=0;i<num_of_objects;i++)
-                {
-                    me.objects[i].setObject(newModel.objects[i]);
-                }
-
+            {
+                me.objects[i].setObject(newModel.objects[i]);
+            }
             //book keep added objects
             for (i=me.num_of_objects;i<num_of_objects;i++)
             {
-               
                 me.objects[i]=new GameObject(0,0,0,0,me.canvas,me);
-              
                 me.objects[i].setObject(newModel.objects[i]);
-               
             }
            
-            //book-keep removed objects
-            if (me.num_of_objects>num_of_objects)
+            for (i=num_of_objects;i<me.num_of_objects;i++)
             {
-                
-                    for (i=num_of_objects;i<me.num_of_objects;i++)
-                        me.objects[i].destroyMe();
-                    me.current=0;
+                  me.objects[i].destroyMe();
             }
+          if (me.num_of_objects!=num_of_objects)
+          {
+              //alert("me.num_of_objects!=num_of_objects  => updated num_of objects from "+me.num_of_objects+" to "+num_of_objects);
+              me.num_of_objects=num_of_objects;
+          }
           
-            me.num_of_objects=num_of_objects;
-           
         }
         this.updateModel=function()
         {
           
             //update the Model
-            
-            me.objects[me.currentToUpdate].move();
-            me.currentToUpdate++;
             if (me.currentToUpdate>=me.num_of_objects)
                 me.currentToUpdate=0;
+            me.objects[me.currentToUpdate].move();
+            me.currentToUpdate++;
+            
         }
         this.drawModel=function()
         {
-
-            me.objects[me.currentToDraw].draw();
-            me.currentToDraw++;
             if (me.currentToDraw>=me.num_of_objects)
                 me.currentToDraw=0;
+            me.objects[me.currentToDraw].draw();
+            me.currentToDraw++;
+            
         }
         this.selectedObject=0;
 
@@ -328,8 +320,8 @@ function Model(canvas)
             {
                
                  
-                var newX=Number(me.x) + me.vel*Math.cos(me.ang);
-                var newY=Number(me.y) + me.vel*Math.sin(me.ang);
+                var newX=Number(me.x) + me.vel*Math.cos(me.ang)*2;
+                var newY=Number(me.y) + me.vel*Math.sin(me.ang)*2;
                 me.x=newX;
                 me.y=newY;
 

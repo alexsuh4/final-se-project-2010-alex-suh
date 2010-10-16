@@ -10,7 +10,10 @@ var OPERATION_REGISTER="register";
 
 function debug_trace(reason,msg)
 {
-    alert(reason+"\n====="+"\n"+msg);
+     if (debugMode)
+     {
+            alert(reason+"\n====="+"\n"+msg);
+     }
 }
 
 function getMainPanel()
@@ -329,7 +332,8 @@ function Gamelet_container(_mygamelet)
     this.sync_speed_long=100;
     this.sync_speed_short=100;
     this.updateModel_speed=11;
-    
+    //called when Sync error accured , can be used for event handling attachment
+    this.syncError=null;
     this.init=function()
     {
         
@@ -375,6 +379,7 @@ function Gamelet_container(_mygamelet)
     }
     this.newModelRecieved=function(xmlhttp)
     {
+        var isError=false;
         var new_Model_Serialized=xmlhttp.responseText;
         var new_Model;
         try
@@ -429,22 +434,15 @@ function Gamelet_container(_mygamelet)
             {
                 debug_trace("no system data");
             }
-        
-        
+    me.mygamelet.sync_Model(new_Model.GameletModel);
 
-        me.mygamelet.sync_Model(new_Model.GameletModel);
-
-       
-
-        me.timer_sync= setTimeout(me.sync,me.sync_speed_long);
-
-        
-
-        }
+    }//try
         catch(exp)
         {
+
+
             //model syncing went wrong
-            var errtxt="ecpetion accured";
+            var errtxt="excpetion accured";
             errtxt+="\ndescription  : "             +exp.description;
             errtxt+="\nname         : "             +exp.name;
             errtxt+="\nmessage      : "             +exp.message;
@@ -462,7 +460,14 @@ function Gamelet_container(_mygamelet)
             }
             errtxt="serialized data was : " +new_Model_Serialized+"\n"+errtxt;
             debug_trace("exception", errtxt);
+            isError=true;
+            if (me.syncError) me.syncError(exp);
         }
+         //even if modelparsing fails, attemp to retransmit
+         if (isError)//<= if error accured , wait some time and try again
+             me.timer_sync= setTimeout(me.sync,me.sync_speed_long*2);
+         else
+            me.timer_sync= setTimeout(me.sync,me.sync_speed_long);
     }
     this.updateModel=function()
     {
@@ -497,7 +502,7 @@ function Gamelet_container(_mygamelet)
         catch (e){}
     }
 }
-
+var debugMode=false;
 function State()
 {
     this.current_gamelet=null;
