@@ -8,9 +8,14 @@ package
 	*/
 	public class GameObject extends BaseObject
 	{
+		public var guidID:String = "";
 		// object position
 		public var position:Point = null;
-		// the bitmap data to display	
+		// object angel
+		public var unitMoveAngle:Number = 0;
+		// current speed of moving unit
+		public var unitSpeed:Number = 0;
+		// the bitmap data to display
 		public var graphics:GraphicsResource = null;
 		public var collisionArea:Rectangle;
 		public var collisionName:String = CollisionIdentifiers.NONE;	
@@ -25,13 +30,15 @@ package
 			super();
 		}
 		
-		public function startupGameObject(graphics:GraphicsResource, position:Point, zOrder:int = 0):void
+		public function startupGameObject( guid:String, graphics:GraphicsResource, position:Point, angle:Number, zOrder:int = 0):void
 		{
 			if (!inuse)
 			{
+				guidID = guid;
 				super.startupBaseObject(zOrder);			
 				this.graphics = graphics;
 				this.position = position.clone();
+				unitMoveAngle = angle;
 				setupCollision();
 			}
 		}

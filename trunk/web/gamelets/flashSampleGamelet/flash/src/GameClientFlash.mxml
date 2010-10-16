@@ -18,19 +18,6 @@
 			name="Game"			
 			enterState="enterGame(event)"
 			exitState="exitGame(event)">
-			
-			<!--CHAT PREPARATION-->
-			<mx:AddChild relativeTo="{myCanvas}" position="lastChild">
-				<mx:Canvas x="10" y="500" width="400" height="90" id="chatCanvas"
-						   backgroundColor="0x6666DD" borderColor="0x4444CC" borderVisible="true"
-						   borderStyle="solid" />
-			</mx:AddChild>
-			
-			<mx:AddChild relativeTo="{myCanvas}" position="lastChild">
-			<mx:Label x="10" y="500" text="Hello! how r u today?" fontSize="15" color="0xFF3333" id="testLabel"/>
-			</mx:AddChild>
-			
-			
 		</mx:State>
 	</mx:states>
 	
@@ -45,7 +32,7 @@
 			import flash.external.*;
 
 			public function myFunc(s:String):void {
-				testLabel.text=s;
+				//testLabel.text=s;
 			}
 				
 			protected var inGame:Boolean = false;
@@ -60,10 +47,32 @@
 				ExternalInterface.addCallback("myFlexFunction",myFunc);	
 				ExternalInterface.addCallback("sync_Model",sync_Model);
 			}
-			public function sync_Model(newModelObj:String):void
+			
+			public function sync_Model( isCurrentPlayer:String, modelGuid:String, posX:String, posY:String, angle:String, movingSpeed:String):void
 			{
-				//var newModelStr:String=JSON.decode(newModelObj) as String;
-				testLabel.text+="new model recieved "+newModelObj;
+				var foundObj:GameObject = null;
+				if(inGame)
+				{
+					if(isCurrentPlayer == "1")
+					{
+						foundObj = GameObjectManager.Instance.findObjectInArray("current_player_guid");
+					}
+					else
+					{
+						foundObj = GameObjectManager.Instance.findObjectInArray(modelGuid);
+					}
+					if(foundObj != null)
+					{
+						foundObj.position.x = parseFloat(posX);
+						foundObj.position.y = parseFloat(posY);
+						foundObj.unitMoveAngle = parseFloat(angle);
+						foundObj.unitSpeed = parseFloat(movingSpeed);
+					}
+					else
+					{
+						new Enemy().startupBasicEnemy(modelGuid, ResourceManager.WarriorAvatarGraphics, new Point(parseFloat(posX), parseFloat(posY)), parseFloat(angle), parseFloat(movingSpeed));
+					}
+				}
 				
 			}
 			public function enterFrame(event:Event):void
@@ -97,15 +106,29 @@
 			private function mouseMove(event:MouseEvent):void
 			{
 				GameObjectManager.Instance.mouseMove(event);
-			} 	  
+			}
+			private var myLoader:URLLoader;
 			
-			protected function enterGame(event:Event):void
+			private function processXML(e:Event):void 
 			{
-				//Mouse.hide();
-				GameObjectManager.Instance.startup();
-				LevelDefinitions.Instance.startup();
+				var definitionXML:XML;	
+				definitionXML = new XML(e.target.data);
+				LevelDefinitions.Instance.startup(definitionXML);
 				Level.Instance.startup(currentLevel);
 				inGame = true;
+				
+			}
+			protected function enterGame(event:Event):void
+			{
+				
+				// TODO call javascript function for XML map name
+				GameObjectManager.Instance.startup();
+				
+				myLoader = new URLLoader();
+				myLoader.load(new URLRequest("map1.xml"));
+				myLoader.addEventListener(Event.COMPLETE, processXML);
+				
+				
 			}
 			
 			protected function exitGame(event:Event):void

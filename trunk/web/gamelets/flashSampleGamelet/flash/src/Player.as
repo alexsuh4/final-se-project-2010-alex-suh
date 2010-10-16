@@ -9,21 +9,18 @@ package
 	public class Player extends AnimatedGameObject
 	{
 		public static var globalPlayerPos:Point = new Point(0, 0);
+		
+		public static const myGuidID:String = "current_player_guid";
 		// moving flag
-		protected var unitIsMoving:Boolean = false;
+		public var unitIsMoving:Boolean = false;
 		
 		// target position, mouse clicked
-		protected var targetPosition:Point = new Point(0, 0);
+		public var targetPosition:Point = new Point(0, 0);
 		// object position center
-		protected var centerPos:Point = new Point(0, 0);
-		
-		// current speed of moving unit
-		protected var unitSpeed:Number = 0;
-		
-		protected var unitMoveAngle:Number = 0;
-		
+		public var centerPos:Point = new Point(0, 0);
+				
 		// determine when object pass over the target, and bring to stop moving
-		protected var tempMoveAngle:Number = 0;
+		public var tempMoveAngle:Number = 0;
 		
 		protected static const TimeBetweenShots:Number = 0.25;
 		protected var shooting:Boolean = false;
@@ -37,7 +34,7 @@ package
 		public function startupPlayer():void
 		{
 			globalPlayerPos = new Point(100, 100);
-			super.startupAnimatedGameObject(ResourceManager.WarriorAvatarGraphics, globalPlayerPos , ZOrders.PLAYERZORDER);
+			super.startupAnimatedGameObject(myGuidID, ResourceManager.WarriorAvatarGraphics, globalPlayerPos , 0, ZOrders.PLAYERZORDER);
 			// center the screen on player
 			shooting = false;
 			timeToNextShot = 0;

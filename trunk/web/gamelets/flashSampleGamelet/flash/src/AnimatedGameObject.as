@@ -2,6 +2,7 @@ package
 {
 	import flash.display.*;
 	import flash.geom.*;
+	
 	import mx.collections.*;
 
 	public class AnimatedGameObject extends GameObject
@@ -24,13 +25,13 @@ package
 			super();		
 		}
 		
-		public function startupAnimatedGameObject(graphics:GraphicsResource, position:Point, z:int = 0, playOnce:Boolean = false):void
+		public function startupAnimatedGameObject(guid:String ,graphics:GraphicsResource, position:Point, angle:Number,  z:int = 0, playOnce:Boolean = false):void
 		{			
 			this.playOnce = playOnce;			
 			this.frameWidth = graphics.bitmap.width / graphics.frames;
 			this.frameHeight = graphics.bitmap.height;
 			
-			startupGameObject(graphics, position, z);
+			startupGameObject(guid, graphics, position, angle, z);
 		}
 		
 		override public function enterFrame(dt:Number):void

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<map>
+  <baselayer>grass</baselayer>
+  <layer type="natureLayer">
+    <sprite type="mine" x="5" y="2"></sprite>
+    <sprite type="bigTree" x="2" y="3"></sprite>
+    <sprite type="farm" x="7" y="2"></sprite>
+    <sprite type="lumberjack" x="4" y="6"></sprite>    
+  </layer>
+</map>
