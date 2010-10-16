@@ -188,6 +188,10 @@ private:
     gamelet_object * add_object(point &cords,const string &obj_Type,const string &entity_id);
     pthread_mutex_t innerObjectLock;
 	bool isInialized;
+	std::string lastModelString;
+	time_t lastModelStringlastUpdated;
+	long lastModelStringRefreshTimeout;
+	void get_model_string_Uncached(std::string &msgout);
 public:
     sample_gamelet();
     ~sample_gamelet();
@@ -227,14 +231,14 @@ sample_gamelet::sample_gamelet()
     pthread_mutex_unlock(&innerObjectLock);
     cout<<"SAMPLE GAMELET CTOR innerObjectLock UNLOCKED \n";
     cout<<"constructor sample gamelet called!\n";
+	lastModelString="";
+	lastModelStringlastUpdated=0;
+	lastModelStringRefreshTimeout=1;//<=refresh every cache every 1 seconds
 }
 
 sample_gamelet::~sample_gamelet()
 {
     cout<<"destroing gamelet\n";
-    /*for (int i=0; i<num_of_objects; i++)
-        delete my_objects[i];
-	*/
 	cout<<"SAMPLEGAMELET :: dtor LOCKING innerObjectLock\n";
 	pthread_mutex_lock(&innerObjectLock);
 	for (
@@ -390,23 +394,7 @@ void sample_gamelet::init_gamelet(gamelet_desc *my_gamelet_desc)
     cout<<"initalizing gamelet with session id "<<this->my_gamelet_desc->gamelet_session_id<<" and gamlete class id "<<this->my_gamelet_desc->gamelet_type_id<<endl;
 
     srand(time(NULL));
-    //double cords[2],vel,ang;
-  //  gamelet_object * new_object=NULL;
-  //  for (int i=0; i<num_of_objects; i++)
-  //  {
-  //      cords[0]=rand()%(int)bounds[1][0]+bounds[0][0];
-  //      cords[1]=rand()%(int)bounds[1][1]+bounds[0][1];
-  //      vel=1.0/(rand()%3);
-  //      ang=1.0/(rand()%30);
-
-  //      new_object=new gamelet_object(ang,vel,cords);
-		//new_object->activateObject();
-  //      //my_objects[i]=new_object;
-		//my_objects.push_back(new_object);
-		////lst_my_objects.push_back(new_object);
-  //  }
-
-
+  
 	isInialized=true;
 }
 
@@ -506,8 +494,27 @@ void sample_gamelet::main_loop()
 
  }
 
-///JSON object serialization
+
 void sample_gamelet::get_model_string(std::string &msgout)
+{
+	/*
+	//experimental cache mehchanism 
+	time_t	secondsNow;
+
+	secondsNow = time (NULL);
+	
+	if (secondsNow-lastModelStringlastUpdated>=lastModelStringRefreshTimeout)
+	{
+		get_model_string_Uncached(msgout);
+		lastModelString=msgout;
+		lastModelStringlastUpdated=secondsNow;
+	}*/
+	get_model_string_Uncached(msgout);
+
+}
+
+///JSON object serialization
+void sample_gamelet::get_model_string_Uncached(std::string &msgout)
 {
     cout<<"generating gamelt encoding\n";
     //collect data
@@ -515,12 +522,6 @@ void sample_gamelet::get_model_string(std::string &msgout)
     _temp_strs<<"{ ";
 
     _temp_strs<<"\"objects\":[ ";
-    //for (int i=0; i<num_of_objects; i++)
-    //{
-    //    my_objects[i]->serialize_me(_temp_strs);
-    //    if (i<(num_of_objects-1))
-    //        _temp_strs<<",";// comma for all but last
-    //}
 	unsigned int i=0;
 	for (
 		list<gamelet_object*>::iterator my_objects_itr=my_objects.begin();

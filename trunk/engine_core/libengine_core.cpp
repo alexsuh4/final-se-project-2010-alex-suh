@@ -603,13 +603,10 @@ void world_manager::move_player(std::string & player_id,std::string & gamelet_se
 
 
 }
-/****
-initalize world manager from a given path
-*/
-void world_manager::init(const char *path)
-{
 
-    std::cout<<"initalizeing world manager from path "<<path<<endl;
+void world_manager::LoadGamelet(const char *dll_name)
+{
+	//std::cout<<"initalizeing world manager from path "<<path<<endl;
 
 
     ///handle for shared lib
@@ -619,28 +616,28 @@ void world_manager::init(const char *path)
     char *err_string;
     ///using static strings
     char dll_path[500];
-    strcpy(dll_path,path);
-    char dll_name[500];
+    //strcpy(dll_path,path);
+    //char dll_name[500];
 #ifndef _MSC_VER
 	//linux
 	sprintf(dll_name,"%s/sample_gamelet.so",dll_path);
 #else
 	//windows
-	char shared_library_name[]="sample_gamelet.dll";
-	char delimeter='\\';
-	if (strlen(dll_path)>0)
-	{
-		//other direcory
-		sprintf(dll_name,"%s%c%s",dll_path,delimeter,shared_library_name);
-	}
-	else
-	{
-		//same dir as executable
-		sprintf(dll_name,"%s",shared_library_name);
-	}
+	//char shared_library_name[]="sample_gamelet.dll";
+	//char delimeter='\\';
+	//if (strlen(dll_path)>0)
+	//{
+	//	//other direcory
+	//	sprintf(dll_name,"%s%c%s",dll_path,delimeter,shared_library_name);
+	//}
+	//else
+	//{
+	//	//same dir as executable
+	//	sprintf(dll_name,"%s",shared_library_name);
+	//}
 #endif
 
-    std::cout<<"opening library at : "<<dll_name<<"\n";
+	//std::cout<<"opening library at : "<<path<<"\n";
     handle=dlopen(dll_name,RTLD_LAZY);
     err_string = dlerror();
 	if( handle==NULL || err_string )
@@ -675,6 +672,54 @@ void world_manager::init(const char *path)
         cout<<"gamelet registration FAILED\n";
     else
         cout<<"gamemelt registered succesully\n";
+}
+void world_manager::LoadGamelets(const char *path)
+{
+	UINT counter(0);
+	bool working(true);
+	string buffer;
+	string fileName[1000];
+
+	WIN32_FIND_DATA myimage;
+	HANDLE myHandle=FindFirstFile("*.dll",&myimage);
+
+	if(myHandle!=INVALID_HANDLE_VALUE)
+	{
+		   buffer=myimage.cFileName;
+		   fileName[counter]=buffer;
+
+		   while(working)
+		   {
+				  FindNextFile(myHandle,&myimage);
+				  if(myimage.cFileName!=buffer)
+				  {
+						 buffer=myimage.cFileName;
+						 ++counter;
+						 fileName[counter]=buffer;
+				  }
+				  else
+				  {
+						  //end of files reached
+						  working=false;
+				  }
+
+		   }
+		   for (int i=0;i<counter+1;i++)
+		   {
+			   LoadGamelet(fileName[i].c_str());
+		   }
+		}//	myHandle!=INVALID_HANDLE_VALUE
+	
+}
+/****
+initalize world manager from a given path
+*/
+void world_manager::init(const char *path)
+{
+
+    
+
+   LoadGamelets(path);
 
 
     ///init config start
@@ -1043,7 +1088,7 @@ std::string const MSG_PARSE_MALFORMED_INPUT="malformed message , discarding ";
 void ReqHandler::handleRequest()
 {
     char
-    buffer_in[1000];		///buffered red
+    buffer_in[32000];		///buffered red
     int n=0;				///bytes written/red
 
 
@@ -1351,6 +1396,8 @@ void ReqHandler::do_update(std::string &msgout)
 	}
 
 	//messages end
+	if (pl==NULL)
+		return;
     cout<<"player is player name="<<pl->name<<" ; gamelet session id "<<pl->gamelet_session_id<<"\n";
     cout<<"seeking gamelet session \n";
     gamelet_session* _game_session=_world_manager->get_game_container().get_gamelet_session(pl->gamelet_session_id);

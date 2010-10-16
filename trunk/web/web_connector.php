@@ -57,7 +57,7 @@
 	{									
             fputs ($fp, $message);
             // get the result
-            $result=fgets($fp,1024);
+            $result=fgets($fp,32000);
             // close the connection
             fclose ($fp);
             $result = trim($result);
