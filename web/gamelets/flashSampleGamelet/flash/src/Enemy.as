@@ -22,9 +22,9 @@ package
 
 		// Sets Image, position, and speed.
 		// TODO Add angle.
-		public function startupBasicEnemy(graphics:GraphicsResource, position:Point, speed:Number):void
+		public function startupBasicEnemy(guid:String ,graphics:GraphicsResource, position:Point, angle:Number, speed:Number):void
 		{
-			super.startupAnimatedGameObject(graphics, position, ZOrders.PLAYERZORDER);
+			super.startupAnimatedGameObject(guid, graphics, position, angle, ZOrders.PLAYERZORDER);
 			
 							// Set Idle function for object
 			logic = basicEnemyLogic;			

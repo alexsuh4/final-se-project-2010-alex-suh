@@ -24,14 +24,14 @@ package
 		
 		public function startupBackgroundLevelElement(bitmap:GraphicsResource, position:Point, z:int, scrollRate:Number):void
 		{
-			startupGameObject(bitmap, position, z);
+			startupGameObject("none" ,bitmap, position, 0, z);
 			//could move rate
 			this.scrollRate = scrollRate; 
 		}
 		
 		public override function enterFrame(dt:Number):void
 		{
-			if (position.y > Application.application.height + graphics.bitmap.height )
+			if (position.y > FlexGlobals.topLevelApplication.height + graphics.bitmap.height )
 				this.shutdown();
 			
 			// moving of clouds

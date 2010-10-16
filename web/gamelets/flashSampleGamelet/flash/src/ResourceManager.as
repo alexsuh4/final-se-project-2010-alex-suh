@@ -162,10 +162,16 @@ package
 			LayerdRepository[ResourceManager.LAYER_NATURE][1] = nat_101;
 			
 			// farm
-			[Embed(source="../media/environment/009.png")]
+			[Embed(source="../media/environment/007.png")]
 			var natureID2:Class;
 			var nat_102:GraphicsResource = new GraphicsResource(new natureID2());
-			LayerdRepository[ResourceManager.LAYER_NATURE][2] = nat_102;		
+			LayerdRepository[ResourceManager.LAYER_NATURE][2] = nat_102;
+			
+			// lumberjack
+			[Embed(source="../media/environment/009.png")]
+			var natureID3:Class;
+			var nat_103:GraphicsResource = new GraphicsResource(new natureID3());
+			LayerdRepository[ResourceManager.LAYER_NATURE][3] = nat_103;
 		}
 		
 		[Embed(source="../media/cloud.png")]
@@ -183,9 +189,9 @@ package
 		public static var ExplosionFX:SoundAsset = new ExplosionSound() as SoundAsset;	
 		
 		
-		[Embed(source="../media/track1.mp3")]
-		public static var Track1Sound:Class;
-		public static var Track1FX:SoundAsset = new Track1Sound() as SoundAsset;	
+//		[Embed(source="../media/track1.mp3")]
+//		public static var Track1Sound:Class;
+//		public static var Track1FX:SoundAsset = new Track1Sound() as SoundAsset;	
 		
 		
 		[Embed(source="../media/GameLet_1/TeuKnightRun_E.png")]

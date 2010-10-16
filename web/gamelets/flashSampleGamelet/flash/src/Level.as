@@ -21,7 +21,8 @@ package
 		protected var totalTime:Number = 0;
 		protected var timeToNextCloud:Number = 0;
 		protected var timeToLevelEnd:Number = 0;
-		protected var backgroundMusic:SoundChannel = null;
+		// UNDO for background music
+		// protected var backgroundMusic:SoundChannel = null;
 		public var levelEnd:Boolean = false;
 
 		static public function get Instance():Level
@@ -39,10 +40,11 @@ package
 		public function startup(levelID:int):void
 		{
 			new Player().startupPlayer();
-			new Enemy().startupBasicEnemy(ResourceManager.WarriorAvatarGraphics, new Point(300, 400), 0);
+			//new Enemy().startupBasicEnemy("test1", ResourceManager.WarriorAvatarGraphics, new Point(300, 400), 0, 0);
 			timeToLevelEnd = TimeToLevelEnd;
 			levelEnd = false;
-			backgroundMusic = ResourceManager.Track1FX.play(0, int.MAX_VALUE);
+			// UNDO for background music
+			//backgroundMusic = ResourceManager.Track1FX.play(0, int.MAX_VALUE);
 			
 			this.totalTime = 0;
 			this.levelID = levelID;
@@ -55,8 +57,9 @@ package
 		
 		public function shutdown():void
 		{
-			backgroundMusic.stop();
-			backgroundMusic = null;
+			// UNDO for background music
+			// backgroundMusic.stop();
+			// backgroundMusic = null;
 		}
 		
 		public function enterFrame(dt:Number):void
@@ -89,7 +92,7 @@ package
 				var cloudBackgroundLevelElement:BackgroundLevelElement = BackgroundLevelElement.pool.ItemFromPool as BackgroundLevelElement;
 				cloudBackgroundLevelElement.startupBackgroundLevelElement(
 					ResourceManager.CloudGraphics, 
-					new Point(Math.random() * Application.application.width, -ResourceManager.CloudGraphics.bitmap.height),
+					new Point(Math.random() * FlexGlobals.topLevelApplication.width, -ResourceManager.CloudGraphics.bitmap.height),
 					ZOrders.CLOUDSBELOWZORDER,
 					75);
 			}

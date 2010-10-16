@@ -45,7 +45,7 @@ package
 				throw new Error( "Only one Singleton instance should be instantiated" ); 
 				
 			// constructor for backBuffer. (width, height, transparent)
-			backBuffer = new BitmapData(Application.application.width, Application.application.height, false);
+			backBuffer = new BitmapData(FlexGlobals.topLevelApplication.width, FlexGlobals.topLevelApplication.height, false);
 		}
 		
 		public function startup():void
@@ -189,6 +189,19 @@ package
 			}
 			
 			removedBaseObjects.removeAll();
+		}
+		
+		public function findObjectInArray(findObjId:String):GameObject
+		{
+			for each (var gameObject:GameObject in baseObjects)
+			{					
+				if (gameObject.guidID == findObjId)
+				{
+					return gameObject;
+				}
+			}
+			
+			return null;
 		}
 		
 		public function addCollidingPair(collider1:String, collider2:String):void
