@@ -803,6 +803,17 @@ game_container & world_manager::get_game_container()
     return the_world_container;
 }
 
+
+
+void world_manager::SaveToDB(std::string &gameletSessionID)
+{
+
+}
+void world_manager::LoadFromDB(std::string &gameletSessionID,std::map<std::string,std::string> & params)
+{
+
+}
+
 ///////////////////////////////////////////////////////////////
 ///	gamelet session
 /////////////////////////////////////////////////////////////

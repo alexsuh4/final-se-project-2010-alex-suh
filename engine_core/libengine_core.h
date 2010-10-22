@@ -411,6 +411,7 @@ public:
     void add_gamelet_class(std::string &gamelet_class_name,Function_Ptr gamelet_class_factory_func);
     gamelet_session* game_container::get_last_gamelet_session();
     void game_container::get_All_gamelet_sessions(map<string,gamelet_session*> &all_gamelets);
+	
 };
 
 //end of game container class
@@ -474,7 +475,8 @@ public:
       * by gamelet session id
       */
     void world_manager::move_player(std::string & player_id,std::string & gamelet_session_id);
-
+	void SaveToDB(std::string &gameletSessionID);
+	void LoadFromDB(std::string &gameletSessionID,std::map<std::string,std::string> & params);
     ///IWorld Manager
 };
 

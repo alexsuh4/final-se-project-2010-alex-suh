@@ -17,6 +17,9 @@ class Iworld_manager
     public:
     //virtual ~Iworld_manager()=0;
     virtual void move_player(std::string & player_id,std::string & gamelet_session_id)=0;
+	virtual void SaveToDB(std::string &gameletSessionID)=0;
+	virtual void LoadFromDB(std::string &gameletSessionID,std::map<std::string,std::string> & params)=0;
+
 };
 
 //holds information about current gamelet
@@ -78,6 +81,7 @@ public:
 	virtual void get_name(char *name)=0;
 	virtual void get_path(char *path)=0;
 	virtual void get_addidionalValues(std::map<std::string,std::string> & addidionalValues)=0;
+	virtual void SerializeToParams(std::map<std::string,std::string> & params)=0;
 };
 
 extern "C" gamelet* make();
