@@ -12,6 +12,9 @@ package
 		public var tileWidthHalf:int = 0;
 		public var tileHeightHalf:int = 0;
 		
+		public var mapWidth:int = 0;
+		public var mapHeight:int = 0;
+		
 		public var globalWigth:int = 0;
 		public var globalHeight:int = 0;
 		
