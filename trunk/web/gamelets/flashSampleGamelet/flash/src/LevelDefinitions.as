@@ -12,7 +12,7 @@ package
 	public class LevelDefinitions
 	{
 		
-		
+		private var definitionXML:XML=null;
 		
 		protected static var instance:LevelDefinitions = null;
 		protected var levelDefinitions:Dictionary = new Dictionary();
@@ -73,14 +73,11 @@ package
 			return levelID + 1;
 		}
 		
-		private var myXML:XML=null;
-		
-		
 		
 		public function startup(myXML:XML):void
 		{
 			
-			this.myXML=myXML
+			this.definitionXML=myXML
 			
 			
 			GameObjectManager.Instance.addCollidingPair(CollisionIdentifiers.PLAYER, CollisionIdentifiers.ENEMY);
@@ -104,84 +101,99 @@ package
 		
 		protected function defineLevel1():void
 		{
-			if (myXML==null)
+			if (definitionXML==null)
 			{
 			
 				mx.controls.Alert.show("xml file not found !!!");
 				return;
 			}			
 			
-			var level1Tiles:TiledBackgroundDefinition = new TiledBackgroundDefinition();
-			levelTileMaps[1] = level1Tiles;
-			level1Tiles.tileHeight = 32;
-			level1Tiles.tileWidth = 64;
-			level1Tiles.tileHeightHalf = level1Tiles.tileHeight / 2;
-			level1Tiles.tileWidthHalf = level1Tiles.tileWidth / 2;
-			level1Tiles.scrRowsCount = FlexGlobals.topLevelApplication.height / level1Tiles.tileHeightHalf;
-			level1Tiles.scrColsCount = FlexGlobals.topLevelApplication.width / level1Tiles.tileWidth;
-			level1Tiles.tiles=new Array();
+			var map:TiledBackgroundDefinition = new TiledBackgroundDefinition();
+			levelTileMaps[1] = map;
 			
-			level1Tiles.nature=new Array();
+			map.mapWidth = definitionXML.definitions.mapwidth;
+			map.mapHeight = definitionXML.definitions.mapheight;
 			
-			//base layer
-			var baseLayer:String=myXML.baselayer;
+			map.tileWidth = definitionXML.definitions.tilewidth;
+			map.tileHeight = definitionXML.definitions.tileheight;
 			
-			switch(baseLayer)
+			map.tileHeightHalf = map.tileHeight / 2;
+			map.tileWidthHalf = map.tileWidth / 2;
+			map.scrRowsCount = FlexGlobals.topLevelApplication.height / map.tileHeightHalf;
+			map.scrColsCount = FlexGlobals.topLevelApplication.width / map.tileWidth;
+			
+			
+			map.tiles=new Array();
+			map.nature=new Array();
+			
+
+			for( var i:int = 0 ; i < map.mapWidth; i++)
 			{
-				case "grass":
-					
-					for( var i:int = 0 ; i < 50; i++)
-					{
-						//mx.controls.Alert.show("i="+i);
-						level1Tiles.tiles[i]=new Array();
-						level1Tiles.nature[i]=new Array();
-						for( var j:int = 0 ; j < 50; j++)
-						{
-							level1Tiles.tiles[i][j]=(int)(Math.random()*5);
-						}
-					}
-					
-					break;
-				default:
-					break;
-			}
-			
-			//mx.controls.Alert.show
-			for (var layerIndex:int=0;layerIndex<myXML.layer.length();layerIndex++)
-			{
-				var layerType:String=myXML.layer[layerIndex].@type;
-				var tiles:XML=myXML.layer[layerIndex];
-				switch(layerType)
+
+				map.tiles[i]=new Array();
+				map.nature[i]=new Array();
+				for( var j:int = 0 ; j < map.mapHeight; j++)
 				{
-					case "natureLayer":
+					map.tiles[i][j]=(int)(Math.random()*5);
+				}
+			}
+
+			//mx.controls.Alert.show
+			for (var layerIndex:int=0 ; layerIndex < definitionXML.layer.length() ; layerIndex++ )
+			{
+				// get type of current layer
+				var layerType:String=definitionXML.layer[layerIndex].@type;
+				
+				// get constructor of layer: auto / manual
+				var layerBuilder:String = definitionXML.layer[layerIndex].@builder;
+				
+				// list of objects
+				var objList:XML=definitionXML.layer[layerIndex];
+				
+				switch(layerBuilder)
+				{
+					case "auto":
 						
-						for (var spriteIndex:int=0;spriteIndex<tiles.sprite.length();spriteIndex++)
+						break;
+					case "manual":
+						switch(layerType)
 						{
-							var spriteType:String=tiles.sprite[spriteIndex].@type;
-							var spriteX:int=tiles.sprite[spriteIndex].@x;
-							var spriteY:int=tiles.sprite[spriteIndex].@y;
-							alert("x="+spriteX+"y="+spriteY+"spriteType="+spriteType);
-							switch(spriteType)
-							{
-								case "mine":
-									level1Tiles.nature[spriteX][spriteY]=0;
-									break;
-								case "bigTree":
-									level1Tiles.nature[spriteX][spriteY]=1;
-									break;
-								case "farm":
-									level1Tiles.nature[spriteX][spriteY]=2;
-									break;
-								case "lumberjack":
-									level1Tiles.nature[spriteX][spriteY]=3;
-									break;
-								default:
-									break;
-							}
+							case "natureLayer":
+								
+								for (var spriteIndex:int=0; spriteIndex < objList.sprite.length(); spriteIndex++)
+								{
+									var spriteType:String = objList.sprite[spriteIndex].@type;
+									var spriteX:int=objList.sprite[spriteIndex].@x;
+									var spriteY:int=objList.sprite[spriteIndex].@y;
+
+									switch(spriteType)
+									{
+										case "mine":
+											alert("mine");
+											map.nature[spriteX][spriteY]=1;
+											break;
+										case "big_tree":
+											alert("big_tree");
+											map.nature[spriteX][spriteY]=2;
+											break;
+										case "farm":
+											alert("farm");
+											map.nature[spriteX][spriteY]=3;
+											break;
+										case "lumberjack":
+											alert("lumberjack");
+											map.nature[spriteX][spriteY]=3;
+											break;
+										default:
+											map.nature[spriteX][spriteY]=0;
+											break;
+									}
+								}
+								break;
+							default:
+								break;
 						}
-						break;
-					default:
-						break;
+						
 				}
 			}
 			

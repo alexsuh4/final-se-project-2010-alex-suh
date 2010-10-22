@@ -31,8 +31,7 @@ package
 		{
 			LayerdRepository[ResourceManager.LAYER_TILES]=new Array();
 			LayerdRepository[ResourceManager.LAYER_NATURE]=new Array();
-			LoadResources();
-			
+			LoadResources();	
 		}
 		
 		public static function getInstance():ResourceManager
@@ -194,9 +193,37 @@ package
 //		public static var Track1FX:SoundAsset = new Track1Sound() as SoundAsset;	
 		
 		
-		[Embed(source="../media/GameLet_1/TeuKnightRun_E.png")]
-		public static var WarriorAvatar:Class;
-		public static var WarriorAvatarGraphics:GraphicsResource = new GraphicsResource(new WarriorAvatar(), 10, 15);
+		[Embed(source="../media/GameLet_1/miner_walk_1.PNG")]
+		public static var WarriorAvatar1:Class;
+		public static var WarriorAvatarGraphics1:GraphicsResource = new GraphicsResource(new WarriorAvatar1(), 8, 10);
+		
+		[Embed(source="../media/GameLet_1/miner_walk_2.PNG")]
+		public static var WarriorAvatar2:Class;
+		public static var WarriorAvatarGraphics2:GraphicsResource = new GraphicsResource(new WarriorAvatar2(), 8, 10);
+		
+		[Embed(source="../media/GameLet_1/miner_walk_3.PNG")]
+		public static var WarriorAvatar3:Class;
+		public static var WarriorAvatarGraphics3:GraphicsResource = new GraphicsResource(new WarriorAvatar3(), 8, 10);
+		
+		[Embed(source="../media/GameLet_1/miner_walk_4.PNG")]
+		public static var WarriorAvatar4:Class;
+		public static var WarriorAvatarGraphics4:GraphicsResource = new GraphicsResource(new WarriorAvatar4(), 8, 10);
+		
+		[Embed(source="../media/GameLet_1/miner_walk_5.PNG")]
+		public static var WarriorAvatar5:Class;
+		public static var WarriorAvatarGraphics5:GraphicsResource = new GraphicsResource(new WarriorAvatar5(), 8, 10);
+		
+		[Embed(source="../media/GameLet_1/miner_walk_6.PNG")]
+		public static var WarriorAvatar6:Class;
+		public static var WarriorAvatarGraphics6:GraphicsResource = new GraphicsResource(new WarriorAvatar6(), 8, 10);
+		
+		[Embed(source="../media/GameLet_1/miner_walk_7.PNG")]
+		public static var WarriorAvatar7:Class;
+		public static var WarriorAvatarGraphics7:GraphicsResource = new GraphicsResource(new WarriorAvatar7(), 8, 10);
+		
+		[Embed(source="../media/GameLet_1/miner_walk_8.PNG")]
+		public static var WarriorAvatar8:Class;
+		public static var WarriorAvatarGraphics8:GraphicsResource = new GraphicsResource(new WarriorAvatar8(), 8, 10);
 		
 	}
 	

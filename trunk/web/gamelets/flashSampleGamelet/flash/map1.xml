@@ -1,10 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <map>
-  <baselayer>grass</baselayer>
-  <layer type="natureLayer">
-    <sprite type="mine" x="5" y="2"></sprite>
-    <sprite type="bigTree" x="2" y="3"></sprite>
-    <sprite type="farm" x="7" y="2"></sprite>
-    <sprite type="lumberjack" x="4" y="6"></sprite>    
+  <definitions>
+    <mapwidth units="count">50</mapwidth>
+    <mapheight units="count">50</mapheight>
+    <tilewidth units="pixel">64</tilewidth>
+    <tileheight units="pixel">32</tileheight>
+    <player>
+      <zorder>5</zorder>
+    </player>
+  </definitions>
+  <objectslist>
+    <object name="ground1" type="none" src="media/ground/ground1.png"></object>
+    <object name="ground2" type="none" src="media/ground/ground2.png"></object>
+    <object name="ground3" type="none" src="media/ground/ground3.png"></object>
+    <object name="ground4" type="none" src="media/ground/ground4.png"></object>
+    <object name="ground5" type="none" src="media/ground/ground5.png"></object>
+    <object name="mine" type="portal" src="media/mine.png"></object>
+    <object name="farm" type="portal" src="media/farm.png"></object>
+    <object name="big_tree" type="obstacle" src="media/tree01.png"></object>
+    <object name="lumberjack" type="portal" src="media/lumberjack_house.png"></object>
+    <object name="villagehouse_01" type="portal" src="media/house01.png"></object>
+  </objectslist>
+  <layer key="baselayer" zorder="0" builder="auto">
+    <sprite type="ground1"></sprite>
+    <sprite type="ground2"></sprite>
+    <sprite type="ground3"></sprite>
+    <sprite type="ground4"></sprite>
+    <sprite type="ground5"></sprite>
+  </layer>
+  <layer key="natureLayer" zorder="1" builder="manual">
+    <sprite type="big_tree" x="1" y="1"></sprite>
+    <sprite type="big_tree" x="3" y="3"></sprite>
+    <sprite type="big_tree" x="5" y="5"></sprite>
+    <sprite type="mine" x="7" y="7"></sprite>
+    <sprite type="big_tree" x="9" y="9"></sprite>
+    <sprite type="farm" x="11" y="11"></sprite>
+    <sprite type="lumberjack" x="13" y="13"></sprite>
   </layer>
 </map>

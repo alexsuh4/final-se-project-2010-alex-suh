@@ -39,7 +39,7 @@ package
 		
 		public function startup(levelID:int):void
 		{
-			new Player().startupPlayer();
+			new Player().startupPlayer(new Point(200,200));
 			//new Enemy().startupBasicEnemy("test1", ResourceManager.WarriorAvatarGraphics, new Point(300, 400), 0, 0);
 			timeToLevelEnd = TimeToLevelEnd;
 			levelEnd = false;

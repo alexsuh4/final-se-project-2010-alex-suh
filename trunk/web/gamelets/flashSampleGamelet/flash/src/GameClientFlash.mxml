@@ -70,7 +70,7 @@
 					}
 					else
 					{
-						new Enemy().startupBasicEnemy(modelGuid, ResourceManager.WarriorAvatarGraphics, new Point(parseFloat(posX), parseFloat(posY)), parseFloat(angle), parseFloat(movingSpeed));
+						new Enemy().startupBasicEnemy(modelGuid, ResourceManager.WarriorAvatarGraphics1, new Point(parseFloat(posX), parseFloat(posY)), parseFloat(angle), parseFloat(movingSpeed));
 					}
 				}
 				

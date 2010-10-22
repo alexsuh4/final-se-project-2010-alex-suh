@@ -11,34 +11,33 @@ package
 		public static var globalPlayerPos:Point = new Point(0, 0);
 		
 		public static const myGuidID:String = "current_player_guid";
+		
 		// moving flag
 		public var unitIsMoving:Boolean = false;
 		
-		// target position, mouse clicked
+		// target position, mouse pointer clicked
 		public var targetPosition:Point = new Point(0, 0);
+		
 		// object position center
 		public var centerPos:Point = new Point(0, 0);
 				
 		// determine when object pass over the target, and bring to stop moving
 		public var tempMoveAngle:Number = 0;
 		
-		protected static const TimeBetweenShots:Number = 0.25;
-		protected var shooting:Boolean = false;
-		protected var timeToNextShot:Number = 0;
 		
 		public function Player()
 		{			
 			super();
 		}
 		
-		public function startupPlayer():void
+		public function startupPlayer(playerInitPosition:Point):void
 		{
-			globalPlayerPos = new Point(100, 100);
-			super.startupAnimatedGameObject(myGuidID, ResourceManager.WarriorAvatarGraphics, globalPlayerPos , 0, ZOrders.PLAYERZORDER);
-			// center the screen on player
-			shooting = false;
-			timeToNextShot = 0;
+			globalPlayerPos = playerInitPosition;
+			super.startupAnimatedGameObject(myGuidID, ResourceManager.WarriorAvatarGraphics1, globalPlayerPos , 0, ZOrders.PLAYERZORDER);
+			
 			this.collisionName = CollisionIdentifiers.PLAYER;
+			
+			// center the screen on player
 			ViewPort.Instance.setShowArea(this.getCenterCords());
 		}
 		
@@ -64,7 +63,7 @@ package
 					unitIsMoving = false;
 				}
 				
-				// keep player on the screen
+				// keep player on the map
 //				if (position.x < 0)
 //					position.x = 0;
 //				if (position.x > Application.application.width - graphics.bitmap.width / graphics.frames)
@@ -76,25 +75,6 @@ package
 				
 				ViewPort.Instance.setShowArea(this.getCenterCords());
 			}
-			
-			/*
-			timeToNextShot -= dt;
-			if (timeToNextShot <= 0 && shooting)
-			{
-				timeToNextShot = TimeBetweenShots;
-				var weapon:Weapon = Weapon.pool.ItemFromPool as Weapon;
-				weapon.startupBasicWeapon(
-					ResourceManager.TwoBulletsGraphics,
-					new Point(
-						position.x + graphics.bitmap.width / graphics.frames / 2 - ResourceManager.TwoBulletsGraphics.bitmap.width / 2, 
-						position.y),
-					150,
-					true);
-				
-				ResourceManager.Gun1FX.play();
-			
-			}
-			*/
 		}
 		
 		override public function mouseMove(event:MouseEvent):void
@@ -104,15 +84,13 @@ package
 		
 		override public function mouseDown(event:MouseEvent):void
 		{
-			shooting = true;
+
 		}
 		
 		override public function mouseUp(event:MouseEvent):void
-		{
-			shooting = false;		
-			
+		{			
 			// set target position where the center of unit to move
-			//	substruct unit half-width and half-height
+			// substruct unit half-width and half-height
 			targetPosition.x = ViewPort.Instance.getTLpoint().x + event.stageX - (frameWidth / 2);
 			targetPosition.y = ViewPort.Instance.getTLpoint().y + event.stageY - (frameHeight / 2);
 			
@@ -121,6 +99,13 @@ package
 			//centerPos.y = position.y + (frameHeight / 2);
 				
 			unitMoveAngle = Math.atan2(targetPosition.y - position.y, targetPosition.x - position.x);
+			
+			// East
+			if(unitMoveAngle <= 0.4 && unitMoveAngle > -0.4)
+			{
+				
+			}
+			
 			unitSpeed = 1.2;
 			
 			// start moving flag
