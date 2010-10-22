@@ -1,5 +1,5 @@
 #ifdef _MSC_VER
-#include "gamelet.hpp"
+#include "gamelet.h"
 #else
 #include "../engine_core/gamelet.hh"
 #include "../engine_core/game_engine_api.hh"
