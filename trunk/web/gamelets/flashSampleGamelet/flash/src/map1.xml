@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ActiveObjectsDefinitions>
+
+<!--
+represent an object that can have several animation sets (walk right / left etc...) 
+-->
+	<ActiveObject name="human-miner" type="player">
+		<animation name="walkS" src="media/human-miner-walks.png"/>
+		<animation name="walkN" src="media/human-miner-walkn.png"/>
+		<animation name="walkE" src="media/human-miner-walke.png"/>
+		<animation name="walkW" src="media/human-miner-walkw.png"/>
+		<animation name="workS" src="media/human-miner-walks.png"/>
+		<animation name="workN" src="media/human-miner-walkn.png"/>
+		<animation name="workE" src="media/human-miner-walke.png"/>
+		<animation name="workW" src="media/human-miner-walkw.png"/>
+	</ActiveObject>
+	
+	
+	
+</ActiveObjectsDefinitions>
+
+<map>
+  <definitions>
+    <width>50</width>
+    <height>50</height>
+    <tilewidth unit="px">64</tilewidth>
+    <tileheight unit="px">64</tileheight>
+  </definitions>
+  <objectslist>
+    <object name="ground1" type="none" src="media/ground/ground1.png"></object>
+    <object name="ground2" type="none" src="media/ground/ground2.png"></object>
+    <object name="ground3" type="none" src="media/ground/ground3.png"></object>
+    <object name="ground4" type="none" src="media/ground/ground4.png"></object>
+    <object name="ground5" type="none" src="media/ground/ground5.png"></object>
+    <object name="mine" type="portal" src="media/mine.png"></object>
+    <object name="farm" type="portal" src="media/farm.png"></object>
+    <object name="big_tree" type="obstacle" src="media/tree01.png"></object>
+    <object name="lumberjack" type="portal" src="media/lumberjack_house.png"></object>
+    <object name="villagehouse_01" type="portal" src="media/house01.png"></object>
+	
+	
+  </objectslist>
+  <baselayer>grass</baselayer>
+  <layer type="baselayer" builder="auto">
+    <sprite type="ground1"></sprite>
+    <sprite type="ground2"></sprite>
+    <sprite type="ground3"></sprite>
+    <sprite type="ground4"></sprite>
+    <sprite type="ground5"></sprite>
+  </layer>
+  <layer type="natureLayer" builder="manual">
+    <sprite type="big_tree" x="1" y="1"></sprite>
+    <sprite type="big_tree" x="3" y="3"></sprite>
+    <sprite type="big_tree" x="5" y="5"></sprite>
+    <sprite type="mine" x="7" y="7"></sprite>
+    <sprite type="big_tree" x="9" y="9"></sprite>
+    <sprite type="farm" x="11" y="11"></sprite>
+    <sprite type="lumberjack" x="13" y="13"></sprite>
+  </layer>
+</map>
