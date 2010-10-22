@@ -439,13 +439,7 @@ player* world_manager::register_player(const std::string user_name, const char p
 	{
 		Alexsuh::ErrorHandling::ErrorManager::Instance()->ExceptionHandler(sql_exp);
 	}
-	/*string qry=+string("
-	sprintf("call registerPlayer(@user
-	std::string sql=*/
 	
-	
-	//this->DataManager->toDBObject(
-	//data access ends
 
 	return NULL;
 }
@@ -807,11 +801,78 @@ game_container & world_manager::get_game_container()
 
 void world_manager::SaveToDB(std::string &gameletSessionID)
 {
-
+	gamelet_session* ssn=this->get_game_container().get_gamelet_session(gameletSessionID);
+	if (!ssn)	return;
+	gamelet *gmlt=ssn->get_gamelet();
+	if (!gmlt)	return;
+	std::map<std::string,std::string> params;
+	gmlt->SerializeToParams(params);
+	SaveToDB(gameletSessionID,params);
 }
+
+
+void world_manager::SaveToDB(std::string &gameletSessionID,std::map<std::string,std::string> & params)
+{
+	ostringstream oss;
+	try
+	{
+		for(std::map<std::string,std::string>::iterator itr=params.begin()
+			;itr!=params.end()
+			;itr++)
+		{
+			oss<<"call sampleprojectdb.CreateOrUpdateObject(";
+			oss<<"'GAMELET_SESSION'";//section 
+			oss<<",'"<<gameletSessionID<<"'";//pkid
+			oss<<",'"<<itr->first<<"'";//field name
+			oss<<",'"<<itr->second<<"'";//field value
+			oss<<")";
+			delete this->DataManager->toDBObject(oss.str());
+			oss.clear();
+		}
+	}
+	catch (sql::SQLException sql_exp)
+	{
+		Alexsuh::ErrorHandling::ErrorManager::Instance()->ExceptionHandler(sql_exp);
+	}
+
+	
+}
+
+
+
 void world_manager::LoadFromDB(std::string &gameletSessionID,std::map<std::string,std::string> & params)
 {
 
+	ostringstream oss;
+	try
+	{
+			oss<<"call sampleprojectdb.getObject(";
+			oss<<"'GAMELET_SESSION'";//section 
+			oss<<",'"<<gameletSessionID<<"'";//pkid
+			oss<<")";
+			std::vector<Alexsuh::Data::DBObject*> *result =this->DataManager->toDBObject(oss.str());
+			if (result==NULL)
+				{return;}
+			
+
+			
+			std::string fieldname;
+			std::string fieldvalue;
+			int size=result->size();
+			for (int i=0;i<size;i++)
+			{
+				fieldname=(*result)[i]->data["fieldname"];
+				fieldvalue=(*result)[i]->data["fieldvalue"];
+				params[fieldname]=fieldvalue;
+			}
+
+			delete result;
+		
+	}
+	catch (sql::SQLException sql_exp)
+	{
+		Alexsuh::ErrorHandling::ErrorManager::Instance()->ExceptionHandler(sql_exp);
+	}
 }
 
 ///////////////////////////////////////////////////////////////

@@ -476,6 +476,7 @@ public:
       */
     void world_manager::move_player(std::string & player_id,std::string & gamelet_session_id);
 	void SaveToDB(std::string &gameletSessionID);
+	void SaveToDB(std::string &gameletSessionID,std::map<std::string,std::string> & params);
 	void LoadFromDB(std::string &gameletSessionID,std::map<std::string,std::string> & params);
     ///IWorld Manager
 };

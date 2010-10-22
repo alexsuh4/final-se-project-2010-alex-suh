@@ -1,5 +1,9 @@
 #ifndef _GAMELET_HH
 #define _GAMELET_HH
+/**
+gamelet api file .
+version 0.0.0.1
+*/
 /*
 //not really needed here as acts as only interface class
 #ifdef _MSC_VER
@@ -18,6 +22,7 @@ class Iworld_manager
     //virtual ~Iworld_manager()=0;
     virtual void move_player(std::string & player_id,std::string & gamelet_session_id)=0;
 	virtual void SaveToDB(std::string &gameletSessionID)=0;
+	virtual void SaveToDB(std::string &gameletSessionID,std::map<std::string,std::string> & params)=0;
 	virtual void LoadFromDB(std::string &gameletSessionID,std::map<std::string,std::string> & params)=0;
 
 };
@@ -80,7 +85,7 @@ public:
 	virtual bool is_initalized()=0;
 	virtual void get_name(char *name)=0;
 	virtual void get_path(char *path)=0;
-	virtual void get_addidionalValues(std::map<std::string,std::string> & addidionalValues)=0;
+	virtual void DeSerializeFromParams(std::map<std::string,std::string> & addidionalValues)=0;
 	virtual void SerializeToParams(std::map<std::string,std::string> & params)=0;
 };
 
