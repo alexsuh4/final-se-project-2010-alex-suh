@@ -6,14 +6,11 @@ package
 	
 	import mx.core.*;
 
-	public class Player extends AnimatedGameObject
+	public class Player extends MultiAnimatedGameObject
 	{
 		public static var globalPlayerPos:Point = new Point(0, 0);
 		
 		public static const myGuidID:String = "current_player_guid";
-		
-		// moving flag
-		public var unitIsMoving:Boolean = false;
 		
 		// target position, mouse pointer clicked
 		public var targetPosition:Point = new Point(0, 0);
@@ -33,7 +30,7 @@ package
 		public function startupPlayer(playerInitPosition:Point):void
 		{
 			globalPlayerPos = playerInitPosition;
-			super.startupAnimatedGameObject(myGuidID, ResourceManager.WarriorAvatarGraphics1, globalPlayerPos , 0, ZOrders.PLAYERZORDER);
+			super.startupMultiAnimatedGameObject(myGuidID, ResourceManager.getInstance().animationsCollections["human_miner"], globalPlayerPos , 0, ZOrders.PLAYERZORDER);
 			
 			this.collisionName = CollisionIdentifiers.PLAYER;
 			
@@ -50,7 +47,7 @@ package
 		{
 			super.enterFrame(dt);
 			
-			if(unitIsMoving)
+			if(unitSpeed != 0)
 			{
 				// move player to mouse position
 				position.x += unitSpeed * Math.cos( unitMoveAngle ); 
@@ -60,7 +57,7 @@ package
 				tempMoveAngle = Math.atan2(targetPosition.y - position.y,targetPosition.x - position.x);
 				if((tempMoveAngle * unitMoveAngle) < 0)
 				{
-					unitIsMoving = false;
+					unitSpeed = 0;
 				}
 				
 				// keep player on the map
@@ -100,22 +97,12 @@ package
 				
 			unitMoveAngle = Math.atan2(targetPosition.y - position.y, targetPosition.x - position.x);
 			
-			// East
-			if(unitMoveAngle <= 0.4 && unitMoveAngle > -0.4)
-			{
-				
-			}
-			
-			unitSpeed = 1.2;
-			
-			// start moving flag
-			unitIsMoving = true;
+			unitSpeed = 1.1;
 
 		}
 		
 		override public function collision(other:BaseObject):void
 		{
-			Level.Instance.levelEnd = true;
 			
 			// Death animation
 //			var animatedGameObject:AnimatedGameObject = AnimatedGameObject.pool.ItemFromPool as AnimatedGameObject;
@@ -127,11 +114,6 @@ package
 //				ZOrders.PLAYERZORDER, 
 //				true);			
 			this.shutdown();
-			
-			// only play the sound if we didn't crash into an enemy, because an
-			// enemy is already playing an explosion sound
-			if (other as Enemy == null)
-				ResourceManager.ExplosionFX.play();
 		}
 	}
 }

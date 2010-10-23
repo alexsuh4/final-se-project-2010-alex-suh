@@ -12,18 +12,14 @@ package
 	{
 		protected static var instance:Level = null;
 		
-		protected static const TimeBetweenLevelElements:Number = 2;
 		protected static const TimeBetweenClouds:Number = 2.5;
-		protected static const TimeToLevelEnd:Number = 2;
-		
-		protected var nextDefinitions:Array = null;
-		protected var levelID:int = 0;
-		protected var totalTime:Number = 0;
 		protected var timeToNextCloud:Number = 0;
-		protected var timeToLevelEnd:Number = 0;
+		
+		protected var tileDefinitions:TiledBackgroundDefinition = null;
+		
+		
 		// UNDO for background music
 		// protected var backgroundMusic:SoundChannel = null;
-		public var levelEnd:Boolean = false;
 
 		static public function get Instance():Level
 		{
@@ -41,18 +37,12 @@ package
 		{
 			new Player().startupPlayer(new Point(200,200));
 			//new Enemy().startupBasicEnemy("test1", ResourceManager.WarriorAvatarGraphics, new Point(300, 400), 0, 0);
-			timeToLevelEnd = TimeToLevelEnd;
-			levelEnd = false;
 			// UNDO for background music
 			//backgroundMusic = ResourceManager.Track1FX.play(0, int.MAX_VALUE);
-			
-			this.totalTime = 0;
-			this.levelID = levelID;
-			nextDefinitions = LevelDefinitions.Instance.getNextLevelDefinitionElements(levelID, 0);
-			
-			var tileDefinition:TiledBackgroundDefinition = LevelDefinitions.Instance.levelTileMaps[levelID] as TiledBackgroundDefinition;			
-			if (tileDefinition != null)
-				(TiledBackground.pool.ItemFromPool as TiledBackground).startupTiledBackground(tileDefinition);
+						
+			tileDefinitions = LevelDefinitions.Instance.map;			
+			if (tileDefinitions != null)
+				(TiledBackground.pool.ItemFromPool as TiledBackground).startupTiledBackground(tileDefinitions);
 		}
 		
 		public function shutdown():void
@@ -63,26 +53,7 @@ package
 		}
 		
 		public function enterFrame(dt:Number):void
-		{
-			
-			totalTime += dt;
-			
-			if (nextDefinitions == null)
-			{
-				if (Enemy.pool.NumberOfActiveObjects == 0)
-					levelEnd = true;
-			}
-			else
-			{
-				var nextLevelDefTime:Number = (nextDefinitions[0] as LevelDefinitionElement).time;
-				if (totalTime >= nextLevelDefTime)
-				{
-					for each (var levelDefElement:LevelDefinitionElement in nextDefinitions)
-						levelDefElement.func();
-					nextDefinitions = LevelDefinitions.Instance.getNextLevelDefinitionElements(levelID, nextLevelDefTime);
-				}
-			}
-			
+		{		
 			// add cloud
 			timeToNextCloud -= dt;
 			
@@ -96,19 +67,6 @@ package
 					ZOrders.CLOUDSBELOWZORDER,
 					75);
 			}
-//			
-//			if (levelEnd)
-//			{
-//				timeToLevelEnd -= dt;
-//				var scale:Number = timeToLevelEnd / TimeToLevelEnd;
-//				if (scale < 0) scale = 0;
-//				var transform:SoundTransform = backgroundMusic.soundTransform;
-//				transform.volume = scale;
-//				backgroundMusic.soundTransform = transform;
-//			}
-//				
-//			if (timeToLevelEnd <= 0)
-//				Application.application.currentState = "LevelEnd";	
 		}
 	}
 }
