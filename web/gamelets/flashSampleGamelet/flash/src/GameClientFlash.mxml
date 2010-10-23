@@ -30,6 +30,8 @@
 			import com.adobe.serialization.json.JSON;
 			
 			import flash.external.*;
+			
+			import mx.controls.Alert;
 
 			public function myFunc(s:String):void {
 				//testLabel.text=s;
@@ -44,8 +46,8 @@
 				
 				
 				//function registartion for JS call
-				ExternalInterface.addCallback("myFlexFunction",myFunc);	
-				ExternalInterface.addCallback("sync_Model",sync_Model);
+				//ExternalInterface.addCallback("myFlexFunction",myFunc);	
+				//ExternalInterface.addCallback("sync_Model",sync_Model);
 			}
 			
 			public function sync_Model( isCurrentPlayer:String, modelGuid:String, posX:String, posY:String, angle:String, movingSpeed:String):void
@@ -70,7 +72,7 @@
 					}
 					else
 					{
-						new Enemy().startupBasicEnemy(modelGuid, ResourceManager.WarriorAvatarGraphics1, new Point(parseFloat(posX), parseFloat(posY)), parseFloat(angle), parseFloat(movingSpeed));
+						//new Enemy().startupBasicEnemy(modelGuid, ResourceManager.WarriorAvatarGraphics1, new Point(parseFloat(posX), parseFloat(posY)), parseFloat(angle), parseFloat(movingSpeed));
 					}
 				}
 				
@@ -108,32 +110,49 @@
 				GameObjectManager.Instance.mouseMove(event);
 			}
 			private var myLoader:URLLoader;
+			private var definitionXML:XML;
 			
-			private function processXML(e:Event):void 
+			public function ResourcesRecieved():void
 			{
-				var definitionXML:XML;	
-				definitionXML = new XML(e.target.data);
 				LevelDefinitions.Instance.startup(definitionXML);
 				Level.Instance.startup(currentLevel);
 				inGame = true;
-				
 			}
-			protected function enterGame(event:Event):void
+			
+			
+			private function processXML(e:Event):void 
 			{
-				
+				definitionXML = new XML(e.target.data);
+				ResourceManager.getInstance().LoadResources(definitionXML, this);
+			}
+			
+			
+			private function processXML_Error(e:IOErrorEvent):void
+			{
+				mx.controls.Alert.show("processXML_Error");
+				throw new Error("processXML_Error");
+			}
+
+			private function processXML_SecurityError(e:SecurityErrorEvent):void
+			{
+				mx.controls.Alert.show("processXML_SecurityError");
+				throw new Error("processXML_SecurityError");
+			}
+			
+			protected function enterGame(event:Event):void
+			{		
 				// TODO call javascript function for XML map name
-				GameObjectManager.Instance.startup();
+				//GameObjectManager.Instance.startup();
 				
 				myLoader = new URLLoader();
-				myLoader.load(new URLRequest("map1.xml"));
+				myLoader.load(new URLRequest("http://www.vabank.clan.su/private/media/map1.xml"));
 				myLoader.addEventListener(Event.COMPLETE, processXML);
-				
-				
+				myLoader.addEventListener(IOErrorEvent.IO_ERROR, processXML_Error);
+				myLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, processXML_SecurityError);
 			}
 			
 			protected function exitGame(event:Event):void
 			{
-				Mouse.show();
 				Level.Instance.shutdown();
 				GameObjectManager.Instance.shutdown();
 				inGame = false;

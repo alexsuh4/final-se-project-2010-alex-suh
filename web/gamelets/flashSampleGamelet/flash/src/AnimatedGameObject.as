@@ -8,12 +8,12 @@ package
 	public class AnimatedGameObject extends GameObject
 	{
 		static public var pool:ResourcePool = new ResourcePool(NewAnimatedGameObject);
-		protected var frameTime:Number = 0;
-		protected var currentFrame:int = 0;
-		protected var frameWidth:int = 0;
-		protected var frameHeight:int = 0;
+		public var frameTime:Number = 0;
+		public var currentFrame:int = 0;
+		public var frameWidth:int = 0;
+		public var frameHeight:int = 0;
 		
-		protected var playOnce:Boolean = false;
+		public var playOnce:Boolean = false;
 		
 		static public function NewAnimatedGameObject():AnimatedGameObject
 		{

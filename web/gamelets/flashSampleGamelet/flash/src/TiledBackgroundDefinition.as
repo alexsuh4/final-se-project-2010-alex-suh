@@ -2,9 +2,9 @@ package
 {
 	public class TiledBackgroundDefinition
 	{
-		public var tiles:Array = null;
-		public var environment:Array = null;
-		public var nature:Array = null;
+		// Collection of arrays
+		public var mapLayers:Array = null;
+
 		
 		public var tileWidth:int = 0;
 		public var tileHeight:int = 0;
@@ -23,5 +23,7 @@ package
 		
 		public var scrRowsCount:int = 0;
 		public var scrColsCount:int = 0;
+		
+		public var layerZorder:int = 0;
 	}
 }
