@@ -19,6 +19,7 @@ package
 		
 		private static var classInstance:ResourceManager = null;
 		
+		private var loadersArray:Array = null;
 		private var currentLoaded:int = 0;
 		private var maxResources:int = 0;
 		
@@ -51,6 +52,8 @@ package
 			var ActiveObjectsDefinitions:XML = gamelet.ActiveObjectsDefinitions[0];
 			maxResources = ActiveObjectsDefinitions.@count;
 
+			loadersArray = new Array();
+				
 			for(var i:int=0; i< ActiveObjectsDefinitions.ActiveObject.length(); i++)
 			{
 				// get animationObejct and all it's own animations
@@ -64,45 +67,50 @@ package
 					// get single animation object
 					var animation:XML = ActiveObject.animation[j];
 
-					var resourceLoader:Loader = new Loader();					
+					var resourceLoader:Loader = new Loader();
+					
+					// register same Event function for each Loader to count loaded resources
+					resourceLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, countLoadedResources);
 					// make a request for a picture from XML file
 					resourceLoader.load(new URLRequest(animation.@src));
-					//mx.controls.Alert.show("1");
-					// register Event to count loaded resources
-					resourceLoader.addEventListener(Event.COMPLETE, 
-						// function to proccess picture
-						onLoadFinish = function (e:Event):void
-						{
-							var loaderInf:LoaderInfo = LoaderInfo(e.target);
+					// add new Loader object to animations collection (after extract it as Display object)
+					animationsCollections[ActiveObject.@skin_name][animation.@action].push(resourceLoader);
+//						function (e:Event):void
+//						{
+//							var loaderInf:LoaderInfo = LoaderInfo(e.target);
+//
+//							var tempGraphic:GraphicsResource = new GraphicsResource(loaderInf.content,8,10);
+//							animationsCollections[ActiveObject.@name][animation.@action] = tempGraphic;
+//							 
+//							currentLoaded++;
+//							mx.controls.Alert.show(currentLoaded.toString());
+//							
+//							// All pictures loaded
+//							if (maxResources <= currentLoaded)
+//							{
+//								mx.controls.Alert.show("All resources loaded");
+//								refCallClass.ResourcesRecieved();
+//							}
+//							
+//						}
+//					);
+					
 
-							var tempGraphic:GraphicsResource = new GraphicsResource(loaderInf.content,8,10);
-							animationsCollections[ActiveObject.@name][animation.@action] = tempGraphic;
-							 
-							currentLoaded++;
-							mx.controls.Alert.show(currentLoaded.toString());
-							// All pictures loaded
-							if (maxResources <= currentLoaded)
-							{
-								mx.controls.Alert.show("All resources loaded");
-								refCallClass.ResourcesRecieved();
-							}
-						}
-					);
 				}
 			}
 		}
 
 		// function to proccess picture
-		private function countLoadedResources(e:Event):void
+		public function countLoadedResources(e:Event):void
 		{
-			currentLoaded++;
+			//currentLoaded++;
 			
 			// All pictures loaded
-			if (maxResources <= currentLoaded)
-			{
+			//if (maxResources <= currentLoaded)
+			//{
 				mx.controls.Alert.show("All resources loaded");
-				refCallClass.ResourcesRecieved();
-			}
+				//refCallClass.ResourcesRecieved();
+			//}
 		}
 		
 		[Embed(source="../media/cloud.png")]
