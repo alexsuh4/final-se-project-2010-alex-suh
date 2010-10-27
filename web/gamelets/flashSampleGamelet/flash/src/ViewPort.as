@@ -7,7 +7,6 @@ package
 	import mx.core.FlexGlobals;
 	import mx.utils.UIDUtil;
 	
-	import spark.primitives.Rect;
 /**
  * Represents viewport of the game world.
  * In this viewport only part of the game world is visible in 
@@ -52,8 +51,8 @@ package
 			var newViewPortCenterX:int;
 			var newViewPortCenterY:int;
 			
-			newViewPortCenterX=newViewPortCenter.x-_viewPortWidth / 2;
-			newViewPortCenterY=newViewPortCenter.y-_viewPortHeight / 2;
+			newViewPortCenterX=newViewPortCenter.x - _viewPortWidth / 2;
+			newViewPortCenterY=newViewPortCenter.y - _viewPortHeight / 2;
 			
 			globalTLpoint = new Point(newViewPortCenterX, newViewPortCenterY);
 		}

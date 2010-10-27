@@ -30,7 +30,7 @@ package
 		public function startupPlayer(playerInitPosition:Point):void
 		{
 			globalPlayerPos = playerInitPosition;
-			super.startupMultiAnimatedGameObject(myGuidID, ResourceManager.getInstance().animationsCollections["human_miner"], globalPlayerPos , 0, ZOrders.PLAYERZORDER);
+			super.startupMultiAnimatedGameObject(myGuidID, "human_miner", "walk", globalPlayerPos , 0, ZOrders.PLAYERZORDER);
 			
 			this.collisionName = CollisionIdentifiers.PLAYER;
 			
