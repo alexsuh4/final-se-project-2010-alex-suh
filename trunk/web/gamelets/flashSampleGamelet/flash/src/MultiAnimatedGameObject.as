@@ -21,17 +21,21 @@ package
 		public static const SouthWest:Number = -3 * PI / 4;
 		
 		
-		public static const borderNorth:Number = North + PIdiv8 ;
-		public static const borderSouth:Number = South + PIdiv8 ;
-		public static const borderEast:Number = East + PIdiv8 ;
-		public static const borderWest:Number = West + PIdiv8 ;
-		public static const borderNorthEast:Number = NorthEast + PIdiv8 ;
-		public static const borderNorthWest:Number = NorthWest + PIdiv8 ;
-		public static const borderSouthEast:Number = SouthEast + PIdiv8 ;
-		public static const borderSouthWest:Number = SouthWest + PIdiv8 ;
+		public static const NorthLeftBrd:Number = North + PIdiv8 ;
+		public static const NorthRightBrd:Number = North - PIdiv8 ;
+		public static const SouthRightBrd:Number = South + PIdiv8 ;
+		public static const SouthLeftBrd:Number = South - PIdiv8 ;
 		
-		public var multiGraphicsArray:Array = null;
-		public var animationForAngle:String = "E";
+		public static const EastTopBrd:Number = East + PIdiv8 ;
+		public static const EastLowBrd:Number = East - PIdiv8 ;
+		public static const WestTopBrd:Number = West - PIdiv8 ;
+		public static const WestLowBrd:Number = - West + PIdiv8 ;
+		
+		protected var isAnimationChanged:Boolean = false;
+		
+		public var animationAngleString:String = "";
+		public var currentSkinName:String = "";
+		public var currentActionName:String = "";
 		
 		static public function NewMultiAnimatedGameObject():MultiAnimatedGameObject
 		{
@@ -43,38 +47,131 @@ package
 			super();		
 		}
 		
-		public function startupMultiAnimatedGameObject(guid:String ,graphicsArray:Array, position:Point, angle:Number,  z:int = 0, playOnce:Boolean = false):void
+		public function startupMultiAnimatedGameObject(guid:String ,skinName:String, actionName:String, position:Point, angle:Number = North,  z:int = 0, playOnce:Boolean = false):void
 		{
-			if(graphicsArray == null || graphicsArray.length == 0)
-			{
-				throw new Error("MultiAnimatedGameObject.graphicsArray:Array - can't be empty or null!");
-			}
-			multiGraphicsArray = graphicsArray;
-			startupGameObject(guid, multiGraphicsArray[0], position, angle, z);
+			// store unit look (skin) according to XML
+			currentSkinName = skinName;
+			
+			// store action name, like: walk, stand, run ...
+			currentActionName = actionName;
+			
+			// store direction as string
+			animationAngleString = convertAngleToString(angle);
+			
+			super.startupAnimatedGameObject(guid, ResourceManager.Instance.animationCollection[currentSkinName][currentActionName + animationAngleString] as GraphicsResource, position, angle, ZOrders.PLAYERZORDER);
 		}
 		
 		override public function enterFrame(dt:Number):void
 		{
-			var isAnimationChanged:Boolean = false;
 			if (inuse)
 			{
-				// East
-				if(unitMoveAngle <= borderEast && unitMoveAngle >= borderSouthEast && animationForAngle != "E")
-				{
-					animationForAngle = "E";		
-				}			
-				// West
-				else if(unitMoveAngle <= Math.abs(borderNorthWest) && animationForAngle != "W")
-				{
-					animationForAngle = "W";
-				}
-				
-				if(isAnimationChanged)
-				{
-					graphics = multiGraphicsArray[animationForAngle] as GraphicsResource;
-					currentFrame = 0;
-				}
+				updateAnimation();
+				super.enterFrame(dt);	
 			}
+		}
+		
+		public function convertAngleToString(_angle:Number):String
+		{
+			// East
+			if(_angle <= EastTopBrd && _angle >= EastLowBrd)
+			{
+				return "E";
+			}			
+				// West
+			else if(_angle <= WestLowBrd || _angle >= WestTopBrd)
+			{
+				return "W";
+			}
+				// South direction actualy. Positive direction is down (North)
+			else if(_angle <= NorthLeftBrd && _angle >= NorthRightBrd)
+			{
+				return "S";
+			}
+				// North direction actualy. Negative direction is up (South)
+			else if(_angle <= SouthRightBrd && _angle >= SouthLeftBrd)
+			{
+				return "N";
+			}
+				// SouthEast (NorthEast)
+			else if(_angle <= NorthRightBrd && _angle >= EastTopBrd)
+			{
+				return "SE";
+			}
+				// NorthEast (SouthEast)
+			else if(_angle <= EastLowBrd && _angle >= SouthRightBrd)
+			{
+				return "NE";
+			}
+				// SouthWest (NorthWest)
+			else if(_angle <= WestTopBrd && _angle >= NorthLeftBrd)
+			{
+				return "SW";
+			}
+				// NorthWest (SouthWest)
+			else // if(_angle <= SouthLeftBrd && _angle >= WestLowBrd)
+			{
+				return "NW";
+			}
+		}
+		
+		public function updateAnimation():void
+		{
+			isAnimationChanged = false;
+			
+			// East
+			if(unitMoveAngle <= EastTopBrd && unitMoveAngle >= EastLowBrd && animationAngleString != "E")
+			{
+				animationAngleString = "E";
+				isAnimationChanged = true;
+			}			
+			// West
+			else if((unitMoveAngle <= WestLowBrd || unitMoveAngle >= WestTopBrd) && animationAngleString != "W")
+			{
+				animationAngleString = "W";
+				isAnimationChanged = true;
+			}
+			// South direction actualy. Positive direction is down (North)
+			else if(unitMoveAngle <= NorthLeftBrd && unitMoveAngle >= NorthRightBrd && animationAngleString != "S")
+			{
+				animationAngleString = "S";
+				isAnimationChanged = true;
+			}
+			// North direction actualy. Negative direction is up (South)
+			else if(unitMoveAngle <= SouthRightBrd && unitMoveAngle >= SouthLeftBrd && animationAngleString != "N")
+			{
+				animationAngleString = "N";
+				isAnimationChanged = true;
+			}
+			// SouthEast (NorthEast)
+			else if(unitMoveAngle <= NorthRightBrd && unitMoveAngle >= EastTopBrd && animationAngleString != "SE")
+			{
+				animationAngleString = "SE";
+				isAnimationChanged = true;
+			}
+			// NorthEast (SouthEast)
+			else if(unitMoveAngle <= EastLowBrd && unitMoveAngle >= SouthRightBrd && animationAngleString != "NE")
+			{
+				animationAngleString = "NE";
+				isAnimationChanged = true;
+			}
+			// SouthWest (NorthWest)
+			else if(unitMoveAngle <= WestTopBrd && unitMoveAngle >= NorthLeftBrd && animationAngleString != "SW")
+			{
+				animationAngleString = "SW";
+				isAnimationChanged = true;
+			}
+			// NorthWest (SouthWest)
+			else if(unitMoveAngle <= SouthLeftBrd && unitMoveAngle >= WestLowBrd && animationAngleString != "NW")
+			{
+				animationAngleString = "NW";
+				isAnimationChanged = true;
+			}
+			
+			if(isAnimationChanged)
+			{
+				graphics = ResourceManager.Instance.animationCollection[currentSkinName][currentActionName + animationAngleString] as GraphicsResource;
+				currentFrame = 0;
+			}			
 		}
 	}
 	

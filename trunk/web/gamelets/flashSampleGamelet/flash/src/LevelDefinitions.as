@@ -32,9 +32,9 @@ package
 		public function startup(myXML:XML):void
 		{
 			
-			this.definitionXML=myXML.Map;
+			this.definitionXML=myXML.Map[0];
 			
-			defineLevel1();
+			defineLevel();
 			
 		}
 		
@@ -42,24 +42,14 @@ package
 		{
 			
 		}
-		public function alert(arg:String):void
-		{
-			mx.controls.Alert.show(arg);
-		}
 		
-		protected function defineLevel1():void
-		{
-			if (definitionXML==null)
-			{
-			
-				mx.controls.Alert.show("xml file not found !!!");
-				return;
-			}			
+		protected function defineLevel():void
+		{			
 			
 			map = new TiledBackgroundDefinition();
 			
-			map.mapWidth = definitionXML.definitions.mapwidth;
-			map.mapHeight = definitionXML.definitions.mapheight;
+			map.mapWidth = definitionXML.definitions.width;
+			map.mapHeight = definitionXML.definitions.height;
 			
 			map.tileWidth = definitionXML.definitions.tilewidth;
 			map.tileHeight = definitionXML.definitions.tileheight;
@@ -82,12 +72,12 @@ package
 					map.mapLayers[iterLayers][i]=new Array();
 					for( var j:int = 0 ; j < map.mapHeight; j++)
 					{
-						map.mapLayers[iterLayers][i][j] = "";
+						map.mapLayers[iterLayers][i][j] = "#";
 					}
 				}
 			}
 			
-			//mx.controls.Alert.show
+			// Fill Arrays
 			for (var layerIndex:int=0 ; layerIndex < definitionXML.layer.length() ; layerIndex++ )
 			{
 				// get type of current layer
@@ -107,26 +97,47 @@ package
 						{
 							for( var h:int = 0 ; h < map.mapHeight; h++)
 							{
-								map.mapLayers[layerIndex][w][h] = objList[MathUtils.randomInteger(1,objList.length())].@type;
+								map.mapLayers[layerIndex][w][h] = objList.sprite[MathUtils.randomInteger(1,objList.sprite.length())].@type;
 							}
 						}
 						break;
 					case "manual":
-		
-						for (var spriteIndex:int=0; spriteIndex < objList.sprite.length(); spriteIndex++)
+						// fill layer according to list of objects
+						for (var index:int=0; index < objList.sprite.length(); index++)
 						{
-							var spriteType:String = objList.sprite[spriteIndex].@type;
-							var spriteX:int=objList.sprite[spriteIndex].@x;
-							var spriteY:int=objList.sprite[spriteIndex].@y;
-					
-							alert(spriteType);
-							map.mapLayers[layerIndex][spriteX][spriteY] = spriteType;
+							var spriteType:String = objList.sprite[index].@type;
+							var colNumber:int=parseInt(objList.sprite[index].@x);
+							var rowNumber:int=parseInt(objList.sprite[index].@y);
+							
+							if(colNumber >= 0 && colNumber < map.mapWidth)
+							{
+								if(rowNumber >= 0 && rowNumber < map.mapHeight)
+								{
+									map.mapLayers[layerIndex][rowNumber][colNumber] = spriteType;
+								}
+							}
 						}
 						break;
 					default: // tranparent
 						break;
 				}
-			}													
+			}
+			
+			
+			// Show filled layers
+//			var str:String = "";
+//			for(var lay:int = 0; lay < map.mapLayers.length; lay++)
+//			{
+//				for(var q:int = 0; q < map.mapWidth; q++)
+//				{
+//					for(var e:int = 0; e < map.mapWidth; e++)
+//					{
+//						str = str + map.mapLayers[lay][q][e];
+//					}
+//					str = str + "\n"
+//				}
+//				mx.controls.Alert.show(str);
+//			}
 		}
 	}
 }

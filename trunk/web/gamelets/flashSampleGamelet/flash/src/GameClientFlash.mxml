@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application 
-	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
 	layout="absolute"
+	backgroundColor="0x66CC66"
 	width="800" 
 	height="600"
 	frameRate="100"
@@ -11,11 +12,15 @@
 	mouseDown="mouseDown(event)"
 	mouseUp="mouseUp(event)"
 	mouseMove="mouseMove(event)"
-	currentState="Game">
+	currentState="ImgLoader">
 	
 	<mx:states>
-		<mx:State 
-			name="Game"			
+		<mx:State name="ImgLoader">
+			<mx:AddChild relativeTo="{myCanvas}" position="lastChild">
+				<mx:Label x="10" y="10" text="Loading..." fontSize="20" fontStyle="italic" fontWeight="bold"/>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="Game"			
 			enterState="enterGame(event)"
 			exitState="exitGame(event)">
 		</mx:State>
@@ -32,13 +37,9 @@
 			import flash.external.*;
 			
 			import mx.controls.Alert;
-
-			public function myFunc(s:String):void {
-				//testLabel.text=s;
-			}
+			import mx.core.FlexGlobals;
 				
 			protected var inGame:Boolean = false;
-			protected var currentLevel:int = 1;
 
 			public function creationComplete():void
 			{
@@ -48,6 +49,8 @@
 				//function registartion for JS call
 				//ExternalInterface.addCallback("myFlexFunction",myFunc);	
 				//ExternalInterface.addCallback("sync_Model",sync_Model);
+				
+				ImgLoader();
 			}
 			
 			public function sync_Model( isCurrentPlayer:String, modelGuid:String, posX:String, posY:String, angle:String, movingSpeed:String):void
@@ -109,23 +112,17 @@
 			{
 				GameObjectManager.Instance.mouseMove(event);
 			}
-			private var myLoader:URLLoader;
-			private var definitionXML:XML;
-			
+						
 			public function ResourcesRecieved():void
 			{
-				LevelDefinitions.Instance.startup(definitionXML);
-				Level.Instance.startup(currentLevel);
-				inGame = true;
+				FlexGlobals.topLevelApplication.currentState  = "Game";
 			}
-			
 			
 			private function processXML(e:Event):void 
 			{
 				definitionXML = new XML(e.target.data);
-				ResourceManager.getInstance().LoadResources(definitionXML, this);
+				ResourceManager.Instance.LoadResources(definitionXML, this);	
 			}
-			
 			
 			private function processXML_Error(e:IOErrorEvent):void
 			{
@@ -142,13 +139,10 @@
 			protected function enterGame(event:Event):void
 			{		
 				// TODO call javascript function for XML map name
-				//GameObjectManager.Instance.startup();
-				
-				myLoader = new URLLoader();
-				myLoader.load(new URLRequest("http://www.vabank.clan.su/private/media/map1.xml"));
-				myLoader.addEventListener(Event.COMPLETE, processXML);
-				myLoader.addEventListener(IOErrorEvent.IO_ERROR, processXML_Error);
-				myLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, processXML_SecurityError);
+				GameObjectManager.Instance.startup();
+				LevelDefinitions.Instance.startup(definitionXML);
+				Level.Instance.startup();
+				inGame = true;
 			}
 			
 			protected function exitGame(event:Event):void
@@ -156,7 +150,24 @@
 				Level.Instance.shutdown();
 				GameObjectManager.Instance.shutdown();
 				inGame = false;
-			}  
+			} 
+			
+			private var myLoader:URLLoader;
+			private var definitionXML:XML;
+			
+			protected function ImgLoader():void
+			{	
+				inGame = false;
+				// TODO call javascript function for XML map name
+				
+				myLoader = new URLLoader();
+				//myLoader.load(new URLRequest("map1.xml"));
+				myLoader.load(new URLRequest("http://www.vabank.clan.su/private/media/map1.xml"));
+				myLoader.addEventListener(Event.COMPLETE, processXML);
+				myLoader.addEventListener(IOErrorEvent.IO_ERROR, processXML_Error);
+				myLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, processXML_SecurityError);
+			}
+			
 			
 		]]>
 	</mx:Script>
