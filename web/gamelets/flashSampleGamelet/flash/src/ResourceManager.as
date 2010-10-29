@@ -65,21 +65,26 @@ package
 				// create sub array for pictures to load
 				resourceCollections[ActiveObject.@skin_name] = new Array();
 				
-				// load all frames of current animation
-				for( var j:int = 0; j < ActiveObject.animation.length(); j++)
+				for(var act:int = 0; act < ActiveObject.Action.length(); act++)
 				{
-					// get single animation object
-					var animation:XML = ActiveObject.animation[j];
-					
-					// add new Loader for object
-					resourceCollections[ActiveObject.@skin_name][animation.@action] = new Loader();					
-					
-					// register same Event function for each Loader to count loaded resources
-					resourceCollections[ActiveObject.@skin_name][animation.@action].contentLoaderInfo.addEventListener(Event.COMPLETE, countLoadedResources);
-					resourceCollections[ActiveObject.@skin_name][animation.@action].contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, ioErrForResource);
-					
-					// start loading...
-					resourceCollections[ActiveObject.@skin_name][animation.@action].load(new URLRequest(encodeURI(animation.@src)));
+					var Actions:XML = ActiveObject.Action[act];
+					var actionType:String = Actions.@type;
+					// load all frames of current animation
+					for( var j:int = 0; j < Actions.animation.length(); j++)
+					{
+						// get single animation object
+						var animation:XML = Actions.animation[j];
+						var resourceName:String = actionType + "_" + animation.@angle;
+						// add new Loader for object
+						resourceCollections[ActiveObject.@skin_name][resourceName] = new Loader();					
+						
+						// register same Event function for each Loader to count loaded resources
+						resourceCollections[ActiveObject.@skin_name][resourceName].contentLoaderInfo.addEventListener(Event.COMPLETE, countLoadedResources);
+						resourceCollections[ActiveObject.@skin_name][resourceName].contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, ioErrForResource);
+						
+						// start loading...
+						resourceCollections[ActiveObject.@skin_name][resourceName].load(new URLRequest(encodeURI(animation.@src)));
+					}
 				}
 			}
 			
@@ -124,17 +129,23 @@ package
 				
 				animationCollection[ActiveObject.@skin_name] = new Array();
 				
-				// load all frames of current animation
-				for( var j:int = 0; j < ActiveObject.animation.length(); j++)
+				for(var act:int = 0; act < ActiveObject.Action.length(); act++)
 				{
-					// get single animation object
-					var animation:XML = ActiveObject.animation[j];
+					var Actions:XML = ActiveObject.Action[act];
+					var actionType:String = Actions.@type;
 					
-					// create GraphicsResource object
-					animationCollection[ActiveObject.@skin_name][animation.@action] = new GraphicsResource(
-						resourceCollections[ActiveObject.@skin_name][animation.@action].content,
-						animation.@frames,
-						animation.@fps);
+					// load all frames of current animation
+					for( var j:int = 0; j < Actions.animation.length(); j++)
+					{
+						// get single animation object
+						var animation:XML = Actions.animation[j];
+						var resourceName:String = actionType + "_" + animation.@angle;
+						// create GraphicsResource object
+						animationCollection[ActiveObject.@skin_name][resourceName] = new GraphicsResource(
+							resourceCollections[ActiveObject.@skin_name][resourceName].content,
+							animation.@frames,
+							animation.@fps);
+					}
 				}
 			}
 			
