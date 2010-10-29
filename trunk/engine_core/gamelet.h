@@ -2,15 +2,10 @@
 #define _GAMELET_HH
 /**
 gamelet api file .
-version 0.0.0.1
+version 0.0.0.2
 */
-/*
-//not really needed here as acts as only interface class
-#ifdef _MSC_VER
-//for pthread functionality under win32
-#include "posix_for_windows.hpp"
-#endif
-*/
+
+
 #include <string>
 #include <map>
 /**
@@ -89,7 +84,14 @@ public:
 	virtual void SerializeToParams(std::map<std::string,std::string> & params)=0;
 };
 
-extern "C" gamelet* make();
 
+
+extern "C" 
+{
+	#ifdef _MSC_VER
+		__declspec(dllexport)
+	#endif
+	gamelet* make();
+}
 
 #endif

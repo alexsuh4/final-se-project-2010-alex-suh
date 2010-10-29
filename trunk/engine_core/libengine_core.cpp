@@ -37,6 +37,11 @@ void player::generate_next_id(string & newplayerid)
 {
     Utils::generate_uuid(newplayerid);
 }
+string player::getValue(const char key[])
+{
+	string str_key(key);
+	return getValue(str_key);
+}
 string player::getValue(std::string &key)
 {
 	string result;
@@ -298,6 +303,20 @@ game_container* game_container::Instance()
 		currentInstance=new game_container();
 	return currentInstance;
 }
+void game_container::getClasses(std::list<std::string> classNames)
+{
+	pthread_mutex_lock(&gamelet_classes_mutex);
+
+	for(map<std::string,Function_Ptr>::iterator itr=gamelet_classes.begin()
+		;itr!=gamelet_classes.end()
+		;itr++)
+	{
+		classNames.push_back(itr->first);
+	}
+
+	pthread_mutex_unlock(&gamelet_classes_mutex);
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///	world manager
@@ -320,11 +339,18 @@ world_manager::world_manager():the_world_container(*game_container::Instance())
         cout<<"coutl not inti dataManager , Press any key to continue\n";
         cin.get();
     }
-    ///init("/opt/game_engine/");
+	///init  mutex
+	pthread_mutex_init(&config_pthread_mutex,NULL);
+	
+    
+	///init("/opt/game_engine/");
     ///init(app_path);
 }
 world_manager::~world_manager()
 {
+	pthread_mutex_destroy(&config_pthread_mutex);
+	
+
     std::cout<<"wolrd_manager ended";
 }
 /**
@@ -368,7 +394,7 @@ player* world_manager::login(std::string username,std::string password)
     player *p=new player(new_user_id);
 	p->setValue(string("player_name"),player_name);
 	p->setValue(string("player_email"),player_email);
-	p->setValue(string("current_gamelet"),player_email);
+	p->setValue(string("current_gamelet"),current_gamelet);
 
     the_world_container.insert_player(new_user_id,p);
     return p;
@@ -624,40 +650,30 @@ void world_manager::LoadGamelet(const char *dll_name)
 	//linux
 	sprintf(dll_name,"%s/sample_gamelet.so",dll_path);
 #else
-	//windows
-	//char shared_library_name[]="sample_gamelet.dll";
-	//char delimeter='\\';
-	//if (strlen(dll_path)>0)
-	//{
-	//	//other direcory
-	//	sprintf(dll_name,"%s%c%s",dll_path,delimeter,shared_library_name);
-	//}
-	//else
-	//{
-	//	//same dir as executable
-	//	sprintf(dll_name,"%s",shared_library_name);
-	//}
+	
 #endif
 
-	//std::cout<<"opening library at : "<<path<<"\n";
+	
     handle=dlopen(dll_name,RTLD_LAZY);
     err_string = dlerror();
 	if( handle==NULL || err_string )
     {
-        printf("error opening library!,aborting\n%s\n",err_string);
+        printf("error opening library %s !,aborting\n%s\n",dll_name,err_string);
         return;
     }
-    std::cout<<"opened succesfully\n";
-    std::cout<<"seeking function named 'test'\n";
+    std::cout<<"library '"<<dll_name<<"' opened succesfully\n";
+	char factoryFunctionName[]="make";
+    std::cout<<"seeking function named '"<<factoryFunctionName<<"'\n";
 
     ///function pointer
 
     gamelet* (*test_fctn)();
-    *(void **)(&test_fctn) =dlsym(handle,"make");
+	
+    *(void **)(&test_fctn) =dlsym(handle,factoryFunctionName);
     err_string = dlerror();
 	if( err_string || test_fctn==NULL )
     {
-        printf("error seeking function!,aborting\n%s\n",err_string);
+        printf("error seeking function %s for file '%s' !,aborting\n%s\n",factoryFunctionName,dll_name,err_string);
         return;
     }
     std::cout<<"function loaded!\n";
@@ -735,6 +751,8 @@ void world_manager::init(const char *path)
 
 
     ///init config start
+   pthread_mutex_lock(&config_pthread_mutex);
+   
 	#ifndef	_MSC_VER
     string config_path=string(path)+string("/engineConfig.cfg");
 	#else
@@ -751,6 +769,7 @@ void world_manager::init(const char *path)
         string gamelet_session_id;
         string gamelet_data;
         gamelet_session *new_gamelet_session;
+		std::string is_default_entry_gamelet;
         for (
             gamelets_itr = config.nestedConfig.begin();
             gamelets_itr !=config.nestedConfig.end();
@@ -764,21 +783,28 @@ void world_manager::init(const char *path)
             gamelet_type=           gamelets_itr->second->find("gamelet_type")->second;
             gamelet_session_id=     gamelets_itr->second->find("id")->second;
             gamelet_data=           gamelets_itr->second->find("data-1")->second;
-            new_gamelet_session=start_gamelet(gamelet_type,gamelet_session_id);
-            //cout<<"old session "<<new_gamelet_session->session_id<<endl;
-            //new_gamelet_session->session_id=gamelet_session_id;
-            //cout<<"new session "<<new_gamelet_session->session_id<<endl;
-
+            is_default_entry_gamelet= (*gamelets_itr->second)["is_default_entry_gamelet"];
+			
+			new_gamelet_session=start_gamelet(gamelet_type,gamelet_session_id);
             if (the_world_container.get_gamelet_session(gamelet_session_id)==NULL)
-                cout<<"changing session id failed \n";
+                cout<<"Session"<<gamelet_session_id<<" of type "<<gamelet_type<<" creation Failed\n";
             else
-                cout<<"changinr session id succesfull \n";
-        }
+			{
+                cout<<"Session"<<gamelet_session_id<<" of type "<<gamelet_type<<"succesfully created\n";
+				std::transform(is_default_entry_gamelet.begin(),is_default_entry_gamelet.end(),is_default_entry_gamelet.begin(),Utils::toUpper);					
+				if (is_default_entry_gamelet=="YES" || is_default_entry_gamelet=="TRUE" ||is_default_entry_gamelet=="1"  )
+				{
+					DefaultGameletSessions.push_back(new_gamelet_session);
+				}			
+			}
+			}
 
     }
     else
         cout<<"could not load config from"<<config_path<<"\n";
-
+	
+	pthread_mutex_unlock(&config_pthread_mutex);
+	
     ///init config end
     std::cout<<"strating NET server "<<endl;
     ///start serevr
@@ -874,7 +900,44 @@ void world_manager::LoadFromDB(std::string &gameletSessionID,std::map<std::strin
 		Alexsuh::ErrorHandling::ErrorManager::Instance()->ExceptionHandler(sql_exp);
 	}
 }
+gamelet_session* world_manager::getDefalutGameletSession(std::map<std::string,std::string> *vars)
+{
+	if (vars!=NULL)
+	{
+		//TODO optional vars processing 
+	}
 
+	if (!DefaultGameletSessions.empty())
+	{
+		return DefaultGameletSessions.front();
+	}
+	else 
+		return NULL;
+	
+}
+gamelet_session* world_manager::getDefalutGameletSession()
+{
+	return getDefalutGameletSession(NULL);
+}
+gamelet_session* world_manager::getOrCreateFirstAvaibleGameletSession()
+{
+	std::map<std::string,gamelet_session*> sessions;
+	this->the_world_container.get_All_gamelet_sessions(sessions);
+	
+	if (!sessions.empty() && sessions.begin()->second)
+	{
+		return sessions.begin()->second;
+	}
+	//create session from first availble class
+	std::list<std::string> classes;
+	this->the_world_container.getClasses(classes);
+	if (!classes.empty())
+	{
+		return this->start_gamelet(classes.front());
+	}
+	//no classes availble , NULL...
+	return NULL;
+}
 ///////////////////////////////////////////////////////////////
 ///	gamelet session
 /////////////////////////////////////////////////////////////
@@ -1449,8 +1512,8 @@ void ReqHandler::do_login(std::string &msgout)
     //std::string user_default_startup_gamelet="mydefaultgamelet123";
     
 	
-	header_params[field_name_gamelet_type_id]="sampleGamelet";
-    //header_params[field_name_gamelet_type_id]=newplayer->
+	//header_params[field_name_gamelet_type_id]="sampleGamelet";
+	header_params[field_name_gamelet_session_id]=newplayer->getValue("current_gamelet");
 	
 	//gamelet_session *ssn=_world_manager->get_game_container().get_gamelet_session(user_default_startup_gamelet);
     //get and start user gamelet
@@ -1655,12 +1718,18 @@ void ReqHandler::do_switch_gamelet(std::string &msgout)
         return;
     }
     ///no gamemlet with this name or session id is missing
-    if (newsession==NULL)
-    {
-        //no such gamelet class exists
-        msgout+="ERROR! no such gamelet or session !\n";
-        return;
-    }
+    if (!newsession 
+		&& !(newsession=_world_manager->getDefalutGameletSession())
+		&& !(newsession=_world_manager->getOrCreateFirstAvaibleGameletSession())
+		)
+		{
+			//ne default , just pick the first gamelet running...
+			// if nonr running attempt to create from first availble class , 
+			//if no gamelet classes are availble , just abort 
+			msgout="system error , no gamelets found ...";
+			return;
+		}			
+	
     ///player is retrieved
     std::string playerid=header_params[field_name_playerId];
     cout<<"for player "<<playerid<<"\n";
@@ -1691,52 +1760,53 @@ void ReqHandler::do_switch_gamelet(std::string &msgout)
 //utils
 namespace Utils
 {
-//int UUID_INITIATED=0;
-void generate_uuid(string & newuuid)
-{
-	time_t t=time(NULL);
-	srand(t);
-    if (!UUID_INITIATED)
-    {
-        
-        UUID_INITIATED=1;
-    }
-    char strUuid[200];
-	memset(strUuid,0,sizeof(char)*200);
-    sprintf(strUuid, "%x%x-%x-%x-%x-%x%x%x",
-            rand(), rand(),                 // Generates a 64-bit Hex number
-            rand(),                         // Generates a 32-bit Hex number
-            ((rand() & 0x0fff) | 0x4000),   // Generates a 32-bit Hex number of the form 4xxx (4 indicates the UUID version)
-            rand() % 0x3fff + 0x8000,       // Generates a 32-bit Hex number in the range [0x8000, 0xbfff]
-            rand(), rand(), rand());        // Generates a 96-bit Hex number
+	char toLower(char c) { if (c>='A'&& c<='Z') c+=('a'-'A'); return c;}
+	char toUpper(char c) { if (c>='a'&& c<='z') c-=('a'-'A'); return c;}
+	void generate_uuid(string & newuuid)
+	{
+		time_t t=time(NULL);
+		srand(t);
+		if (!UUID_INITIATED)
+		{
+	        
+			UUID_INITIATED=1;
+		}
+		char strUuid[200];
+		memset(strUuid,0,sizeof(char)*200);
+		sprintf(strUuid, "%x%x-%x-%x-%x-%x%x%x",
+				rand(), rand(),                 // Generates a 64-bit Hex number
+				rand(),                         // Generates a 32-bit Hex number
+				((rand() & 0x0fff) | 0x4000),   // Generates a 32-bit Hex number of the form 4xxx (4 indicates the UUID version)
+				rand() % 0x3fff + 0x8000,       // Generates a 32-bit Hex number in the range [0x8000, 0xbfff]
+				rand(), rand(), rand());        // Generates a 96-bit Hex number
 
-    newuuid=string(strUuid);
-}
-/**
-courtsey of http://cc.byexamples.com/2007/05/25/nanosleep-is-better-than-sleep-and-usleep/
-*/
-#ifndef _MSC_VER
-//unix/linux
-int msleep(unsigned long milisec)
-{
-    struct timespec req= {0};
-    time_t sec=(int)(milisec/1000);
-    milisec=milisec-(sec*1000);
-    req.tv_sec=sec;
-    req.tv_nsec=milisec*1000000L;
-    while(nanosleep(&req,&req)==-1)
-        continue;
-    return 1;
-}
-#else
-//win32
-int msleep(unsigned long milisec)
-{
-	Sleep(milisec);
-	return 1;
-}
-#endif
-}
+		newuuid=string(strUuid);
+	}
+	/**
+	courtsey of http://cc.byexamples.com/2007/05/25/nanosleep-is-better-than-sleep-and-usleep/
+	*/
+	#ifndef _MSC_VER
+	//unix/linux
+	int msleep(unsigned long milisec)
+	{
+		struct timespec req= {0};
+		time_t sec=(int)(milisec/1000);
+		milisec=milisec-(sec*1000);
+		req.tv_sec=sec;
+		req.tv_nsec=milisec*1000000L;
+		while(nanosleep(&req,&req)==-1)
+			continue;
+		return 1;
+	}
+	#else
+	//win32
+	int msleep(unsigned long milisec)
+	{
+		Sleep(milisec);
+		return 1;
+	}
+	#endif
+}//util ns
 ////////////////////////////////////////
 //implementation of ConfigContainer START
 //
@@ -1800,7 +1870,7 @@ bool ConfigContainer::LoadConfig(const std::string& path)
 
 bool ConfigContainer::LoadNestedConfig(const std::string & path)
 {
-	system("dir");
+	//system("dir");
     ifstream myfile (path.c_str());
     bool result=true;
     if (!myfile.is_open())

@@ -136,9 +136,14 @@ typedef std::map<string,string> dataNode;
 class ConfigContainer
 {
     public:
-        /** Default constructor */
+
+        /** 
+			@brief Default constructor 
+		*/
         ConfigContainer();
-        /** Default destructor */
+        /** 
+			Default destructor 
+		*/
         virtual ~ConfigContainer();
 
 
@@ -270,6 +275,7 @@ public:
 	void addMessage(std::string &from,std::string msgBody);
 	void serializeMessages(std::string &msgout);
 	std::string getValue(std::string &key);
+	std::string getValue(const char key[]);
 	void setValue(std::string &key,std::string &val);
     /**
     	return next free player id for new player creation
@@ -289,6 +295,7 @@ public:
     @param _player_id id of this player
     */
     player(string &_player_id);
+
     ~player();
 
 };
@@ -332,6 +339,7 @@ private:
     */
     game_container();
 public:
+	void getClasses(std::list<std::string> classNames);
     static game_container *Instance();
     /**
     	destroys this game container
@@ -428,7 +436,15 @@ private:
     ConfigContainer config;
 	void LoadGamelets(const char* path);
 	void LoadGamelet(const char* path);
+	std::list<gamelet_session*> DefaultGameletSessions;
+	pthread_mutex_t config_pthread_mutex;
+	
 public:
+	
+	gamelet_session* getOrCreateFirstAvaibleGameletSession();
+	gamelet_session* getDefalutGameletSession(std::map<std::string,std::string> *vars);
+	gamelet_session* getDefalutGameletSession();
+
     Alexsuh::Data::dataManager *DataManager;
     world_manager();
     virtual ~world_manager();
@@ -607,6 +623,8 @@ namespace Utils
 {
 int UUID_INITIATED=0;
 void generate_uuid(string& newuuid);
+char toLower(char c);
+char toUpper(char c);
 int msleep(unsigned long milisec);
 }
 #endif
