@@ -1,5 +1,6 @@
 #ifdef _MSC_VER
 #include "gamelet.h"
+#include "posix_for_windows.h"
 #else
 #include "../engine_core/gamelet.hh"
 #include "../engine_core/game_engine_api.hh"
@@ -79,6 +80,47 @@ public:
 	~gamelet_object();
     void move();
     void serialize_me(ostringstream &msgout);
+	void serialize(std::map<std::string,std::string> & params)
+	{
+		params[string("object ")+string(entity_id)+string(" entity_id")]=entity_id;
+		params[string("object ")+string(entity_id)+string(" current_state")]=current_state;
+		params[string("object ")+string(entity_id)+string(" x")]=cords[0];
+		params[string("object ")+string(entity_id)+string(" y")]=cords[1];
+		params[string("object ")+string(entity_id)+string(" vel")]=vel;
+		params[string("object ")+string(entity_id)+string(" ang")]=entity_id;
+		
+		for (
+         map<string,string>::iterator itr=Dynamic_properies.begin();
+         itr!=Dynamic_properies.end();
+         itr++)
+         {
+             params[string("object ")+string(entity_id)+string(" ")+string(itr->first)]=itr->second;
+         }
+	}
+
+	void deserialize(std::map<std::string,std::string> & params)
+	{
+		for(std::map<std::string,std::string>::iterator itr=params.begin()
+			;itr!=params.end()
+			;itr++)
+		{
+
+		}
+		params[string("object ")+string(entity_id)+string(" entity_id")]=entity_id;
+		params[string("object ")+string(entity_id)+string(" current state")]=current_state;
+		params[string("object ")+string(entity_id)+string(" x")]=cords[0];
+		params[string("object ")+string(entity_id)+string(" y")]=cords[1];
+		params[string("object ")+string(entity_id)+string(" vel")]=vel;
+		params[string("object ")+string(entity_id)+string(" ang")]=entity_id;
+		
+		for (
+         map<string,string>::iterator itr=Dynamic_properies.begin();
+         itr!=Dynamic_properies.end();
+         itr++)
+         {
+             //params[string("object ")+string(entity_id)++string(" ")+string(itr->first)]=itr->second;
+         }
+	}
 };
 
 /**
@@ -215,10 +257,68 @@ public:
 	{
 		addidionalValues["Description"]="this is a sample gameled , Desgined to demostrated Game engine capacities";
 		addidionalValues["Version"]="1.1";
-		addidionalValues["clientPath"]="js/samplegamelet.js";
+		//addidionalValues["clientPath"]="js/samplegamelet.js";
 		addidionalValues["ClassID"]="dbd8f7e0-d525-11df-937b-0800200c9a66";
-		addidionalValues["Name"]="sampleGamelet";
+		//addidionalValues["Name"]="sampleGamelet";
+		
+		//flashSampleGamelet
+		//js
+		addidionalValues["clientPath"]="js/samplegamelet.js";
+		addidionalValues["Name"]="sample_gamelet";
 	}
+	void DeSerializeFromParams(std::map<std::string,std::string> & params)
+	{
+		
+		
+		//get objects 
+		for(std::map<std::string,std::string>::iterator itr=params.begin()
+			;itr!=params.end()
+			;itr++)
+		{
+			
+		}
+		//get params start
+		//
+		istringstream iss;
+		iss.str(params["boundsx1"]);iss>>bounds[0][0];
+		iss.str(params["boundsy1"]);iss>>bounds[0][1];
+		iss.str(params["boundsx2"]);iss>>bounds[1][0];
+		iss.str(params["boundsy2"]);iss>>bounds[1][1];
+		string entry_point_id=params["entry_point_id"];
+		
+		//get params end
+
+		//set entry point
+		for (list<gamelet_object*> ::iterator itr=my_objects.begin()
+			;itr!=my_objects.end()
+			;itr++)
+		{
+			if ((*itr)->entity_id==entry_point_id)
+			{
+				entry_point=**itr;
+				break;
+			}
+		}
+		
+	}
+	void SerializeToParams(std::map<std::string,std::string> & params)
+	{
+		ostringstream oss;
+		oss<<bounds[0][0];params["boundsx1"]=oss.str();oss.clear();
+		oss<<bounds[0][1];params["boundsy1"]=oss.str();oss.clear();
+		oss<<bounds[1][0];params["boundsx2"]=oss.str();oss.clear();
+		oss<<bounds[1][1];params["boundsy2"]=oss.str();oss.clear();
+		params["entry_point_id"]=entry_point.entity_id;
+		
+		for (
+			list<gamelet_object*>::iterator my_objects_itr=my_objects.begin();
+			my_objects_itr!=my_objects.end();
+			my_objects_itr++)
+			{
+				(*my_objects_itr)->serialize(params);
+			}
+		
+		}
 };
 
 sample_gamelet::sample_gamelet()
@@ -630,7 +730,9 @@ void sample_gamelet::handle_client_request(const handle_client_request_Args & re
 
 }
 
-
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 extern "C" gamelet* make()
 {
     cout<<"running factory function\n";

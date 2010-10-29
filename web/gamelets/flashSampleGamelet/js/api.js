@@ -43,11 +43,23 @@ this.array2json=function (arr) {
     this.myFlashObj = null;
     //this.canvas.innerHTML="Loaded!";
     //this.myModel=new Model(this.canvas);
+    this.isInitialized=false;
+    
+
+    
+   
     
     //this get excecuted before first run and after the new
 
     this.init = function() {
 
+    alert("this.init");
+    if (me.isInitialized)
+    {
+        alert("this.init is already initialized");
+        return;
+    }
+    alert("initializing");
         //     <object id='mySwf' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab' height='200' width='400'>
         //                <param name='src' value='WrapperCaller.swf'/>
         //                <param name='flashVars' value=''/>
@@ -89,7 +101,13 @@ this.array2json=function (arr) {
         me.canvas.appendChild(newObj);
 
         me.myFlashObj = document.getElementById("GameClientFlash");
+
+
+        me.isInitialized=true;
+        alert("initzlized");
     }
+    me.init();
+
     ///this gets exceuted every game cycle
     
     this.mainloop=function()
@@ -97,18 +115,21 @@ this.array2json=function (arr) {
        // if (me.canvas==null)
        //     return;
       //  me.canvas.innerHTML="running...";
+       
     }
     this.start=function ()
     {
        //  if (me.canvas==null)
        //     return;
       //  me.canvas.innerHTML="starting ...";
+       
     }
     this.end=function ()
     {
         // if (me.canvas==null)
        //     return;
       //  me.canvas.innerHTML="ending ...";
+        
     }
     ///leave empty if got own timing logic
     ///triggered by engine in a loop
@@ -119,6 +140,7 @@ this.array2json=function (arr) {
     {
          
      //   me.canvas.innerHTML="drawing Model";
+     
     }
     
     //triggered by engine in a loop
@@ -127,6 +149,14 @@ this.array2json=function (arr) {
     //that supposed to represent your current game state
     this.sync_Model=function(newModelObj)
     {
+        alert("sync_Model enter");
+        if (!me.isInitialized)
+        {
+            alert("sync_Model enter not initialized");
+            me.init();
+        }
+       // alert("syncing _Model");
+
         // call flex function and pass newModelObj as a state of current game state
         var x;
         var y;
@@ -178,21 +208,51 @@ this.array2json=function (arr) {
     {
         //returns feedback to server
         //controls pressed ed.
+        //return me.myFlashObj.UpdateServer();
     }
 
     this.getSelectedObject=function()
     {
 
         return me.myModel.getSelectedObject();
+        //return me.myFlashObj.getSelectedObject();
     }
     ///passes on clicks , clicked on HTML surface
     this.handleClick=function(x,y)
     {
        
+       //N/a - handles by flash
     }
 
 
+    this.array2json=function (arr) {
+    var parts = [];
+    var is_list = (Object.prototype.toString.apply(arr) === '[object Array]');
 
+    for(var key in arr) {
+    	var value = arr[key];
+        if(typeof value == "object") { //Custom handling for arrays
+            if(is_list) parts.push(array2json(value)); /* :RECURSION: */
+            else parts[key] = array2json(value); /* :RECURSION: */
+        } else {
+            var str = "";
+            if(!is_list) str = '"' + key + '":';
+
+            //Custom handling for multiple data types
+            if(typeof value == "number") str += value; //Numbers
+            else if(value === false) str += 'false'; //The booleans
+            else if(value === true) str += 'true';
+            else str += '"' + value + '"'; //All other things
+            // :TODO: Is there any more datatype we should be in the lookout for? (Functions?)
+
+            parts.push(str);
+        }
+    }
+    var json = parts.join(",");
+
+    if(is_list) return '[' + json + ']';//Return numerical JSON
+    return '{' + json + '}';//Return associative JSON
+}
 
 }
 

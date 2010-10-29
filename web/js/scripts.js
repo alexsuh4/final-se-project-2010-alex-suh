@@ -7,6 +7,16 @@ var VAR_OPERTION="operation";
 var OPERATION_REGISTER="register";
 
 
+var BASE_GAMELET_PATH="gamelets";
+function getCurrentGameletPath()
+{
+    alert("calling getCurrentPath");
+    var result=BASE_GAMELET_PATH;
+    var current_gamelet=currentState.attribs["gamelet"];
+    if (current_gamelet && current_gamelet.getCurrentGameletPath)
+        result+="/"+current_gamelet.getCurrentGameletPath();
+    return result;
+}
 
 function debug_trace(reason,msg)
 {
