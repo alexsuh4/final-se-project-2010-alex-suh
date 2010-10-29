@@ -58,6 +58,7 @@ package
 				if((tempMoveAngle * unitMoveAngle) < 0)
 				{
 					unitSpeed = 0;
+					super.updateAction("stopped");
 				}
 				
 				// keep player on the map
@@ -98,6 +99,7 @@ package
 			unitMoveAngle = Math.atan2(targetPosition.y - position.y, targetPosition.x - position.x);
 			
 			unitSpeed = 1.1;
+			super.updateAction("walk");
 
 		}
 		

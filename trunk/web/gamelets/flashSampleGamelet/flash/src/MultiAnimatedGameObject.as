@@ -58,7 +58,7 @@ package
 			// store direction as string
 			animationAngleString = convertAngleToString(angle);
 			
-			super.startupAnimatedGameObject(guid, ResourceManager.Instance.animationCollection[currentSkinName][currentActionName + animationAngleString] as GraphicsResource, position, angle, ZOrders.PLAYERZORDER);
+			super.startupAnimatedGameObject(guid, ResourceManager.Instance.animationCollection[currentSkinName][currentActionName + "_" + animationAngleString] as GraphicsResource, position, angle, ZOrders.PLAYERZORDER);
 		}
 		
 		override public function enterFrame(dt:Number):void
@@ -169,9 +169,29 @@ package
 			
 			if(isAnimationChanged)
 			{
-				graphics = ResourceManager.Instance.animationCollection[currentSkinName][currentActionName + animationAngleString] as GraphicsResource;
+				graphics = ResourceManager.Instance.animationCollection[currentSkinName][currentActionName + "_" + animationAngleString] as GraphicsResource;
 				currentFrame = 0;
 			}			
+		}
+		
+		public function updateSkin(newSkinName:String, newAction:String):void
+		{
+			if(newSkinName != this.currentSkinName)
+			{
+				this.currentSkinName = newSkinName;
+				graphics = ResourceManager.Instance.animationCollection[newSkinName][newAction + "_" + animationAngleString] as GraphicsResource;
+				currentFrame = 0;
+			}
+		}
+		
+		public function updateAction(newAction:String):void
+		{
+			if(newAction != this.currentActionName)
+			{
+				this.currentActionName = newAction;
+				graphics = ResourceManager.Instance.animationCollection[currentSkinName][newAction + "_" + animationAngleString] as GraphicsResource;
+				currentFrame = 0;
+			}
 		}
 	}
 	

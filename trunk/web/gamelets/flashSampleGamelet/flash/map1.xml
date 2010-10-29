@@ -1,40 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<map>
-  <definitions>
-    <mapwidth units="count">50</mapwidth>
-    <mapheight units="count">50</mapheight>
-    <tilewidth units="pixel">64</tilewidth>
-    <tileheight units="pixel">32</tileheight>
-    <player>
-      <zorder>5</zorder>
-    </player>
-  </definitions>
-  <objectslist>
-    <object name="ground1" type="none" src="media/ground/ground1.png"></object>
-    <object name="ground2" type="none" src="media/ground/ground2.png"></object>
-    <object name="ground3" type="none" src="media/ground/ground3.png"></object>
-    <object name="ground4" type="none" src="media/ground/ground4.png"></object>
-    <object name="ground5" type="none" src="media/ground/ground5.png"></object>
-    <object name="mine" type="portal" src="media/mine.png"></object>
-    <object name="farm" type="portal" src="media/farm.png"></object>
-    <object name="big_tree" type="obstacle" src="media/tree01.png"></object>
-    <object name="lumberjack" type="portal" src="media/lumberjack_house.png"></object>
-    <object name="villagehouse_01" type="portal" src="media/house01.png"></object>
-  </objectslist>
-  <layer key="baselayer" zorder="0" builder="auto">
-    <sprite type="ground1"></sprite>
-    <sprite type="ground2"></sprite>
-    <sprite type="ground3"></sprite>
-    <sprite type="ground4"></sprite>
-    <sprite type="ground5"></sprite>
-  </layer>
-  <layer key="natureLayer" zorder="1" builder="manual">
-    <sprite type="big_tree" x="1" y="1"></sprite>
-    <sprite type="big_tree" x="3" y="3"></sprite>
-    <sprite type="big_tree" x="5" y="5"></sprite>
-    <sprite type="mine" x="7" y="7"></sprite>
-    <sprite type="big_tree" x="9" y="9"></sprite>
-    <sprite type="farm" x="11" y="11"></sprite>
-    <sprite type="lumberjack" x="13" y="13"></sprite>
-  </layer>
-</map>
+<gamelet>
+  <ActiveObjectsDefinitions count="16">
+  <!--represent an object that can have several animation sets (walk right / left etc...) -->
+	  <ActiveObject skin_name="human_miner" type="player">
+      <Action type="walk">
+		    <animation angle="S" src="http://www.vabank.clan.su/private/media/humans/miner_walk_S.png" frames="8" fps="10"/>
+		    <animation angle="N" src="http://www.vabank.clan.su/private/media/humans/miner_walk_N.png" frames="8" fps="10"/>
+		    <animation angle="E" src="http://www.vabank.clan.su/private/media/humans/miner_walk_E.png" frames="8" fps="10"/>
+		    <animation angle="W" src="http://www.vabank.clan.su/private/media/humans/miner_walk_W.png" frames="8" fps="10"/>
+		    <animation angle="SE" src="http://www.vabank.clan.su/private/media/humans/miner_walk_SE.png" frames="8" fps="10"/>
+		    <animation angle="NE" src="http://www.vabank.clan.su/private/media/humans/miner_walk_NE.png" frames="8" fps="10"/>
+		    <animation angle="SW" src="http://www.vabank.clan.su/private/media/humans/miner_walk_SW.png" frames="8" fps="10"/>
+		    <animation angle="NW" src="http://www.vabank.clan.su/private/media/humans/miner_walk_NW.png" frames="8" fps="10"/>
+      </Action>
+      <Action type="stopped">
+        <animation angle="S" src="http://www.vabank.clan.su/private/media/humans/miner_stopped_S.png" frames="1" fps="0"/>
+        <animation angle="N" src="http://www.vabank.clan.su/private/media/humans/miner_stopped_N.png" frames="1" fps="0"/>
+        <animation angle="E" src="http://www.vabank.clan.su/private/media/humans/miner_stopped_E.png" frames="1" fps="0"/>
+        <animation angle="W" src="http://www.vabank.clan.su/private/media/humans/miner_stopped_W.png" frames="1" fps="0"/>
+        <animation angle="SE" src="http://www.vabank.clan.su/private/media/humans/miner_stopped_SE.png" frames="1" fps="0"/>
+        <animation angle="NE" src="http://www.vabank.clan.su/private/media/humans/miner_stopped_NE.png" frames="1" fps="0"/>
+        <animation angle="SW" src="http://www.vabank.clan.su/private/media/humans/miner_stopped_SW.png" frames="1" fps="0"/>
+        <animation angle="NW" src="http://www.vabank.clan.su/private/media/humans/miner_stopped_NW.png" frames="1" fps="0"/>
+      </Action>
+	  </ActiveObject>
+  </ActiveObjectsDefinitions>
+  <Map>
+    <!--Defines static environment objects-->
+    <definitions>
+      <width>50</width>
+      <height>50</height>
+      <tilewidth unit="pixel">128</tilewidth>
+      <tileheight unit="pixel">64</tileheight>
+    </definitions>
+    <objectslist count="10">
+      <!--represent objects list for current gamelet world. names should be unique-->
+      <object name="ground1" type="none" src="http://www.vabank.clan.su/private/media/ground/ground1.png"/>
+      <object name="ground2" type="none" src="http://www.vabank.clan.su/private/media/ground/ground2.png"/>
+      <object name="ground3" type="none" src="http://www.vabank.clan.su/private/media/ground/ground3.png"/>
+      <object name="ground4" type="none" src="http://www.vabank.clan.su/private/media/ground/ground4.png"/>
+      <object name="ground5" type="none" src="http://www.vabank.clan.su/private/media/ground/ground5.png"/>
+      <object name="mine" type="portal" src="http://www.vabank.clan.su/private/media/sprites/mine.png"/>
+      <object name="farm" type="portal" src="http://www.vabank.clan.su/private/media/sprites/farm.png"/>
+      <object name="big_tree" type="obstacle" src="http://www.vabank.clan.su/private/media/sprites/tree01.png"/>
+      <object name="house_lumberjack" type="portal" src="http://www.vabank.clan.su/private/media/sprites/lumberjack_house.png"/>
+      <object name="villagehouse_01" type="portal" src="http://www.vabank.clan.su/private/media/sprites/house01.png"/>
+    </objectslist>
+    <!--Layers represent a set of objects of one group that can be loaded/rendered or not.-->
+    <layer type="baselayer" builder="auto"><!--auto = world builder will fill each tile by random sprite from a list below-->
+      <sprite type="ground1" />
+      <sprite type="ground2" />
+      <sprite type="ground3" />
+      <sprite type="ground4" />
+      <sprite type="ground5" />
+    </layer>
+    <layer type="natureLayer" builder="manual"><!--manual = each sprite/object has it's specific position on gamelet map-->
+      <sprite type="big_tree" x="0" y="1"></sprite>
+      <sprite type="big_tree" x="0" y="3"></sprite>
+      <sprite type="big_tree" x="1" y="3"></sprite>
+      <sprite type="mine"     x="1" y="9"></sprite>
+      <sprite type="villagehouse_01" x="1" y="3"></sprite>
+      <sprite type="big_tree"        x="2" y="5"></sprite>
+      <sprite type="house_lumberjack" x="2" y="0"></sprite>
+      <sprite type="big_tree" x="3" y="2"></sprite>
+      <sprite type="villagehouse_01" x="4" y="5"></sprite>  
+      <sprite type="big_tree" x="4" y="0"></sprite>
+      <sprite type="big_tree" x="3" y="5"></sprite>
+      <sprite type="farm" x="6" y="3"></sprite>
+    </layer>
+  </Map>
+</gamelet>
