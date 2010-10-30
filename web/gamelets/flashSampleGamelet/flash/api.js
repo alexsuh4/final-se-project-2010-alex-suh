@@ -79,7 +79,17 @@ function Gamelet(_divOnPage)
 
         me.canvas.appendChild(newObj);
 
-        me.myFlashObj = document.getElementById("flashGamelet");
+        //me.myFlashObj = document.getElementById("flashGamelet");
+         if (window.XMLHttpRequest)
+        {// code for IE7+, Firefox, Chrome, Opera, Safari
+            me.myFlashObj=embedObj;
+        }
+        else
+        {// code for IE6, IE5
+            //scriptObject=me.myFlashObj.ch
+            me.myFlashObj=newObj;
+        }
+
         _divOnPage.style.width="800px";
         _divOnPage.style.height="600px";
 
@@ -132,24 +142,32 @@ function Gamelet(_divOnPage)
             //alert("sync_Model enter not initialized");
             me.init();
         }
-       // alert("syncing _Model");
+        
 
         // call flex function and pass newModelObj as a state of current game state
-//        var x;
-//        var y;
-//        var ang;
-//        var vel;
-//        var id;
-//        var isCurrentPlayer;
+        var x;
+        var y;
+        var ang;
+        var vel;
+        var id;
+        var isCurrentPlayer;
+
+        me.myFlashObj.testFunc
+        (
+            newModelObj.objects
+        );
 //        for(var i=0 ;i <newModelObj.objects.length;i++ )
 //           {
-//                x=newModelObj.x;
-//                y=newModelObj.y;
-//                ang=newModelObj.ang;
-//                vel=newModelObj.vel;
-//                id=newModelObj.id;
-//                isCurrentPlayer=newModelObj.isCurrentPlayer;
-//
+//                x=newModelObj.objects[i].x;
+//                y=newModelObj.objects[i].y;
+//                ang=newModelObj.objects[i].ang;
+//                vel=newModelObj.objects[i].vel;
+//                id=newModelObj.objects[i].player_id;
+//                isCurrentPlayer=currentState.attribs["playerid"]==id;// current state is assumed to be defined in client framework (script.js)
+//                //alert("x = "+x+" y= "+y+" ang = "+ang+ " vel = "+vel + " player_id = "+id+ " isCurrentPlayer = "+isCurrentPlayer+" \nme.myFlashObj.sync_Model is a "+me.myFlashObj.sync_Model);
+//                //me.myFlashObj
+//                if ( !me.myFlashObj.sync_Model)
+//                    return ;//not ready
 //                me.myFlashObj.sync_Model
 //                (
 //                    isCurrentPlayer
@@ -166,7 +184,7 @@ function Gamelet(_divOnPage)
     ///triggered by engine in a loop
     ///this is where you put your drawing logic
     ///if using no javascript gamlet ,leave it unimplemented and implement
-    ///extrapolateModel (moving) in flash instead
+    ///extrapolateModel (moving) in flash(or whatever you use) instead
     this.extrapolateModel=function()
     {
     }
@@ -179,9 +197,15 @@ function Gamelet(_divOnPage)
     //right now supported GET method only
     this.UpdateServer=function()
     {
-        //return me.myFlashObj.UpdateServer();
+        var message="";
+        if (me.myFlashObj.UpdateServer)     message=me.myFlashObj.UpdateServer();
+        //if (message!="")                    alert(message);
+        return message;
     }
-
+    /**
+     *returns a string representing id of currently selecte d
+     *object 
+     */
     this.getSelectedObject=function()
     {
 
@@ -193,6 +217,7 @@ function Gamelet(_divOnPage)
        //N/a - handles by flash
     }
 
+//uncomment to use , currently do ont need it
  /**
  * Converts the given data structure to a JSON string.
  * Argument: arr - The data structure that must be converted to JSON
@@ -200,34 +225,34 @@ function Gamelet(_divOnPage)
  * 			var json = array2json({"success":"Sweet","failure":false,"empty_array":[],"numbers":[1,2,3],"info":{"name":"Binny","site":"http:\/\/www.openjs.com\/"}});
  * http://www.openjs.com/scripts/data/json_encode.php
  */
-    this.array2json=function (arr) {
-    var parts = [];
-    var is_list = (Object.prototype.toString.apply(arr) === '[object Array]');
-
-    for(var key in arr) {
-    	var value = arr[key];
-        if(typeof value == "object") { //Custom handling for arrays
-            if(is_list) parts.push(array2json(value)); /* :RECURSION: */
-            else parts[key] = array2json(value); /* :RECURSION: */
-        } else {
-            var str = "";
-            if(!is_list) str = '"' + key + '":';
-
-            //Custom handling for multiple data types
-            if(typeof value == "number") str += value; //Numbers
-            else if(value === false) str += 'false'; //The booleans
-            else if(value === true) str += 'true';
-            else str += '"' + value + '"'; //All other things
-            // :TODO: Is there any more datatype we should be in the lookout for? (Functions?)
-
-            parts.push(str);
-        }
-    }
-    var json = parts.join(",");
-
-    if(is_list) return '[' + json + ']';//Return numerical JSON
-    return '{' + json + '}';//Return associative JSON
-}
+//    this.array2json=function (arr) {
+//    var parts = [];
+//    var is_list = (Object.prototype.toString.apply(arr) === '[object Array]');
+//
+//    for(var key in arr) {
+//    	var value = arr[key];
+//        if(typeof value == "object") { //Custom handling for arrays
+//            if(is_list) parts.push(array2json(value)); /* :RECURSION: */
+//            else parts[key] = array2json(value); /* :RECURSION: */
+//        } else {
+//            var str = "";
+//            if(!is_list) str = '"' + key + '":';
+//
+//            //Custom handling for multiple data types
+//            if(typeof value == "number") str += value; //Numbers
+//            else if(value === false) str += 'false'; //The booleans
+//            else if(value === true) str += 'true';
+//            else str += '"' + value + '"'; //All other things
+//            // :TODO: Is there any more datatype we should be in the lookout for? (Functions?)
+//
+//            parts.push(str);
+//        }
+//    }
+//    var json = parts.join(",");
+//
+//    if(is_list) return '[' + json + ']';//Return numerical JSON
+//    return '{' + json + '}';//Return associative JSON
+//}
     
 }
 

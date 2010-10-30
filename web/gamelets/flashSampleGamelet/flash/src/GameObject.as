@@ -20,6 +20,8 @@ package
 		public var collisionArea:Rectangle;
 		public var collisionName:String = CollisionIdentifiers.NONE;	
 		
+		public static var currentPlayer:GameObject = null;
+		
 		public function get CollisionArea():Rectangle
 		{
 			return new Rectangle(position.x, position.y, collisionArea.width, collisionArea.height);
