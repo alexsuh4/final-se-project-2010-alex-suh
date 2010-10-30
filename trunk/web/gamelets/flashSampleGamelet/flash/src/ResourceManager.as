@@ -54,7 +54,6 @@ package
 			refCallClass = refFromCallClass;
 			
 			var ActiveObjectsDefinitions:XML = gamelet.ActiveObjectsDefinitions[0];
-			maxResources = parseInt(ActiveObjectsDefinitions.@count);
 			
 			resourceCollections = new Array();
 			
@@ -69,6 +68,8 @@ package
 				{
 					var Actions:XML = ActiveObject.Action[act];
 					var actionType:String = Actions.@type;
+					maxResources = maxResources + Actions.animation.length();
+					
 					// load all frames of current animation
 					for( var j:int = 0; j < Actions.animation.length(); j++)
 					{
@@ -92,7 +93,7 @@ package
 			var mapObjectsList:XML = gamelet.Map.objectslist[0];
 			
 			// add to maxResources of animations, number of ground objects
-			maxResources = maxResources + parseInt(mapObjectsList.@count);
+			maxResources = maxResources + mapObjectsList.object.length();
 			
 			groundEnvironment = new Array();
 			

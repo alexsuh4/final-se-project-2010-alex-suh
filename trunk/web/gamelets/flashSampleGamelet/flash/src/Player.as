@@ -27,10 +27,10 @@ package
 			super();
 		}
 		
-		public function startupPlayer(playerInitPosition:Point):void
+		public function startupPlayer(playerInitPosition:Point, defaultSkinName:String, defaultActionName:String):void
 		{
 			globalPlayerPos = playerInitPosition;
-			super.startupMultiAnimatedGameObject(myGuidID, "human_miner", "walk", globalPlayerPos , 0, ZOrders.PLAYERZORDER);
+			super.startupMultiAnimatedGameObject(myGuidID, defaultSkinName, defaultActionName, globalPlayerPos , 0, ZOrders.PLAYERZORDER);
 			
 			this.collisionName = CollisionIdentifiers.PLAYER;
 			

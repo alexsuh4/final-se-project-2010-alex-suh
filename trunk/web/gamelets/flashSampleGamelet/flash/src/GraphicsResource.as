@@ -11,7 +11,7 @@ package
 		public var fps:Number = 0;
 		public var drawRect:Rectangle = null;
 		
-		public function GraphicsResource(image:DisplayObject, frames:int = 1, fps:Number = 0, drawRect:Rectangle = null)
+		public function GraphicsResource(image:DisplayObject, frames:int = 1, fps:Number = 1, drawRect:Rectangle = null)
 		{
 			bitmap = createBitmapData(image);
 			bitmapAlpha = createAlphaBitmapData(image);
