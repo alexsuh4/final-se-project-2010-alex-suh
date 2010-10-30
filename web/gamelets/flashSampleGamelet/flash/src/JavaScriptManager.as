@@ -82,25 +82,58 @@ package
 				var msg:String="";
 				
 				//update existing objects
-				var x:int;
-				var y:int;
+				var x:Number;
+				var y:Number;
 				var id:String;
 				var ang:Number;
 				var vel:Number;
 				var obj:GameObject;
+				var objectType:String;
+				
+				//delete objects not in update
+				var currentPlayersids:Array = GameObjectManager.Instance.getActiveIDs();
+				var argsArray:Array = args as Array;
+				
+				if (argsArray != null)
+				{
+					var tobedeleted:Boolean=true;
+					for (var playerindex:int = 0; playerindex < currentPlayersids.length; playerindex++)
+					{
+						tobedeleted = true;
+						//if not in update , remove him
+						for (var varindex:int = 0; varindex < argsArray.length; varindex++)
+						{
+							if (argsArray[varindex].player_id == currentPlayersids[playerindex])
+							{
+								tobedeleted = false;
+								break;
+							}
+							
+						}
+						if (tobedeleted)
+						{
+							GameObjectManager.Instance.removeBaseObject(
+									GameObjectManager.Instance.findObjectInArray(
+									currentPlayersids[playerindex]));
+						}
+					}	
+				}
+				
+				//add/update objects
 				for (var i:int; i < args.length; i++)
 				{
-					msg += "\n"
+					/*msg += "\n"
 					+ "args[" + i + "].x = " 			+ args[i].x
 					+",args[" + i + "].y = " 			+ args[i].y
 					+",args[" + i + "].ang = " 			+ args[i].ang
 					+",args[" + i + "].vel = " 			+ args[i].ang
-					+",args[" + i + "].id = " 			+ args[i].player_id
+					+",args[" + i + "].id = " 			+ args[i].player_id*/
 					x = args[i].x;
 					y = args[i].y;
 					id = args[i].player_id;
 					ang = args[i].ang;
-					vel = args[i].vel/3;
+					vel = 2;//args[i].vel ;
+					objectType = args[i].objectType;
 					obj = GameObjectManager.Instance.findObjectInArray(id);
 					if (obj != null)
 					{
@@ -109,20 +142,27 @@ package
 						obj.position.y = y;
 						obj.unitSpeed = vel;
 						obj.unitMoveAngle = ang;
-						
 					}
 					else
 					{
+						//object does not exist, create it
 						try
 						{
 							if (!ResourceManager.isInitalized) continue;
-							//object does not exist, create it
-							var newPlayer:Player;
-							newPlayer 						= 	new Player(); 
-							newPlayer.startupPlayer(new Point(x, y));
-							newPlayer.guidID 				= 	id;
-							newPlayer.unitMoveAngle			=	ang;
-							newPlayer.unitSpeed				=	ang;
+							if (objectType.toUpperCase()=="PORTAL")
+							{
+								Alert.show("portal");
+							}
+							else
+							{
+								//player
+								var newPlayer:Player;
+								newPlayer 						= 	new Player(); 
+								newPlayer.startupPlayer(new Point(x, y));
+								newPlayer.guidID 				= 	id;
+								newPlayer.unitMoveAngle			=	ang;
+								newPlayer.unitSpeed				=	vel;
+							}
 						}
 						catch (e:Error)
 						{
@@ -132,10 +172,8 @@ package
 				}
 				
 				
-				//GameObjectManager.Instance.addBaseObject
-				/*Alert.show(
-				msg
-				);*/
+				
+				
 			}
 			public function UpdateServer():String 
 			{
