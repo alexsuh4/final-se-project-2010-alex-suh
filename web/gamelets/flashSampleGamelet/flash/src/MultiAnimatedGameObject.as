@@ -56,7 +56,8 @@ package
 			currentActionName = actionName;
 			
 			// store direction as string
-			animationAngleString = convertAngleToString(angle);
+			animationAngleString = "";
+			updateAnimation(); //This function will update animation according to angle.
 			
 			super.startupAnimatedGameObject(guid, ResourceManager.Instance.animationCollection[currentSkinName][currentActionName + "_" + animationAngleString] as GraphicsResource, position, angle, ZOrders.PLAYERZORDER);
 		}
@@ -66,7 +67,7 @@ package
 			if (inuse)
 			{
 				updateAnimation();
-				super.enterFrame(dt);	
+				super.enterFrame(dt);
 			}
 		}
 		
@@ -169,18 +170,25 @@ package
 			
 			if(isAnimationChanged)
 			{
-				graphics = ResourceManager.Instance.animationCollection[currentSkinName][currentActionName + "_" + animationAngleString] as GraphicsResource;
+				graphics = ResourceManager.Instance.animationCollection[currentSkinName][currentActionName + "_" + animationAngleString];
 				currentFrame = 0;
 			}			
 		}
 		
-		public function updateSkin(newSkinName:String, newAction:String):void
+		public function updateSkin(newSkinName:String, newAction:String = "stopped"):void
 		{
 			if(newSkinName != this.currentSkinName)
 			{
-				this.currentSkinName = newSkinName;
-				graphics = ResourceManager.Instance.animationCollection[newSkinName][newAction + "_" + animationAngleString] as GraphicsResource;
-				currentFrame = 0;
+				if(ResourceManager.Instance.animationCollection[newSkinName] != null)
+				{
+					if(ResourceManager.Instance.animationCollection[newSkinName][newAction + "_" + animationAngleString] != null)
+					{
+						this.currentSkinName = newSkinName;
+						this.currentActionName = newAction;
+						graphics = ResourceManager.Instance.animationCollection[newSkinName][newAction + "_" + animationAngleString];
+						currentFrame = 0;
+					}
+				}
 			}
 		}
 		
@@ -188,9 +196,15 @@ package
 		{
 			if(newAction != this.currentActionName)
 			{
-				this.currentActionName = newAction;
-				graphics = ResourceManager.Instance.animationCollection[currentSkinName][newAction + "_" + animationAngleString] as GraphicsResource;
-				currentFrame = 0;
+				if(ResourceManager.Instance.animationCollection[currentSkinName] != null)
+				{
+					if(ResourceManager.Instance.animationCollection[currentSkinName][newAction + "_" + animationAngleString] != null)
+					{	
+						this.currentActionName = newAction;
+						graphics = ResourceManager.Instance.animationCollection[currentSkinName][newAction + "_" + animationAngleString];
+						currentFrame = 0;
+					}
+				}
 			}
 		}
 	}
