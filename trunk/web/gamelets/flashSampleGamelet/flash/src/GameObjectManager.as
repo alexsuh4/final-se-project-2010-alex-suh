@@ -190,7 +190,19 @@ package
 			
 			removedBaseObjects.removeAll();
 		}
-		
+		public function getActiveIDs():Array
+		{
+			var result:Array = new Array();
+			for each (var gameObject:BaseObject in baseObjects)
+			{
+				
+				var _gameObject:GameObject = gameObject as GameObject;
+				if (_gameObject!=null)
+					result.push(_gameObject.guidID);
+				
+			}
+			return result;
+		}
 		public function findObjectInArray(findObjId:String):GameObject
 		{
 			for each (var gameObject:BaseObject in baseObjects)
