@@ -35,7 +35,7 @@ package
 			this.collisionName = CollisionIdentifiers.PLAYER;
 			
 			// center the screen on player
-			ViewPort.Instance.setShowArea(this.getCenterCords());
+			//ViewPort.Instance.setShowArea(this.getCenterCords());
 		}
 		
 		override public function shutdown():void
@@ -61,17 +61,10 @@ package
 					super.updateAction("stopped");
 				}
 				
-				// keep player on the map
-//				if (position.x < 0)
-//					position.x = 0;
-//				if (position.x > Application.application.width - graphics.bitmap.width / graphics.frames)
-//					position.x = Application.application.width - graphics.bitmap.width / graphics.frames;
-//				if (position.y < 0)
-//					position.y = 0;
-//				if (position.y > Application.application.height - graphics.bitmap.height )
-//					position.y = Application.application.height - graphics.bitmap.height ;	
-				
-				ViewPort.Instance.setShowArea(this.getCenterCords());
+				if (currentPlayer == this)
+				{
+					ViewPort.Instance.setShowArea(this.getCenterCords());
+				}
 			}
 		}
 		
@@ -89,17 +82,18 @@ package
 		{			
 			// set target position where the center of unit to move
 			// substruct unit half-width and half-height
-			targetPosition.x = ViewPort.Instance.getTLpoint().x + event.stageX - (frameWidth / 2);
-			targetPosition.y = ViewPort.Instance.getTLpoint().y + event.stageY - (frameHeight / 2);
+			//targetPosition.x = ViewPort.Instance.getTLpoint().x + event.stageX - (frameWidth / 2);
+			//targetPosition.y = ViewPort.Instance.getTLpoint().y + event.stageY - (frameHeight / 2);
 			
-			// calculate unit center
-			//centerPos.x = position.x + (frameWidth / 2);
-			//centerPos.y = position.y + (frameHeight / 2);
+			
 				
-			unitMoveAngle = Math.atan2(targetPosition.y - position.y, targetPosition.x - position.x);
+			//unitMoveAngle = Math.atan2(targetPosition.y - position.y, targetPosition.x - position.x);
 			
-			unitSpeed = 1.1;
-			super.updateAction("walk");
+			//unitSpeed = 1.1;
+			
+			JavaScriptManager.CurrentInstance().click(event);
+			
+			//super.updateAction("walk");
 
 		}
 		
@@ -115,7 +109,7 @@ package
 //					position.y + graphics.bitmap.height / 2 - ResourceManager.BigExplosionGraphics.bitmap.height / 2), 
 //				ZOrders.PLAYERZORDER, 
 //				true);			
-			this.shutdown();
+			//this.shutdown();
 		}
 	}
 }

@@ -63,6 +63,7 @@ public:
     double ang;
     double vel;
     double cords[2];
+	double target[2];
     string entity_id;
 
     map <string,string> Dynamic_properies;
@@ -170,6 +171,17 @@ void gamelet_object::move()
         cords[1]--;
     //bounds checking end
 
+	//player reached target start
+	
+	if (
+			abs((int)(cords[0]-target[0]))		<	vel*2
+		&&	abs((int)(cords[1]-target[1]))		<	vel*2
+		)
+	{
+		target[0]=cords[0];target[1]=cords[1];vel=0;
+	}
+	//player reached target end
+
     //cout <<"game object has moved to "<<cords[0]<<" , "<<cords[1]<<"\n";
 
 }
@@ -269,6 +281,13 @@ public:
 			}
 		
 		}
+	void resolveMouseClick(gamelet_object*player_Obj, int mx,int my)
+	{
+		player_Obj->ang= atan2(my- player_Obj->cords[1], mx- player_Obj->cords[0]);	
+		player_Obj->target[0]=mx;
+		player_Obj->target[0]=my;
+		player_Obj->vel= 1.1;
+	}
 };
 
 flash_gamelet::flash_gamelet()
@@ -607,6 +626,7 @@ void flash_gamelet::get_model_string(std::string &msgout)
 
 void flash_gamelet::handle_client_request(const handle_client_request_Args & req_Ags,std::string & reply)
 {
+	//retrieve keys 
     string req_const=req_Ags.messageQuery;
     string playerid=req_Ags.playerid;
 
@@ -629,23 +649,26 @@ void flash_gamelet::handle_client_request(const handle_client_request_Args & req
         mystream>>key>>val;
         data_params[key]=val;
     }
-    map<string,string>::const_iterator iter;
-    iter=data_params.find("userKey");
+    //get player
+    map<string,gamelet_object*>::iterator player_itr= players.find(playerid);
+    //player obj
+    if (player_itr==players.end())
+    {
+        cout<<"no player with this id in this gamelet !";
+        return;
+    }
+    gamelet_object* player_Obj=player_itr->second;
+
+	map<string,string>::const_iterator iter;
+    //handle keyboard
+	iter=data_params.find("userKey");
     if (iter!=data_params.end())
     {
         char key=iter->second[0];
         //handle key
         //hande key end
         cout<<"TDODO add handle for char \n"<<key<<" for player with playerid="<<playerid<<endl;
-        //get player
-        map<string,gamelet_object*>::iterator player_itr= players.find(playerid);
-        //player obj
-        if (player_itr==players.end())
-        {
-            cout<<"no player with this id in this gamelet !";
-            return;
-        }
-        gamelet_object* player_Obj=player_itr->second;
+        
 
         //gamelet_object*
         switch (key)
@@ -673,7 +696,22 @@ void flash_gamelet::handle_client_request(const handle_client_request_Args & req
                 break;
         }
     }
-    /*
+	//handle mouse 
+	std::string mx=data_params["mX"];
+	std::string my=data_params["mY"];
+	if (!mx.empty() && !my.empty())
+	{
+		int mxi,myi;
+		istringstream iss;
+		iss.str(mx);iss>>mxi;iss.clear();
+		iss.str(my);iss>>myi;
+		resolveMouseClick(player_Obj,mxi,myi);
+
+	}
+    
+	
+	/*
+	//uncomment for inpur debug 
     cout<<"sample gamelet recieved \n";
     for( iter=data_params.begin() ; iter != data_params.end() ; ++iter )
     {

@@ -31,6 +31,10 @@ package
 			this.frameWidth = graphics.bitmap.width / graphics.frames;
 			this.frameHeight = graphics.bitmap.height;
 			
+			JavaScriptManager.CurrentInstance().frameHeight = this.frameHeight;
+			JavaScriptManager.CurrentInstance().frameWidth = this.frameWidth;
+			
+			
 			startupGameObject(guid, graphics, position, angle, z);
 		}
 		

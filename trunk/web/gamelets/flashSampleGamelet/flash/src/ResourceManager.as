@@ -4,12 +4,11 @@ package
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.geom.*;
-	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.utils.Dictionary;
-	
+	import flash.system.LoaderContext;
 	import mx.controls.Alert;
 	import mx.core.*;
+	
 		
 	
 	public final class ResourceManager
@@ -57,6 +56,7 @@ package
 			
 			resourceCollections = new Array();
 			
+			
 			for(var i:int=0; i< ActiveObjectsDefinitions.ActiveObject.length(); i++)
 			{
 				// get animationObejct and all it's own animations
@@ -84,7 +84,8 @@ package
 						resourceCollections[ActiveObject.@skin_name][resourceName].contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, ioErrForResource);
 						
 						// start loading...
-						resourceCollections[ActiveObject.@skin_name][resourceName].load(new URLRequest(encodeURI(animation.@src)));
+						
+						resourceCollections[ActiveObject.@skin_name][resourceName].load(new URLRequest(encodeURI(CurrentGameletPath+"/"+animation.@src)));
 					}
 				}
 			}
@@ -112,7 +113,8 @@ package
 				groundEnvironment[mapObj.@name].contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, ioErrForResource);
 				
 				// start loading...
-				groundEnvironment[mapObj.@name].load(new URLRequest(encodeURI(mapObj.@src)));
+				
+				groundEnvironment[mapObj.@name].load(new URLRequest(encodeURI(CurrentGameletPath+"/"+mapObj.@src)));
 			}
 		}
 		
@@ -163,8 +165,9 @@ package
 
 				environment[mapObj.@name] = new GraphicsResource(groundEnvironment[mapObj.@name].content);
 			}
+			isInitalized = true;
 		}
-		
+		public static var isInitalized:Boolean = false;
 		// signal to start proccessing
 		public function countLoadedResources(e:Event):void
 		{
@@ -182,13 +185,14 @@ package
 		
 		public function ioErrForResource(e:IOErrorEvent):void
 		{
-			mx.controls.Alert.show("Something goes wrong! Check URLs!");
-			throw new Error("Resources_IO_Error");
+			mx.controls.Alert.show("Something goes wrong! Check URLs! \n"+e.toString());
+			throw new Error("Resources_IO_Error "+e.toString());
 		}
-		
-		[Embed(source="../media/cloud.png")]
+		public var CurrentGameletPath:String;
+		[Embed(source="gamelets/flashSampleGamelet/flash/media/cloud.png")]
 		public static var Cloud:Class;
 		public static var CloudGraphics:GraphicsResource = new GraphicsResource(new Cloud());
+		
 		
 		
 //		[Embed(source="../media/track1.mp3")]

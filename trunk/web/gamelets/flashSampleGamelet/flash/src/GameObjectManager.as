@@ -193,12 +193,13 @@ package
 		
 		public function findObjectInArray(findObjId:String):GameObject
 		{
-			for each (var gameObject:GameObject in baseObjects)
-			{					
-				if (gameObject.guidID == findObjId)
-				{
-					return gameObject;
-				}
+			for each (var gameObject:BaseObject in baseObjects)
+			{
+				
+				var _gameObject:Player = gameObject as Player;
+				if (_gameObject!=null &&_gameObject.guidID == findObjId)
+					return _gameObject;
+				
 			}
 			
 			return null;
