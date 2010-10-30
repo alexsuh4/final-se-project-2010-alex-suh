@@ -151,7 +151,9 @@ package
 							if (!ResourceManager.isInitalized) continue;
 							if (objectType.toUpperCase()=="PORTAL")
 							{
-								Alert.show("portal");
+								//Alert.show("portal");
+								var gameObject:GameObject = new GameObject();
+								gameObject.startupGameObject(id, ResourceManager.MineGraphics, new Point(x, y), 0, 5);
 							}
 							else
 							{
