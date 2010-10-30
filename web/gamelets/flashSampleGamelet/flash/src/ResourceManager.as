@@ -53,6 +53,7 @@ package
 			refCallClass = refFromCallClass;
 			
 			var ActiveObjectsDefinitions:XML = gamelet.ActiveObjectsDefinitions[0];
+			maxResources = parseInt(ActiveObjectsDefinitions.@count);
 			
 			resourceCollections = new Array();
 			
@@ -68,8 +69,6 @@ package
 				{
 					var Actions:XML = ActiveObject.Action[act];
 					var actionType:String = Actions.@type;
-					maxResources = maxResources + Actions.animation.length();
-					
 					// load all frames of current animation
 					for( var j:int = 0; j < Actions.animation.length(); j++)
 					{
@@ -94,7 +93,7 @@ package
 			var mapObjectsList:XML = gamelet.Map.objectslist[0];
 			
 			// add to maxResources of animations, number of ground objects
-			maxResources = maxResources + mapObjectsList.object.length();
+			maxResources = maxResources + parseInt(mapObjectsList.@count);
 			
 			groundEnvironment = new Array();
 			
@@ -193,6 +192,9 @@ package
 		public static var Cloud:Class;
 		public static var CloudGraphics:GraphicsResource = new GraphicsResource(new Cloud());
 		
+		[Embed(source="gamelets/flashSampleGamelet/flash/media/mine.png")]
+		public static var Mine:Class;
+		public static var MineGraphics:GraphicsResource = new GraphicsResource(new Mine());
 		
 		
 //		[Embed(source="../media/track1.mp3")]

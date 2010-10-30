@@ -113,7 +113,7 @@
 
     <layer type="natureLayer" builder="manual"><!--manual = each sprite/object has it's specific position on gamelet map-->
 
-      <sprite type="big_tree" x="0" y="1"></sprite>
+      <!--<sprite type="big_tree" x="0" y="1"></sprite>
 
       <sprite type="big_tree" x="0" y="3"></sprite>
 
@@ -135,7 +135,7 @@
 
       <sprite type="big_tree" x="3" y="5"></sprite>
 
-      <sprite type="farm" x="6" y="3"></sprite>
+      <sprite type="farm" x="6" y="3"></sprite>-->
 
     </layer>
 
