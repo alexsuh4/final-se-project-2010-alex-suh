@@ -129,14 +129,15 @@ function Gamelet(_divOnPage)
          
      
     }
-    
+    this.currentPlayer=null;
     //triggered by engine in a loop
     ///this is where you put your synchronization with server  logic
     /// new model holds a Json decoded javascript object
     //that supposed to represent your current game state
     this.sync_Model=function(newModelObj)
     {
-        //alert("sync_Model enter");
+       
+        
         if (!me.isInitialized)
         {
             //alert("sync_Model enter not initialized");
@@ -152,10 +153,20 @@ function Gamelet(_divOnPage)
         var id;
         var isCurrentPlayer;
 
+ 
         me.myFlashObj.testFunc
         (
             newModelObj.objects
         );
+        if (  currentState.attribs["playerid"] && currentState.attribs["playerid"]!="" &&  me.myFlashObj   &&   me.myFlashObj.SetCurrentPlayer)
+        {
+            me.currentPlayer=currentState.attribs["playerid"];
+            me.myFlashObj.SetCurrentPlayer
+            (
+                    me.currentPlayer
+            );
+        }
+        
 //        for(var i=0 ;i <newModelObj.objects.length;i++ )
 //           {
 //                x=newModelObj.objects[i].x;

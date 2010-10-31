@@ -153,7 +153,7 @@ void gamelet_object::move()
     cords[1]+=(sin(ang)*vel);
     //object move end
     //bound checking start
-    if (cords[0]>=240 || cords[0] <=0 || cords[1]>=240 || cords[1] <=0)
+    if (cords[0]>=440 || cords[0] <=0 || cords[1]>=440 || cords[1] <=0)
     {
         ang+=PI;
         if (ang>PI_MUL_2)
@@ -165,9 +165,9 @@ void gamelet_object::move()
         cords[0]++;
     if (cords[1]<=0)
         cords[1]++;
-    if (cords[0]>=240)
+    if (cords[0]>=440)
         cords[0]--;
-    if (cords[1]>=240)
+    if (cords[1]>=440)
         cords[1]--;
     //bounds checking end
 
@@ -292,14 +292,19 @@ public:
 
 flash_gamelet::flash_gamelet()
 {
+
 	isInialized=false;
+
     pthread_mutex_init(&innerObjectLock,NULL);
     cout<<"SAMPLE GAMELET CTOR LOCK TEST\n";
     cout<<"SAMPLE GAMELET CTOR innerObjectLock LOCKING \n";
     pthread_mutex_lock(&innerObjectLock);
     pthread_mutex_unlock(&innerObjectLock);
     cout<<"SAMPLE GAMELET CTOR innerObjectLock UNLOCKED \n";
-    cout<<"constructor sample gamelet called!\n";
+	this->entry_point.cords[0]=100;
+	this->entry_point.cords[0]=100;
+	cout<<"constructor sample gamelet called!\n";
+	
 }
 
 flash_gamelet::~flash_gamelet()
@@ -420,7 +425,7 @@ void flash_gamelet::add_player(std::string & player_id)
 {
 
     //critical section start
-        gamelet_object* newObject=add_object(entry_point.cords,(rand()%10>4?"boy":"girl"),player_id);
+        gamelet_object* newObject=add_object(entry_point.cords,"boy",player_id);
     cout<<"SAMPLEGAMELET :: add_object_player LOCKING innerObjectLock\n";
     pthread_mutex_lock(&innerObjectLock);
         players[player_id]=newObject;
@@ -456,8 +461,8 @@ void flash_gamelet::init_gamelet(gamelet_desc *my_gamelet_desc)
     cout<<"init bounds\n";
     bounds[0][0]=0;//x1
     bounds[0][1]=0;//y1
-    bounds[1][0]=200;//x2
-    bounds[1][1]=200;//y2
+    bounds[1][0]=1000;//x2
+    bounds[1][1]=1000;//y2
 
     this->my_gamelet_desc=my_gamelet_desc;
     cout<<"initalizing gamelet with session id "<<this->my_gamelet_desc->gamelet_session_id<<" and gamlete class id "<<this->my_gamelet_desc->gamelet_type_id<<endl;

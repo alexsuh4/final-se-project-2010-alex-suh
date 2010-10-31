@@ -41,6 +41,8 @@ package
 			ExternalInterface.addCallback("UpdateServer", UpdateServer);
 			ExternalInterface.addCallback("getSelectedObject", getSelectedObject);
 			ExternalInterface.addCallback("testFunc", testFunc);
+			ExternalInterface.addCallback("SetCurrentPlayer", SetCurrentPlayer);
+			
 			//Alert.show("Callbackes added");
 		}
 		
@@ -54,7 +56,16 @@ package
 		public function myFunc(s:String):void {
 				//testLabel.text=s;
 			}
+		public function SetCurrentPlayer(currentPlayrID:String):void
+		{
+			if (GameObject.currentPlayer != null)
+				return;
+			var obj:GameObject = GameObjectManager.Instance.findObjectInArray(currentPlayrID);
+			if (obj == null)
+				return;
+			GameObject.currentPlayer = obj;
 			
+		}
 		public function sync_Model( isCurrentPlayer:Boolean, modelGuid:String, posX:String, posY:String, angle:String, movingSpeed:String):void
 			{
 				//for debug puposes logic is in testFunc
