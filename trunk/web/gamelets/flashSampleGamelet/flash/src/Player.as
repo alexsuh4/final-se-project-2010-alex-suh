@@ -3,6 +3,7 @@ package
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.media.*;
+	import mx.controls.Alert;
 	
 	import mx.core.*;
 
@@ -27,10 +28,10 @@ package
 			super();
 		}
 		
-		public function startupPlayer(playerInitPosition:Point, defaultSkinName:String, defaultActionName:String):void
+		public function startupPlayer(playerInitPosition:Point):void
 		{
 			globalPlayerPos = playerInitPosition;
-			super.startupMultiAnimatedGameObject(myGuidID, defaultSkinName, defaultActionName, globalPlayerPos , 0, ZOrders.PLAYERZORDER);
+			super.startupMultiAnimatedGameObject(myGuidID, "human_miner", "walk", globalPlayerPos , 0, ZOrders.PLAYERZORDER);
 			
 			this.collisionName = CollisionIdentifiers.PLAYER;
 			
@@ -49,22 +50,28 @@ package
 			
 			if(unitSpeed != 0)
 			{
+				//super
+				super.updateAction("walk");
 				// move player to mouse position
 				position.x += unitSpeed * Math.cos( unitMoveAngle ); 
 				position.y += unitSpeed * Math.sin(	unitMoveAngle );
 				
 				// determine if object need to stop
 				tempMoveAngle = Math.atan2(targetPosition.y - position.y,targetPosition.x - position.x);
-				if((tempMoveAngle * unitMoveAngle) < 0)
-				{
-					unitSpeed = 0;
-					super.updateAction("stopped");
-				}
+				//if((tempMoveAngle * unitMoveAngle) < 0)
+				//{
+				//	unitSpeed = 0;
+				//	super.updateAction("stopped");
+				//}
 				
 				if (currentPlayer == this)
 				{
 					ViewPort.Instance.setShowArea(this.getCenterCords());
 				}
+			}
+			else
+			{
+				super.updateAction("stopped");
 			}
 		}
 		
@@ -84,9 +91,14 @@ package
 			// substruct unit half-width and half-height
 			//targetPosition.x = ViewPort.Instance.getTLpoint().x + event.stageX - (frameWidth / 2);
 			//targetPosition.y = ViewPort.Instance.getTLpoint().y + event.stageY - (frameHeight / 2);
-			
-			
-				
+			var pos:Point=new Point();
+			pos.x = ViewPort.Instance.getTLpoint().x + event.stageX - (frameWidth / 2);
+			pos.y = ViewPort.Instance.getTLpoint().y + event.stageY - (frameHeight / 2);
+			if (Math.abs(pos.x - position.x) <= 30 && Math.abs(pos.x - position.x) <= 30)
+			{
+				//Alert.show("Clicked on " + this.guidID);
+				JavaScriptManager.CurrentInstance().selectedObjectID = this.guidID;
+			}
 			//unitMoveAngle = Math.atan2(targetPosition.y - position.y, targetPosition.x - position.x);
 			
 			//unitSpeed = 1.1;

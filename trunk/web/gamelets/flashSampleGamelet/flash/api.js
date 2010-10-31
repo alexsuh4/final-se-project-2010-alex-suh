@@ -208,8 +208,12 @@ function Gamelet(_divOnPage)
      */
     this.getSelectedObject=function()
     {
-
-        //return me.myFlashObj.getSelectedObject();
+        var message="";
+        if (me.myFlashObj && me.myFlashObj.getSelectedObject)
+            message=me.myFlashObj.getSelectedObject();
+        //if (message&& message!="") alert(message);
+        return message;
+        
     }
     ///passes on clicks , clicked on HTML surface
     this.handleClick=function(x,y)

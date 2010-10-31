@@ -57,7 +57,8 @@ package
 			
 		public function sync_Model( isCurrentPlayer:Boolean, modelGuid:String, posX:String, posY:String, angle:String, movingSpeed:String):void
 			{
-				//Alert.show("sync_Model enter");
+				//for debug puposes logic is in testFunc
+				/*//Alert.show("sync_Model enter");
 				var msg:String;
 				msg=
 				"sync_Model "
@@ -74,7 +75,7 @@ package
 				posX
 				, posY
 				, angle
-				, movingSpeed);
+				, movingSpeed);*/
 				
 			}
 			public function testFunc(args:Object):void
@@ -132,7 +133,7 @@ package
 					y = args[i].y;
 					id = args[i].player_id;
 					ang = args[i].ang;
-					vel = 2;//args[i].vel ;
+					vel = args[i].vel;//args[i].vel ;
 					objectType = args[i].objectType;
 					obj = GameObjectManager.Instance.findObjectInArray(id);
 					if (obj != null)
@@ -194,9 +195,11 @@ package
 				lastClickY = ViewPort.Instance.getTLpoint().y + event.stageY - (frameHeight / 2);
 				isClicked = true;
 			}
+			public var selectedObjectID:String = "";
 			public function getSelectedObject():String 
 			{
-				return "getSelectedObject():String ";
+				//Alert("getSelectedObject() : " + selectedObjectID);
+				return selectedObjectID;
 			}
 		
 			
