@@ -10,7 +10,7 @@ var OPERATION_REGISTER="register";
 var BASE_GAMELET_PATH="gamelets";
 function getCurrentGameletPath()
 {
-    alert("calling getCurrentPath");
+   
     var result=BASE_GAMELET_PATH;
     var current_gamelet=currentState.attribs["gamelet"];
     if (current_gamelet && current_gamelet.getCurrentGameletPath)
@@ -482,9 +482,9 @@ function Gamelet_container(_mygamelet)
     this.updateModel=function()
     {
         var selectedObject=me.mygamelet.getSelectedObject();
+        //alert("updateModel me.mygamelet.getSelectedObject"+selectedObject );
         if (selectedObject!="" && selectedObject && currentState.attribs["Chat"])
         {
-            
             currentState.attribs["Chat"].setTo(selectedObject);
         }
         me.mygamelet.extrapolateModel();
