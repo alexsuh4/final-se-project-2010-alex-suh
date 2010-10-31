@@ -35,7 +35,8 @@ package
 		
 		public function startup():void
 		{
-			new Player().startupPlayer(new Point(0,0), "human_miner", "stopped");
+			var _currentPlayer:Player = new Player(); _currentPlayer.startupPlayer(new Point(0, 0)); GameObject.currentPlayer = _currentPlayer;
+			new Player().startupPlayer(new Point(50,50));
 			//new Enemy().startupBasicEnemy("test1", ResourceManager.WarriorAvatarGraphics, new Point(300, 400), 0, 0);
 			// UNDO for background music
 			//backgroundMusic = ResourceManager.Track1FX.play(0, int.MAX_VALUE);
